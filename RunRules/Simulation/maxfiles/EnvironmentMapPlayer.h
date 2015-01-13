@@ -19,18 +19,36 @@ extern "C" {
 /**
  * \brief Basic static function for the interface 'default'.
  * 
- * \param [in] param_N Interface Parameter "N".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_a Input scalar parameter "EnvironmentMapPlayerKernel.a".
- * \param [in] instream_x The stream should be of size (param_N * 4) bytes.
- * \param [in] instream_y The stream should be of size (param_N * 4) bytes.
- * \param [out] outstream_s The stream should be of size (param_N * 4) bytes.
+ * \param [in] ticks_EnvironmentMapPlayerKernel The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run.
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_u Input scalar parameter "EnvironmentMapPlayerKernel.camera_u".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_v Input scalar parameter "EnvironmentMapPlayerKernel.camera_v".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_w Input scalar parameter "EnvironmentMapPlayerKernel.camera_w".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
+ * \param [in] instream_col Stream "col".
+ * \param [in] instream_size_col The size of the stream instream_col in bytes.
+ * \param [in] instream_row Stream "row".
+ * \param [in] instream_size_row The size of the stream instream_row in bytes.
+ * \param [out] outstream_d Stream "d".
+ * \param [in] outstream_size_d The size of the stream outstream_d in bytes.
  */
 void EnvironmentMapPlayer(
-	int64_t param_N,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_a,
-	const int32_t *instream_x,
-	const int32_t *instream_y,
-	int32_t *outstream_s);
+	uint64_t ticks_EnvironmentMapPlayerKernel,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_u,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_v,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_w,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
+	const void *instream_col,
+	size_t instream_size_col,
+	const void *instream_row,
+	size_t instream_size_row,
+	void *outstream_d,
+	size_t outstream_size_d);
 
 /**
  * \brief Basic static non-blocking function for the interface 'default'.
@@ -40,30 +58,57 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
- * \param [in] param_N Interface Parameter "N".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_a Input scalar parameter "EnvironmentMapPlayerKernel.a".
- * \param [in] instream_x The stream should be of size (param_N * 4) bytes.
- * \param [in] instream_y The stream should be of size (param_N * 4) bytes.
- * \param [out] outstream_s The stream should be of size (param_N * 4) bytes.
+ * \param [in] ticks_EnvironmentMapPlayerKernel The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run.
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_u Input scalar parameter "EnvironmentMapPlayerKernel.camera_u".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_v Input scalar parameter "EnvironmentMapPlayerKernel.camera_v".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_camera_w Input scalar parameter "EnvironmentMapPlayerKernel.camera_w".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
+ * \param [in] instream_col Stream "col".
+ * \param [in] instream_size_col The size of the stream instream_col in bytes.
+ * \param [in] instream_row Stream "row".
+ * \param [in] instream_size_row The size of the stream instream_row in bytes.
+ * \param [out] outstream_d Stream "d".
+ * \param [in] outstream_size_d The size of the stream outstream_d in bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
-	int64_t param_N,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_a,
-	const int32_t *instream_x,
-	const int32_t *instream_y,
-	int32_t *outstream_s);
+	uint64_t ticks_EnvironmentMapPlayerKernel,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_u,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_v,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_w,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
+	const void *instream_col,
+	size_t instream_size_col,
+	const void *instream_row,
+	size_t instream_size_row,
+	void *outstream_d,
+	size_t outstream_size_d);
 
 /**
  * \brief Advanced static interface, structure for the engine interface 'default'
  * 
  */
 typedef struct { 
-	int64_t param_N; /**<  [in] Interface Parameter "N". */
-	uint64_t inscalar_EnvironmentMapPlayerKernel_a; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.a". */
-	const int32_t *instream_x; /**<  [in] The stream should be of size (param_N * 4) bytes. */
-	const int32_t *instream_y; /**<  [in] The stream should be of size (param_N * 4) bytes. */
-	int32_t *outstream_s; /**<  [out] The stream should be of size (param_N * 4) bytes. */
+	uint64_t ticks_EnvironmentMapPlayerKernel; /**<  [in] The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run. */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_u; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.camera_u". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_v; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.camera_v". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_camera_w; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.camera_w". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres". */
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize". */
+	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres". */
+	const void *instream_col; /**<  [in] Stream "col". */
+	size_t instream_size_col; /**<  [in] The size of the stream instream_col in bytes. */
+	const void *instream_row; /**<  [in] Stream "row". */
+	size_t instream_size_row; /**<  [in] The size of the stream instream_row in bytes. */
+	void *outstream_d; /**<  [out] Stream "d". */
+	size_t outstream_size_d; /**<  [in] The size of the stream outstream_d in bytes. */
 } EnvironmentMapPlayer_actions_t;
 
 /**

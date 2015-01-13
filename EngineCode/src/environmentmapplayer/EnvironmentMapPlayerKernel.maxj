@@ -26,17 +26,19 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize",dfefloat);
 		DFEVar viewplane_viewdistance = io.scalarInput("viewplane_viewdistance", dfefloat);
-		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeUInt(32));
-		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeUInt(32));
+		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeuint);
+		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeuint);
 
-		DFEVector<DFEVar> u = io.scalarInput("cameraONB_u", vector3);
-		DFEVector<DFEVar> v = io.scalarInput("cameraONB_v", vector3);
-		DFEVector<DFEVar> w = io.scalarInput("cameraONB_w", vector3);
+		/* Compute camera orthonormal basis */
+
+		DFEVector<DFEVar> u = io.scalarInput("camera_u", vector3);
+		DFEVector<DFEVar> v = io.scalarInput("camera_v", vector3);
+		DFEVector<DFEVar> w = io.scalarInput("camera_w", vector3);
 
 		/* Compute the ray in the camera reference frame */
 
-		DFEVar x_cam = viewplane_pixelsize * (col - (0.5 * viewplane_hres));
-		DFEVar y_cam = viewplane_pixelsize * (row - (0.5 * viewplane_vres));
+		DFEVar x_cam = viewplane_pixelsize * (col - (0.5 * viewplane_hres)).cast(dfefloat);
+		DFEVar y_cam = viewplane_pixelsize * (row - (0.5 * viewplane_vres)).cast(dfefloat);
 
 		/* Compute the ray in the world reference frame */
 
@@ -55,11 +57,17 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		//DFEVar u = 0.5 + ()
 
+		/* Convert the coordinates to addresses */
+
+
+
 
 		// TODO replace with your computation
 		//DFEVar sum = x + y + a;
 
-		//io.output("s", sum, type);
+		/* For this test write the computed uv coordinates out */
+
+		io.output("d", d, vector3);
 	}
 
 

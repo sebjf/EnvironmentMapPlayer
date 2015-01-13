@@ -86,12 +86,34 @@ public class KernelVectorMath {
 
 	public static DFEVar norm(DFEVector<DFEVar> a)
 	{
-		DFEVar sum = a[1] * a[1];
+		DFEVar sum = a[0] * a[0];
 		for(int i = 1; i < a.getSize(); i++)
 		{
 			sum = sum + (a[i] * a[i]);
 		}
 		return KernelMath.sqrt(sum);
+	}
+
+	public static DFEVector<DFEVar> cross(DFEVector<DFEVar> a, DFEVector<DFEVar> b) throws Exception
+	{
+		checkVectors(a,b);
+		DFEVector<DFEVar> ans = makeVector(a);
+
+		if(a.getSize() != 3){
+			throw new Exception("Cross Product is only valid for 3 element vectors.");
+		}
+
+		//http://www.mathsisfun.com/algebra/vectors-cross-product.html
+
+		int x = 0;
+		int y = 1;
+		int z = 2;
+
+		ans.connect(x, (a[x]*b[z]) - (a[z]*b[y]));
+		ans.connect(y, (a[z]*b[x]) - (a[x]*b[z]));
+		ans.connect(z, (a[x]*b[y]) - (a[y]*b[x]));
+
+		return ans;
 	}
 
 }
