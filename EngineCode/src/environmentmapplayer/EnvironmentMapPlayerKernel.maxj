@@ -1,0 +1,67 @@
+package environmentmapplayer;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+class EnvironmentMapPlayerKernel extends Kernel {
+
+	private static final DFEType dfeuint = dfeInt(32);
+	private static final DFEType dfefloat = dfeFloat(8, 24);
+	private static final DFEVectorType<DFEVar> vector3 = new DFEVectorType<DFEVar>(dfeFloat(8,24),3);
+
+
+	protected EnvironmentMapPlayerKernel(KernelParameters parameters) throws Exception {
+		super(parameters);
+
+		/* Inputs from manager that request this kernel to draw a specific ray */
+
+		DFEVar col = io.input("col", dfeuint);
+		DFEVar row = io.input("row", dfeuint);
+
+		/* Inputs from host defining how ray should be computed */
+
+		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize",dfefloat);
+		DFEVar viewplane_viewdistance = io.scalarInput("viewplane_viewdistance", dfefloat);
+		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeUInt(32));
+		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeUInt(32));
+
+		DFEVector<DFEVar> u = io.scalarInput("cameraONB_u", vector3);
+		DFEVector<DFEVar> v = io.scalarInput("cameraONB_v", vector3);
+		DFEVector<DFEVar> w = io.scalarInput("cameraONB_w", vector3);
+
+		/* Compute the ray in the camera reference frame */
+
+		DFEVar x_cam = viewplane_pixelsize * (col - (0.5 * viewplane_hres));
+		DFEVar y_cam = viewplane_pixelsize * (row - (0.5 * viewplane_vres));
+
+		/* Compute the ray in the world reference frame */
+
+		DFEVector<DFEVar> a1 = KernelVectorMath.multiply(x_cam, u);
+		DFEVector<DFEVar> a2 = KernelVectorMath.multiply(y_cam, v);
+		DFEVector<DFEVar> a3 = KernelVectorMath.multiply(viewplane_viewdistance, w);
+
+		DFEVector<DFEVar> d = KernelVectorMath.subtract(KernelVectorMath.add(a1, a2),a3);
+		d = KernelVectorMath.divide(d, KernelVectorMath.norm(d));
+
+		/* Define the rendering rays */
+
+		//
+
+		/* Convert the rays to texture coordinates */
+
+		//DFEVar u = 0.5 + ()
+
+
+		// TODO replace with your computation
+		//DFEVar sum = x + y + a;
+
+		//io.output("s", sum, type);
+	}
+
+
+
+}

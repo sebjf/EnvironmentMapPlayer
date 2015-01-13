@@ -1,0 +1,97 @@
+package environmentmapplayer;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+
+public class KernelVectorMath {
+
+	private static void checkVectors(DFEVector<DFEVar> a, DFEVector<DFEVar> b) throws Exception
+	{
+		/* Sanity check the vectors */
+		if(a.getSize() != b.getSize()){
+			throw new Exception("Trying to multiply vectors with different sizes.");
+		}
+		if(a.getKernel() != b.getKernel()){
+			throw new Exception("Trying to multiply vectors from different kernels.");
+		}
+	}
+
+	private static DFEVector<DFEVar> makeVector(DFEVector<DFEVar> a)
+	{
+		KernelLib k = a.getKernel();
+		int n = a.getSize();
+		return (DFEVector<DFEVar>) (new DFEVectorType(a.getType().getContainedType(), n).newInstance(k));
+	}
+
+	public static DFEVector<DFEVar> multiply(DFEVector<DFEVar> a, DFEVector<DFEVar> b) throws Exception
+	{
+		checkVectors(a,b);
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, a[i] * b[i]);
+		}
+		return ans;
+	}
+
+	public static DFEVector<DFEVar> multiply(DFEVar b, DFEVector<DFEVar> a){
+		return multiply(a,b);
+	}
+
+	public static DFEVector<DFEVar> multiply(DFEVector<DFEVar> a, DFEVar b)
+	{
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, a[i] * b);
+		}
+		return ans;
+	}
+
+
+	public static DFEVector<DFEVar> add(DFEVector<DFEVar> a, DFEVector<DFEVar> b) throws Exception
+	{
+		checkVectors(a,b);
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, a[i] + b[i]);
+		}
+		return ans;
+	}
+
+	public static DFEVector<DFEVar> subtract(DFEVector<DFEVar> a, DFEVector<DFEVar> b) throws Exception
+	{
+		checkVectors(a,b);
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, a[i] - b[i]);
+		}
+		return ans;
+	}
+
+	public static DFEVector<DFEVar> divide(DFEVector<DFEVar> a, DFEVar b) throws Exception
+	{
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, a[i] / b);
+		}
+		return ans;
+	}
+
+	public static DFEVar norm(DFEVector<DFEVar> a)
+	{
+		DFEVar sum = a[1] * a[1];
+		for(int i = 1; i < a.getSize(); i++)
+		{
+			sum = sum + (a[i] * a[i]);
+		}
+		return KernelMath.sqrt(sum);
+	}
+
+}
