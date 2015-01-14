@@ -33,7 +33,6 @@ MAXELEROSDIR_SIM:=$(MAXCOMPILERDIR_QUOTE)/lib/maxeleros-sim
 
 
 export MAXCOMPILER_BUILD_CONF = build.copy_results_to=$(shell pwd)/maxfiles
-export MAXCOMPILER_ACTIVITY_FILE = $(shell pwd)/.maxcompiler-activity.be
 
 #
 # 'all' needs to be the first target (dummy)

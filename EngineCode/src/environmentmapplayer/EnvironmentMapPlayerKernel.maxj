@@ -31,9 +31,9 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Compute camera orthonormal basis */
 
-		DFEVector<DFEVar> u = io.scalarInput("camera_u", vector3);
-		DFEVector<DFEVar> v = io.scalarInput("camera_v", vector3);
-		DFEVector<DFEVar> w = io.scalarInput("camera_w", vector3);
+		DFEVector<DFEVar> cam_u = io.scalarInput("camera_u", vector3);
+		DFEVector<DFEVar> cam_v = io.scalarInput("camera_v", vector3);
+		DFEVector<DFEVar> cam_w = io.scalarInput("camera_w", vector3);
 
 		/* Compute the ray in the camera reference frame */
 
@@ -42,9 +42,9 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Compute the ray in the world reference frame */
 
-		DFEVector<DFEVar> a1 = KernelVectorMath.multiply(x_cam, u);
-		DFEVector<DFEVar> a2 = KernelVectorMath.multiply(y_cam, v);
-		DFEVector<DFEVar> a3 = KernelVectorMath.multiply(viewplane_viewdistance, w);
+		DFEVector<DFEVar> a1 = KernelVectorMath.multiply(x_cam, cam_u);
+		DFEVector<DFEVar> a2 = KernelVectorMath.multiply(y_cam, cam_v);
+		DFEVector<DFEVar> a3 = KernelVectorMath.multiply(viewplane_viewdistance, cam_w);
 
 		DFEVector<DFEVar> d = KernelVectorMath.subtract(KernelVectorMath.add(a1, a2),a3);
 		d = KernelVectorMath.divide(d, KernelVectorMath.norm(d));
@@ -52,10 +52,13 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Define the rendering rays */
 
 		//
+		DFEVector<DFEVar> r_d = d;
 
 		/* Convert the rays to texture coordinates */
 
 		//DFEVar u = 0.5 + ()
+
+		DFEVar v = 0.5 + (KernelMathEx.asin(r_d[1])/Math.PI);
 
 		/* Convert the coordinates to addresses */
 
