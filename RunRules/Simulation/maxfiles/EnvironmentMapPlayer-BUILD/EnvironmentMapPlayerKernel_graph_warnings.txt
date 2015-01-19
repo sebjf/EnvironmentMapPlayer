@@ -3,27 +3,27 @@ node "<{HWOffsetFix:32, 0, TWOSCOMPLEMENT}>" (ID 152) has unconnected outputs: [
 stack trace of node origin follows:
 	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.rom(Mem.java:752)
 	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:141)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
 	
 node "<{HWOffsetFix:32, 0, TWOSCOMPLEMENT}>" (ID 154) has unconnected outputs: [output]
 stack trace of node origin follows:
 	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.rom(Mem.java:752)
 	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:141)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
 	
 node "+" (ID 208) has unconnected outputs: [result]
 stack trace of node origin follows:
 	com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.add(DFEVar.java:873)
 	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:163)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
 	
 node "+" (ID 212) has unconnected outputs: [result]
 stack trace of node origin follows:
 	com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.add(DFEVar.java:873)
 	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:164)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
 	

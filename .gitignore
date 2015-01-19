@@ -56,3 +56,5 @@ hs_err_pid*
 **debug/
 **objects/
 **maxfiles/**BUILD/
+*.png
+*.dot
