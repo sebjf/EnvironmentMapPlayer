@@ -3,7 +3,7 @@ Constant with value 0.5 does not fit exactly into type {HWOffsetFix:32, 0, TWOSC
 COMPLETE_FIXED_POINT_UNDERFLOW, resulting value: 0.0
 Origin of related node:
 com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.mulAsRHS(DFEVar.java:985)
-environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:41)
+environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:106)
 environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
 environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
 
@@ -12,7 +12,7 @@ Constant with value 0.5 does not fit exactly into type {HWOffsetFix:32, 0, TWOSC
 COMPLETE_FIXED_POINT_UNDERFLOW, resulting value: 0.0
 Origin of related node:
 com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.mulAsRHS(DFEVar.java:985)
-environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:40)
+environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:105)
 environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:14)
 environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:55)
 
