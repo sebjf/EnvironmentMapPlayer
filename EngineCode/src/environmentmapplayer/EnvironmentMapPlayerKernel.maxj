@@ -75,6 +75,8 @@ class EnvironmentMapPlayerKernel extends Kernel {
 	protected EnvironmentMapPlayerKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
 
+		flush.disabled();
+
 		/* Inputs from manager that request this kernel to draw a specific ray */
 
 		DFEVar col = io.input("col", dfeuint);

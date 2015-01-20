@@ -9,6 +9,8 @@ public class EnvironmentMapSampleReaderKernel extends Kernel {
 	protected EnvironmentMapSampleReaderKernel(KernelParameters parameters) {
 		super(parameters);
 
+		flush.disabled();
+
 		int	burst_size_in_bytes = 384;
 		int burst_size_in_bits = burst_size_in_bytes * 8;
 

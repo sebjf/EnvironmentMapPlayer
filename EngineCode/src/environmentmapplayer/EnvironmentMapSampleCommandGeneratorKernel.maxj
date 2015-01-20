@@ -11,6 +11,8 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 	protected EnvironmentMapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
 
+		flush.disabled();
+
 		DFEVar address_in_pixels = io.input("address", dfeUInt(32));
 
 		int burst_size_bytes = 384;

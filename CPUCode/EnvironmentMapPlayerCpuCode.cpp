@@ -5,7 +5,11 @@
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
 
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
+
 #include "Camera.hpp"
+#include "EnvironmentMap.hpp"
 
 int main(void)
 {
@@ -14,25 +18,13 @@ int main(void)
 
 	max_file_t *maxfile = EnvironmentMapPlayer_init();
 	max_engine_t *engine = max_load(maxfile, "*");
+
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
 	/* Initialise environment map */
 
-	max_actions_t* memact = max_actions_init(maxfile, "memoryInitialisation");
-
-	int texturesize_bursts = (ceil((200 * 250 * 4)/384)*384);
-	void* texturedata = malloc(texturesize_bursts);
-
-	for(int i = 0; i < texturesize_bursts; i++)
-	{
-		char* texturecontent = (char*)texturedata;
-		texturecontent[i] = 0xf0;
-	}
-
-	max_set_param_uint64t(memact, "size", texturesize_bursts);
-	max_queue_input(memact,"environment_map_in",texturedata,texturesize_bursts);
-
-	max_run(engine, memact);
+	EnvironmentMap environmentMap(engine,maxfile);
+	environmentMap.LoadEnvironmentMap("myimage");
 
 	/* ignore memory input on subsequent runs */
 
@@ -81,10 +73,16 @@ int main(void)
 		}
 	}
 
-	max_set_ticks(act,"EnvironmentMapPlayerKernel", n_rays);
-	max_set_ticks(act,"EnvironmentMapSampleCommandGeneratorKernel", n_rays);
-	max_set_ticks(act,"EnvironmentMapSampleReaderKernel", n_rays);
+	//max_set_ticks(act,"EnvironmentMapPlayerKernel", n_rays);
+	//max_set_ticks(act,"EnvironmentMapSampleCommandGeneratorKernel", n_rays);
+	//max_set_ticks(act,"EnvironmentMapSampleReaderKernel", n_rays);
 
+	max_queue_input(act, "col", x, inputsize_bytes);
+	max_queue_input(act, "row", y, inputsize_bytes);
+	max_queue_input(act, "col", x, inputsize_bytes);
+	max_queue_input(act, "row", y, inputsize_bytes);
+	max_queue_input(act, "col", x, inputsize_bytes);
+	max_queue_input(act, "row", y, inputsize_bytes);
 	max_queue_input(act, "col", x, inputsize_bytes);
 	max_queue_input(act, "row", y, inputsize_bytes);
 
@@ -97,7 +95,12 @@ int main(void)
 
 	printf("Running on DFE...\n");
 
+	//max_disable_validation(act);
+
 	max_run(engine, act);
+
+
+
 	max_unload(engine);
 	
 
