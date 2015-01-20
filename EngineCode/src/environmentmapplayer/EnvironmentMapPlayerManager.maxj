@@ -3,6 +3,7 @@ package environmentmapplayer;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 
 public class EnvironmentMapPlayerManager extends CustomManager {
 
@@ -10,6 +11,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	public EnvironmentMapPlayerManager(EnvironmentMapPlayerEngineParameters engineParameters) throws Exception {
 		super(engineParameters);
+
+		DebugLevel myDebugLevel = new DebugLevel();
+		myDebugLevel.setHasStreamStatus(true);
+		debug.setDebugLevel(myDebugLevel);
 
 		KernelBlock block = addKernel(new EnvironmentMapPlayerKernel(makeKernelParameters(s_kernelName)));
 

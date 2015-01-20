@@ -52,3 +52,9 @@ hs_err_pid*
 *.dat
 *.be
 *.mxru
+
+**debug/
+**objects/
+**maxfiles/**BUILD/
+*.png
+*.dot
