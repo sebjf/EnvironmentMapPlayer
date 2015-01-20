@@ -1,7 +1,10 @@
 package environmentmapplayer;
 
+import java.util.List;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
@@ -21,8 +24,12 @@ public class KernelVectorMath {
 
 	private static DFEVector<DFEVar> makeVector(DFEVector<DFEVar> a)
 	{
+		return makeVector(a, a.getSize());
+	}
+
+	private static DFEVector<DFEVar> makeVector(DFEVector<DFEVar> a, int n)
+	{
 		KernelLib k = a.getKernel();
-		int n = a.getSize();
 		return (DFEVector<DFEVar>) (new DFEVectorType(a.getType().getContainedType(), n).newInstance(k));
 	}
 
@@ -46,6 +53,33 @@ public class KernelVectorMath {
 		DFEVector<DFEVar> ans = makeVector(a);
 		for(int i = 0; i < a.getSize(); i++)
 		{
+			ans.connect(i, a[i] * b);
+		}
+		return ans;
+	}
+
+	public static DFEVector<DFEVar> multiplyMatrix(DFEVector<DFEVar> a, DFEVector<DFEVar> matrix)
+	{
+		DFEVector<DFEVar> ans = makeVector(a);
+
+		if(matrix.getSize() != (a.getSize() * a.getSize())){
+			throw new Exception("We currently require a square matrix for matrix multiplication.");
+		}
+
+		int rows = 3;
+		int columns = 3;
+
+		for(int column = 0; column < columns; column++)
+		{
+
+		}
+
+
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			DFEVar ans0 =
+
+
 			ans.connect(i, a[i] * b);
 		}
 		return ans;
@@ -84,6 +118,16 @@ public class KernelVectorMath {
 		return ans;
 	}
 
+	public static DFEVector<DFEVar> abs(DFEVector<DFEVar> a) throws Exception
+	{
+		DFEVector<DFEVar> ans = makeVector(a);
+		for(int i = 0; i < a.getSize(); i++)
+		{
+			ans.connect(i, KernelMath.abs(a[i]));
+		}
+		return ans;
+	}
+
 	public static DFEVar norm(DFEVector<DFEVar> a)
 	{
 		DFEVar sum = a[0] * a[0];
@@ -115,5 +159,60 @@ public class KernelVectorMath {
 
 		return ans;
 	}
+
+	public static DFEVar makeConstant(DFEVector<DFEVar> a, double v)
+	{
+		return a.getKernel().constant.var((DFEType) a.getType().getContainedType(),v);
+	}
+
+	public static DFEVector<DFEVar> max(DFEVector<DFEVar> a) throws Exception
+	{
+		if(a.getSize() != 3){
+			throw new Exception("This version of max_index is only compatible with 3 element vectors");
+		}
+
+		DFEVar first_compare_result = (a[0] > a[1]) ? a[0] : a[1];
+		DFEVar secon_compare_result = (a[2] > first_compare_result) ? a[2] : first_compare_result;
+
+		DFEVar first_compare_index = (a[0] > a[1]) ? makeConstant(a,0) : makeConstant(a,1);
+		DFEVar secon_compare_index = (a[2] > first_compare_result) ? makeConstant(a, 2) : first_compare_index;
+
+		DFEVector<DFEVar> ans = makeVector(a, 2);
+		ans.connect(0, secon_compare_result);
+		ans.connect(1, secon_compare_index);
+
+		return ans;
+	}
+
+	public static DFEVar maxIndex(DFEVector<DFEVar> a) throws Exception
+	{
+		if(a.getSize() != 3){
+			throw new Exception("This version of max_index is only compatible with 3 element vectors");
+		}
+
+		DFEVar first_compare_result = (a[0] > a[1]) ? a[0] : a[1];
+
+		DFEVar first_compare_index = (a[0] > a[1]) ? makeConstant(a,0) : makeConstant(a,1);
+		DFEVar secon_compare_index = (a[2] > first_compare_result) ? makeConstant(a, 2) : first_compare_index;
+
+		return secon_compare_index;
+	}
+
+	public static DFEVar selectElement(DFEVector<DFEVar> a, DFEVar i) throws Exception
+	{
+		if(a.getSize() != 3){
+			throw new Exception("This version of selectElement is only compatible with 3 element vectors");
+		}
+		//TODO: make this more efficient by collating the dfevars and masking and shifting the selected element
+
+		List<DFEVar> elements = a.getElementsAsList();
+
+		DFEVar first_compare = (i > 0) ? elements[1] : elements[0];
+		DFEVar second_compare = (i > 1) ? elements[2] : first_compare;
+
+		return second_compare;
+
+	}
+
 
 }

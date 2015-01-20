@@ -51,9 +51,22 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Define the rendering rays */
 
-		//
+		DFEVector<DFEVar> r_d = d;
+
+		/* Identify the plane the ray intersects */
+
+		DFEVar plane_axis_index = KernelVectorMath.maxIndex(KernelVectorMath.abs(r_d));
+		DFEVar plane_axis_value = KernelVectorMath.selectElement(r_d, plane_axis_index);
+		DFEVar plane_index = (plane_axis_value > 0) ? (plane_axis_index) : (plane_axis_index + 1);
+
+		/* Retrieve the plane parameters from memory */
+
+
+
 
 		/* Convert the rays to texture coordinates */
+
+
 
 		//DFEVar u = 0.5 + ()
 
