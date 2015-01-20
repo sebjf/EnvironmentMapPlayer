@@ -1,0 +1,53 @@
+package environmentmapplayer;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+
+public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
+
+	protected EnvironmentMapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
+		super(parameters);
+
+		DFEVar address_in_pixels = io.input("address", dfeUInt(32));
+
+		int burst_size_bytes = 384;
+		int pixel_size_bytes = 4;
+		int pixels_per_burst = burst_size_bytes / pixel_size_bytes;
+
+		/* For now we do it the naive way - one command for one sample */
+
+		DFEVar address_in_bursts = address_in_pixels / pixels_per_burst;
+		DFEVar sample_offset_into_burst_in_pixels = KernelMath.modulo(address_in_pixels, pixels_per_burst);
+
+		/*
+		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
+		DFEStruct memoryCommand = memoryCommand_t.newInstance(this);
+
+		memoryCommand["address"] = address_in_bursts;
+		memoryCommand["size"] = constant.var(1).cast(dfeUInt(8));
+		memoryCommand["inc"] = constant.var(1).cast(dfeUInt(8));
+		memoryCommand["stream"] = constant.var(0).cast(dfeRawBits(15));
+		memoryCommand["tag"] = constant.var(false);
+
+		LMemCommandStream.makeKernelOutput("sample_command", constant.var(true), memoryCommand);
+		*/
+
+		LMemCommandStream.makeKernelOutput(
+				"sample_command",
+				constant.var(true),
+				address_in_bursts.cast(dfeUInt(28)),
+				constant.var(dfeUInt(8),1),
+				constant.var(dfeUInt(7),1),
+				constant.var(dfeUInt(4),0),
+				constant.var(false));
+
+		io.output("sample_offset_in_pixels", dfeUInt(32)) <== sample_offset_into_burst_in_pixels.cast(dfeUInt(32));
+
+	}
+
+
+
+}

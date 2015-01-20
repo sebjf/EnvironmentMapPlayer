@@ -1,29 +1,96 @@
 *** After kernel graph-pass 'Init Graph' ***
-node "<{HWOffsetFix:32, 0, TWOSCOMPLEMENT}>" (ID 152) has unconnected outputs: [output]
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
 stack trace of node origin follows:
-	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.rom(Mem.java:752)
-	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:141)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
 	
-node "<{HWOffsetFix:32, 0, TWOSCOMPLEMENT}>" (ID 154) has unconnected outputs: [output]
+node "Hold" (ID 34) has unconnected outputs: [output]
 stack trace of node origin follows:
-	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Mem.rom(Mem.java:752)
-	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:141)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions.streamHold(Reductions.java:641)
+	environmentmapplayer.EnvironmentMapPlayerKernel.makeNonBlockingInput(EnvironmentMapPlayerKernel.maxj:71)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:105)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
 	
-node "+" (ID 208) has unconnected outputs: [result]
+node "Hold" (ID 54) has unconnected outputs: [output]
 stack trace of node origin follows:
-	com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.add(DFEVar.java:873)
-	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:163)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions.streamHold(Reductions.java:641)
+	environmentmapplayer.EnvironmentMapPlayerKernel.makeNonBlockingInput(EnvironmentMapPlayerKernel.maxj:71)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:106)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
 	
-node "+" (ID 212) has unconnected outputs: [result]
+node "Hold" (ID 74) has unconnected outputs: [output]
 stack trace of node origin follows:
-	com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.add(DFEVar.java:873)
-	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:164)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:19)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:60)
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions.streamHold(Reductions.java:641)
+	environmentmapplayer.EnvironmentMapPlayerKernel.makeNonBlockingInput(EnvironmentMapPlayerKernel.maxj:71)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:107)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'Init Graph' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'OptimiseNodesPass' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'TriAddExtractionPass' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'PO2FPMultOptimiser' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'PrepareSimulationPass' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'ScheduleApplier' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'TapFIFOsPass' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'RemoveUntypedConstants' ***
+node "Scalar input (map_height)" (ID 8) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:88)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:25)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
 	

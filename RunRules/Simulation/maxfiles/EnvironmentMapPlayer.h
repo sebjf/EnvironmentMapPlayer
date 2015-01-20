@@ -10,6 +10,138 @@ extern "C" {
 
 
 /*----------------------------------------------------------------------------*/
+/*---------------------- Interface memoryInitialisation ----------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+
+
+/**
+ * \brief Basic static function for the interface 'memoryInitialisation'.
+ * 
+ * \param [in] param_size Interface Parameter "size".
+ * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
+ */
+void EnvironmentMapPlayer_memoryInitialisation(
+	int32_t param_size,
+	const int32_t *instream_environment_map_in);
+
+/**
+ * \brief Basic static non-blocking function for the interface 'memoryInitialisation'.
+ * 
+ * Schedule to run on an engine and return immediately.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ * 
+ * 
+ * \param [in] param_size Interface Parameter "size".
+ * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
+ * \return A handle on the execution status, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_memoryInitialisation_nonblock(
+	int32_t param_size,
+	const int32_t *instream_environment_map_in);
+
+/**
+ * \brief Advanced static interface, structure for the engine interface 'memoryInitialisation'
+ * 
+ */
+typedef struct { 
+	int32_t param_size; /**<  [in] Interface Parameter "size". */
+	const int32_t *instream_environment_map_in; /**<  [in] The stream should be of size (param_size / 4) bytes. */
+} EnvironmentMapPlayer_memoryInitialisation_actions_t;
+
+/**
+ * \brief Advanced static function for the interface 'memoryInitialisation'.
+ * 
+ * \param [in] engine The engine on which the actions will be executed.
+ * \param [in,out] interface_actions Actions to be executed.
+ */
+void EnvironmentMapPlayer_memoryInitialisation_run(
+	max_engine_t *engine,
+	EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+
+/**
+ * \brief Advanced static non-blocking function for the interface 'memoryInitialisation'.
+ *
+ * Schedule the actions to run on the engine and return immediately.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ *
+ * 
+ * \param [in] engine The engine on which the actions will be executed.
+ * \param [in] interface_actions Actions to be executed.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_nonblock(
+	max_engine_t *engine,
+	EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+
+/**
+ * \brief Group run advanced static function for the interface 'memoryInitialisation'.
+ * 
+ * \param [in] group Group to use.
+ * \param [in,out] interface_actions Actions to run.
+ *
+ * Run the actions on the first device available in the group.
+ */
+void EnvironmentMapPlayer_memoryInitialisation_run_group(max_group_t *group, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+
+/**
+ * \brief Group run advanced static non-blocking function for the interface 'memoryInitialisation'.
+ * 
+ *
+ * Schedule the actions to run on the first device available in the group and return immediately.
+ * The status of the run must be checked with ::max_wait. 
+ * Note that use of ::max_nowait is prohibited with non-blocking running on groups:
+ * see the ::max_run_group_nonblock documentation for more explanation.
+ *
+ * \param [in] group Group to use.
+ * \param [in] interface_actions Actions to run.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+
+/**
+ * \brief Array run advanced static function for the interface 'memoryInitialisation'.
+ * 
+ * \param [in] engarray The array of devices to use.
+ * \param [in,out] interface_actions The array of actions to run.
+ *
+ * Run the array of actions on the array of engines.  The length of interface_actions
+ * must match the size of engarray.
+ */
+void EnvironmentMapPlayer_memoryInitialisation_run_array(max_engarray_t *engarray, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions[]);
+
+/**
+ * \brief Array run advanced static non-blocking function for the interface 'memoryInitialisation'.
+ * 
+ *
+ * Schedule to run the array of actions on the array of engines, and return immediately.
+ * The length of interface_actions must match the size of engarray.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ *
+ * \param [in] engarray The array of devices to use.
+ * \param [in] interface_actions The array of actions to run.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions[]);
+
+/**
+ * \brief Converts a static-interface action struct into a dynamic-interface max_actions_t struct.
+ *
+ * Note that this is an internal utility function used by other functions in the static interface.
+ *
+ * \param [in] maxfile The maxfile to use.
+ * \param [in] interface_actions The interface-specific actions to run.
+ * \return The dynamic-interface actions to run, or NULL in case of error.
+ */
+max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *maxfile, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+
+
+
+/*----------------------------------------------------------------------------*/
 /*---------------------------- Interface default -----------------------------*/
 /*----------------------------------------------------------------------------*/
 
@@ -20,6 +152,12 @@ extern "C" {
  * \brief Basic static function for the interface 'default'.
  * 
  * \param [in] ticks_EnvironmentMapPlayerKernel The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run.
+ * \param [in] ticks_EnvironmentMapSampleCommandGeneratorKernel The number of ticks for which kernel "EnvironmentMapSampleCommandGeneratorKernel" will run.
+ * \param [in] ticks_EnvironmentMapSampleReaderKernel The number of ticks for which kernel "EnvironmentMapSampleReaderKernel" will run.
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_map_height Input scalar parameter "EnvironmentMapPlayerKernel.map_height".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_map_width Input scalar parameter "EnvironmentMapPlayerKernel.map_width".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_height Input scalar parameter "EnvironmentMapPlayerKernel.segment_height".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_width Input scalar parameter "EnvironmentMapPlayerKernel.segment_width".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
@@ -32,13 +170,23 @@ extern "C" {
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
  * \param [in] instream_col Stream "col".
  * \param [in] instream_size_col The size of the stream instream_col in bytes.
+ * \param [in] instream_environment_map_in Stream "environment_map_in".
+ * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [in] instream_row Stream "row".
  * \param [in] instream_size_row The size of the stream instream_row in bytes.
- * \param [out] outstream_d Stream "d".
- * \param [in] outstream_size_d The size of the stream outstream_d in bytes.
+ * \param [out] outstream_sample Stream "sample".
+ * \param [in] outstream_size_sample The size of the stream outstream_sample in bytes.
+ * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
+ * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
 	uint64_t ticks_EnvironmentMapPlayerKernel,
+	uint64_t ticks_EnvironmentMapSampleCommandGeneratorKernel,
+	uint64_t ticks_EnvironmentMapSampleReaderKernel,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
@@ -51,10 +199,14 @@ void EnvironmentMapPlayer(
 	size_t instream_size_camera_w,
 	const void *instream_col,
 	size_t instream_size_col,
+	const void *instream_environment_map_in,
+	size_t instream_size_environment_map_in,
 	const void *instream_row,
 	size_t instream_size_row,
-	void *outstream_d,
-	size_t outstream_size_d);
+	void *outstream_sample,
+	size_t outstream_size_sample,
+	size_t lmem_address_environment_map,
+	size_t lmem_arr_size_environment_map);
 
 /**
  * \brief Basic static non-blocking function for the interface 'default'.
@@ -65,6 +217,12 @@ void EnvironmentMapPlayer(
  * 
  * 
  * \param [in] ticks_EnvironmentMapPlayerKernel The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run.
+ * \param [in] ticks_EnvironmentMapSampleCommandGeneratorKernel The number of ticks for which kernel "EnvironmentMapSampleCommandGeneratorKernel" will run.
+ * \param [in] ticks_EnvironmentMapSampleReaderKernel The number of ticks for which kernel "EnvironmentMapSampleReaderKernel" will run.
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_map_height Input scalar parameter "EnvironmentMapPlayerKernel.map_height".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_map_width Input scalar parameter "EnvironmentMapPlayerKernel.map_width".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_height Input scalar parameter "EnvironmentMapPlayerKernel.segment_height".
+ * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_width Input scalar parameter "EnvironmentMapPlayerKernel.segment_width".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
@@ -77,14 +235,24 @@ void EnvironmentMapPlayer(
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
  * \param [in] instream_col Stream "col".
  * \param [in] instream_size_col The size of the stream instream_col in bytes.
+ * \param [in] instream_environment_map_in Stream "environment_map_in".
+ * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [in] instream_row Stream "row".
  * \param [in] instream_size_row The size of the stream instream_row in bytes.
- * \param [out] outstream_d Stream "d".
- * \param [in] outstream_size_d The size of the stream outstream_d in bytes.
+ * \param [out] outstream_sample Stream "sample".
+ * \param [in] outstream_size_sample The size of the stream outstream_sample in bytes.
+ * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
+ * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t ticks_EnvironmentMapPlayerKernel,
+	uint64_t ticks_EnvironmentMapSampleCommandGeneratorKernel,
+	uint64_t ticks_EnvironmentMapSampleReaderKernel,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height,
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
@@ -97,10 +265,14 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	size_t instream_size_camera_w,
 	const void *instream_col,
 	size_t instream_size_col,
+	const void *instream_environment_map_in,
+	size_t instream_size_environment_map_in,
 	const void *instream_row,
 	size_t instream_size_row,
-	void *outstream_d,
-	size_t outstream_size_d);
+	void *outstream_sample,
+	size_t outstream_size_sample,
+	size_t lmem_address_environment_map,
+	size_t lmem_arr_size_environment_map);
 
 /**
  * \brief Advanced static interface, structure for the engine interface 'default'
@@ -108,6 +280,12 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  */
 typedef struct { 
 	uint64_t ticks_EnvironmentMapPlayerKernel; /**<  [in] The number of ticks for which kernel "EnvironmentMapPlayerKernel" will run. */
+	uint64_t ticks_EnvironmentMapSampleCommandGeneratorKernel; /**<  [in] The number of ticks for which kernel "EnvironmentMapSampleCommandGeneratorKernel" will run. */
+	uint64_t ticks_EnvironmentMapSampleReaderKernel; /**<  [in] The number of ticks for which kernel "EnvironmentMapSampleReaderKernel" will run. */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.map_height". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.map_width". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.segment_height". */
+	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.segment_width". */
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres". */
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize". */
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance". */
@@ -120,10 +298,14 @@ typedef struct {
 	size_t instream_size_camera_w; /**<  [in] The size of the stream instream_camera_w in bytes. */
 	const void *instream_col; /**<  [in] Stream "col". */
 	size_t instream_size_col; /**<  [in] The size of the stream instream_col in bytes. */
+	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
+	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
 	const void *instream_row; /**<  [in] Stream "row". */
 	size_t instream_size_row; /**<  [in] The size of the stream instream_row in bytes. */
-	void *outstream_d; /**<  [out] Stream "d". */
-	size_t outstream_size_d; /**<  [in] The size of the stream outstream_d in bytes. */
+	void *outstream_sample; /**<  [out] Stream "sample". */
+	size_t outstream_size_sample; /**<  [in] The size of the stream outstream_sample in bytes. */
+	size_t lmem_address_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: base address, in bytes. */
+	size_t lmem_arr_size_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: array size, in bytes. */
 } EnvironmentMapPlayer_actions_t;
 
 /**

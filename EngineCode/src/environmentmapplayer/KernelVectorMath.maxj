@@ -135,7 +135,7 @@ public class KernelVectorMath {
 		int y = 1;
 		int z = 2;
 
-		ans.connect(x, (a[x]*b[z]) - (a[z]*b[y]));
+		ans.connect(x, (a[y]*b[z]) - (a[z]*b[y]));
 		ans.connect(y, (a[z]*b[x]) - (a[x]*b[z]));
 		ans.connect(z, (a[x]*b[y]) - (a[y]*b[x]));
 
@@ -187,6 +187,16 @@ public class KernelVectorMath {
 		for(int i = 0; i < a.getSize(); i++)
 		{
 			ans.connect(i, -a[i]);
+		}
+		return ans;
+	}
+
+	public static DFEVector<DFEVar> select(DFEVector<DFEVar> a, int base, int elements) throws Exception
+	{
+		DFEVector<DFEVar> ans = makeVector(a,elements);
+		for(int i = 0; i < elements; i++)
+		{
+			ans.connect(i, a[base+i]);
 		}
 		return ans;
 	}

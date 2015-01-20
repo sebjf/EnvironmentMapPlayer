@@ -1,0 +1,33 @@
+package environmentmapplayer;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+
+public class EnvironmentMapSampleReaderKernel extends Kernel {
+
+	protected EnvironmentMapSampleReaderKernel(KernelParameters parameters) {
+		super(parameters);
+
+		int	burst_size_in_bytes = 384;
+		int burst_size_in_bits = burst_size_in_bytes * 8;
+
+		int pixel_size_bytes = 4;
+		int pixel_size_bits = pixel_size_bytes * 8;
+
+		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits));
+		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
+
+		burst.simWatch("data");
+
+		DFEVar sample_offset_in_bits = sample_offset_in_pixels * pixel_size_bits;
+
+		sample_offset_in_bits.simWatch("offset");
+
+		DFEVar sample_content = burst.shiftRight(sample_offset_in_bits.cast(dfeUInt(11))).slice(0,pixel_size_bits);
+
+		io.output("sample", dfeUInt(32)) <== sample_content.cast(dfeUInt(32));
+	}
+
+
+}

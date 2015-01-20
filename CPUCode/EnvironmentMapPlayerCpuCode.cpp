@@ -1,14 +1,11 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <boost/numeric/ublas/vector.hpp>
 
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
 
 #include "Camera.hpp"
-
-using namespace boost::numeric::ublas;
 
 int main(void)
 {
@@ -19,10 +16,32 @@ int main(void)
 	max_engine_t *engine = max_load(maxfile, "*");
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
+	/* Initialise environment map */
+
+	max_actions_t* memact = max_actions_init(maxfile, "memoryInitialisation");
+
+	int texturesize_bursts = (ceil((200 * 250 * 4)/384)*384);
+	void* texturedata = malloc(texturesize_bursts);
+
+	for(int i = 0; i < texturesize_bursts; i++)
+	{
+		char* texturecontent = (char*)texturedata;
+		texturecontent[i] = 0xf0;
+	}
+
+	max_set_param_uint64t(memact, "size", texturesize_bursts);
+	max_queue_input(memact,"environment_map_in",texturedata,texturesize_bursts);
+
+	max_run(engine, memact);
+
+	/* ignore memory input on subsequent runs */
+
+	max_ignore_lmem(act,"environment_map");
+
 	/* Specify camera properties */
 
 	Camera camera;
-	camera.set_lookat(0,0);
+	camera.set_lookat(95,29);
 
 	/* Rendering parameters */
 
@@ -31,41 +50,50 @@ int main(void)
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.02);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
 
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","map_width", 200);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","map_height", 150);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","segment_width", 50);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","segment_height", 50);
+
 	/* Camera parameters */
 
-	max_queue_input(act,"camera_u",camera.u.data(),sizeof(float)*4);
-	max_queue_input(act,"camera_v",camera.v.data(),sizeof(float)*4);
-	max_queue_input(act,"camera_w",camera.w.data(),sizeof(float)*4);
+	//sending these multiple times so there is enough data to do the transfer between the widths inside the dfe
+	for(int i = 0; i < 3; i++){
+		max_queue_input(act,"camera_u",camera.u.data(),sizeof(float)*4);
+		max_queue_input(act,"camera_v",camera.v.data(),sizeof(float)*4);
+		max_queue_input(act,"camera_w",camera.w.data(),sizeof(float)*4);
+	}
 
 	/* Viewport parameters */
 
 	const int width = 16;
 	const int height = 16;
-
 	const int n_rays = width * height;
-
 	int inputsize_bytes = n_rays * sizeof(int32_t);
 
 	int32_t* x = (int32_t*)malloc(inputsize_bytes);
 	int32_t* y = (int32_t*)malloc(inputsize_bytes);
-	for(int i = 0; i < width; i++){
-		x[i] = i;
+	for(int xi = 0; xi < width; xi++){
+		for(int yi = 0; yi < height; yi++){
+			int i = (width * yi) + xi;
+			x[i] = xi;
+			y[i] = yi;
+		}
 	}
-	for(int i = 0; i < width; i++){
-		y[i] = i;
-	}
-
 
 	max_set_ticks(act,"EnvironmentMapPlayerKernel", n_rays);
+	max_set_ticks(act,"EnvironmentMapSampleCommandGeneratorKernel", n_rays);
+	max_set_ticks(act,"EnvironmentMapSampleReaderKernel", n_rays);
 
 	max_queue_input(act, "col", x, inputsize_bytes);
 	max_queue_input(act, "row", y, inputsize_bytes);
 
 	/* Prepare for output */
 
-	float* d = new float[n_rays * 3];
-	max_queue_output(act, "d", d, sizeof(float) * n_rays * 3);
+	int outputdatasize_bytes = 4 * n_rays;
+	void* outputdata = malloc(outputdatasize_bytes);
 
+	max_queue_output(act, "sample", outputdata, outputdatasize_bytes);
 
 	printf("Running on DFE...\n");
 
@@ -75,7 +103,7 @@ int main(void)
 
 	for(int i = 0; i < n_rays; ++i)
 	{
-		printf("d %i: %f %f %f\n", i, d[(3*i) + 0],d[(3*i) + 1],d[(3*i) + 2]);
+		printf("d %i: %X\n", i, ((uint32_t*)outputdata)[i]);
 	}
 
 	printf("Done.\n");

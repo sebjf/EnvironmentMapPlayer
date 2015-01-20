@@ -1,0 +1,40 @@
+*** After kernel graph-pass 'Init Graph' ***
+node "NodeDivMod" (ID 6) has unconnected outputs: [quotient]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
+	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:23)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:26)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'Init Graph' ***
+node "NodeDivMod" (ID 6) has unconnected outputs: [quotient]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
+	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:23)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:26)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'FoldConstantsPass' ***
+node "NodeDivMod" (ID 6) has unconnected outputs: [quotient]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
+	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:23)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:26)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'OptimiseNodesPass' ***
+node "NodeDivMod" (ID 6) has unconnected outputs: [quotient]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
+	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:23)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:26)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	
+*** After kernel graph-pass 'RemoveUntypedConstants' ***
+node "NodeDivMod" (ID 6) has unconnected outputs: [quotient]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
+	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:23)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:26)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:90)
+	

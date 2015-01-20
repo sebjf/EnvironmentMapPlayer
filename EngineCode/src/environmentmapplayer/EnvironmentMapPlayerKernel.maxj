@@ -26,6 +26,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 	private static final DFEType dfeuint = dfeInt(32);
 	private static final DFEType dfefloat = dfeFloat(8, 24);
 	private static final DFEVectorType<DFEVar> vector3 = new DFEVectorType<DFEVar>(dfeFloat(8,24),3);
+	private static final DFEVectorType<DFEVar> vector4 = new DFEVectorType<DFEVar>(dfeFloat(8,24),4);
 
 	private static final DFEStructType planeParams_t =
 		new DFEStructType(
@@ -79,6 +80,15 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar col = io.input("col", dfeuint);
 		DFEVar row = io.input("row", dfeuint);
 
+		col.simWatch("col");
+		row.simWatch("row");
+
+		/* Inputs from host about the environment map */
+		DFEVar map_width = io.scalarInput("map_width", dfeuint);
+		DFEVar map_height = io.scalarInput("map_height", dfeuint);
+		DFEVar segment_width = io.scalarInput("segment_width",dfeuint);
+		DFEVar segment_height = io.scalarInput("segment_height",dfeuint);
+
 		/* Inputs from host defining how ray should be computed */
 
 		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize",dfefloat);
@@ -92,18 +102,14 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Read camera properties on non-blocking stream */
 
-		DFEVector<DFEVar> cam_u = makeNonBlockingInput("camera_u", vector3);
-		DFEVector<DFEVar> cam_v = makeNonBlockingInput("camera_v", vector3);
-		DFEVector<DFEVar> cam_w = makeNonBlockingInput("camera_w", vector3);
-
-		cam_u.simWatch("cam_u");
-		cam_v.simWatch("cam_v");
-		cam_w.simWatch("cam_w");
+		DFEVector<DFEVar> cam_u = KernelVectorMath.select(makeNonBlockingInput("camera_u", vector4),0,3);
+		DFEVector<DFEVar> cam_v = KernelVectorMath.select(makeNonBlockingInput("camera_v", vector4),0,3);
+		DFEVector<DFEVar> cam_w = KernelVectorMath.select(makeNonBlockingInput("camera_w", vector4),0,3);
 
 		/* Compute the ray in the camera reference frame */
 
-		DFEVar x_cam = viewplane_pixelsize * (col - (0.5 * viewplane_hres)).cast(dfefloat);
-		DFEVar y_cam = viewplane_pixelsize * (row - (0.5 * viewplane_vres)).cast(dfefloat);
+		DFEVar x_cam = viewplane_pixelsize * (col - (viewplane_hres/2)).cast(dfefloat);
+		DFEVar y_cam = viewplane_pixelsize * (row - (viewplane_vres/2)).cast(dfefloat);
 
 		/* Compute the ray in the world reference frame */
 
@@ -165,7 +171,16 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Convert the coordinates to addresses */
 
-		io.output("d", d, vector3);
+		DFEVar horizontal_segment_offset = plane_parameters["offsetx"];
+		DFEVar tu = (u *  segment_width.cast(dfefloat)).cast(dfeuint) + (horizontal_segment_offset * segment_width);
+		DFEVar vertical_segment_offset = plane_parameters["offsety"];
+		DFEVar tv = (v * segment_height.cast(dfefloat)).cast(dfeuint) + (vertical_segment_offset * segment_height);
+
+		DFEVar address = (tv * map_width) + tu;
+
+		address.simWatch("address");
+
+		io.output("address", dfeUInt(32)) <== address.cast(dfeUInt(32));
 	}
 
 
