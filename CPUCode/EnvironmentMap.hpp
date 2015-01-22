@@ -9,8 +9,11 @@
 #define ENVIRONMENTMAP_HPP_
 
 #include <string>
+#include "SDL/SDL.h"
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
+
+/*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
 class EnvironmentMap
 {
@@ -27,19 +30,15 @@ public:
 
 	void LoadEnvironmentMap(string filename)
 	{
+		SDL_Surface* img = IMG_Load(filename.c_str());
+		SDL_Surface* surface = SDL_CreateRGBSurface(0, img->w, img->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
+		SDL_BlitSurface(img,NULL,surface,NULL);
+
+		int texture_size_bytes = surface->w * surface->h * 4;
+
 		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
-
-		int texturesize_bursts = (ceil((200 * 250 * 4)/384)*384);
-		void* texturedata = malloc(texturesize_bursts);
-
-		for(int i = 0; i < texturesize_bursts; i++)
-		{
-			char* texturecontent = (char*)texturedata;
-			texturecontent[i] = 0xf0;
-		}
-
-		max_set_param_uint64t(memact, "size", texturesize_bursts);
-		max_queue_input(memact,"environment_map_in",texturedata,texturesize_bursts);
+		max_set_param_uint64t(memact, "size", texture_size_bytes);
+		max_queue_input(memact,"environment_map_in",surface->pixels,texture_size_bytes);
 
 		max_run(m_engine, memact);
 	}

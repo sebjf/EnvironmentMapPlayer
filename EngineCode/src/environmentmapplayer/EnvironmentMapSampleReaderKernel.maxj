@@ -20,15 +20,12 @@ public class EnvironmentMapSampleReaderKernel extends Kernel {
 		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits));
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
 
-		burst.simWatch("data");
 
 		DFEVar sample_offset_in_bits = sample_offset_in_pixels * pixel_size_bits;
 
-		sample_offset_in_bits.simWatch("offset");
-
 		DFEVar sample_content = burst.shiftRight(sample_offset_in_bits.cast(dfeUInt(11))).slice(0,pixel_size_bits);
 
-		io.output("sample", dfeUInt(32)) <== sample_content.cast(dfeUInt(32));
+		io.output("sample", dfeUInt(24)) <== sample_content.slice(0,24).cast(dfeUInt(24));
 	}
 
 

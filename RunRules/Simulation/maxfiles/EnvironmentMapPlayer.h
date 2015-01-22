@@ -159,20 +159,18 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
+ * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
+ * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
  * \param [in] instream_camera_u Stream "camera_u".
  * \param [in] instream_size_camera_u The size of the stream instream_camera_u in bytes.
  * \param [in] instream_camera_v Stream "camera_v".
  * \param [in] instream_size_camera_v The size of the stream instream_camera_v in bytes.
  * \param [in] instream_camera_w Stream "camera_w".
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
- * \param [in] instream_col Stream "col".
- * \param [in] instream_size_col The size of the stream instream_col in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
- * \param [in] instream_row Stream "row".
- * \param [in] instream_size_row The size of the stream instream_row in bytes.
- * \param [out] outstream_sample Stream "sample".
- * \param [in] outstream_size_sample The size of the stream outstream_sample in bytes.
+ * \param [out] outstream_displayDataOut Stream "displayDataOut".
+ * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
@@ -185,20 +183,18 @@ void EnvironmentMapPlayer(
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
+	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
+	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
 	const void *instream_camera_u,
 	size_t instream_size_camera_u,
 	const void *instream_camera_v,
 	size_t instream_size_camera_v,
 	const void *instream_camera_w,
 	size_t instream_size_camera_w,
-	const void *instream_col,
-	size_t instream_size_col,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
-	const void *instream_row,
-	size_t instream_size_row,
-	void *outstream_sample,
-	size_t outstream_size_sample,
+	void *outstream_displayDataOut,
+	size_t outstream_size_displayDataOut,
 	size_t lmem_address_environment_map,
 	size_t lmem_arr_size_environment_map);
 
@@ -218,20 +214,18 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
+ * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
+ * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
  * \param [in] instream_camera_u Stream "camera_u".
  * \param [in] instream_size_camera_u The size of the stream instream_camera_u in bytes.
  * \param [in] instream_camera_v Stream "camera_v".
  * \param [in] instream_size_camera_v The size of the stream instream_camera_v in bytes.
  * \param [in] instream_camera_w Stream "camera_w".
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
- * \param [in] instream_col Stream "col".
- * \param [in] instream_size_col The size of the stream instream_col in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
- * \param [in] instream_row Stream "row".
- * \param [in] instream_size_row The size of the stream instream_row in bytes.
- * \param [out] outstream_sample Stream "sample".
- * \param [in] outstream_size_sample The size of the stream outstream_sample in bytes.
+ * \param [out] outstream_displayDataOut Stream "displayDataOut".
+ * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  * \return A handle on the execution status, or NULL in case of error.
@@ -245,20 +239,18 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
+	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
+	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
 	const void *instream_camera_u,
 	size_t instream_size_camera_u,
 	const void *instream_camera_v,
 	size_t instream_size_camera_v,
 	const void *instream_camera_w,
 	size_t instream_size_camera_w,
-	const void *instream_col,
-	size_t instream_size_col,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
-	const void *instream_row,
-	size_t instream_size_row,
-	void *outstream_sample,
-	size_t outstream_size_sample,
+	void *outstream_displayDataOut,
+	size_t outstream_size_displayDataOut,
 	size_t lmem_address_environment_map,
 	size_t lmem_arr_size_environment_map);
 
@@ -275,20 +267,18 @@ typedef struct {
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize". */
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance". */
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres". */
+	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity". */
+	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */
 	const void *instream_camera_u; /**<  [in] Stream "camera_u". */
 	size_t instream_size_camera_u; /**<  [in] The size of the stream instream_camera_u in bytes. */
 	const void *instream_camera_v; /**<  [in] Stream "camera_v". */
 	size_t instream_size_camera_v; /**<  [in] The size of the stream instream_camera_v in bytes. */
 	const void *instream_camera_w; /**<  [in] Stream "camera_w". */
 	size_t instream_size_camera_w; /**<  [in] The size of the stream instream_camera_w in bytes. */
-	const void *instream_col; /**<  [in] Stream "col". */
-	size_t instream_size_col; /**<  [in] The size of the stream instream_col in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
 	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
-	const void *instream_row; /**<  [in] Stream "row". */
-	size_t instream_size_row; /**<  [in] The size of the stream instream_row in bytes. */
-	void *outstream_sample; /**<  [out] Stream "sample". */
-	size_t outstream_size_sample; /**<  [in] The size of the stream outstream_sample in bytes. */
+	void *outstream_displayDataOut; /**<  [out] Stream "displayDataOut". */
+	size_t outstream_size_displayDataOut; /**<  [in] The size of the stream outstream_displayDataOut in bytes. */
 	size_t lmem_address_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: base address, in bytes. */
 	size_t lmem_arr_size_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: array size, in bytes. */
 } EnvironmentMapPlayer_actions_t;

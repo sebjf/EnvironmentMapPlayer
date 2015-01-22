@@ -53,8 +53,10 @@ hs_err_pid*
 *.be
 *.mxru
 
-**debug/
-**objects/
-**maxfiles/**BUILD/
+RunRules/Simulation/binaries/
+RunRules/Simulation/objects/
+RunRules/DFE/binaries/
+RunRules/DFE/objects/
+RunRules/Simulation/debug*
 *.png
 *.dot
