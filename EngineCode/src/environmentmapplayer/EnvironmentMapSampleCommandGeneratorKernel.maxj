@@ -21,8 +21,10 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 		/* For now we do it the naive way - one command for one sample */
 
-		DFEVar address_in_bursts = address_in_pixels / pixels_per_burst;
+		DFEVar address_in_bursts = KernelMath.floor(address_in_pixels.cast(dfeFloat(8, 24)) / pixels_per_burst).cast(dfeUInt(32));
 		DFEVar sample_offset_into_burst_in_pixels = KernelMath.modulo(address_in_pixels, pixels_per_burst);
+
+		address_in_bursts.simWatch("addressinbursts");
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();

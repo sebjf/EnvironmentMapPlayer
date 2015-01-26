@@ -70,15 +70,17 @@ int main(void)
 
 	//Get a set amount of data, useful for when using simwatch
 
+/*
 	int n_rays = 252*252;
 	int outputdatasize_bytes = 8 * n_rays;
 	void* outputdata = malloc(outputdatasize_bytes);
 	max_queue_output(act, "displayDataOut", outputdata, outputdatasize_bytes);
+*/
 
 	max_run(engine, act);
 
 	//Get a continuous stream and write to the display
-/*/
+
 	VirtualMonitor monitor(256,256);
 	monitor.Connect(engine);
 	//monitor.EnableRawMode();
@@ -86,7 +88,7 @@ int main(void)
 	while(1){
 		monitor.Refresh(256);
 	}
-*/
+
 
 	max_unload(engine);
 	

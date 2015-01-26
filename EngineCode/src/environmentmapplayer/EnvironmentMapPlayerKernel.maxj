@@ -176,16 +176,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar vertical_segment_offset = plane_parameters["offsety"];
 		DFEVar tv = (v * segment_height.cast(dfefloat)).cast(dfeuint) + (vertical_segment_offset * segment_height);
 
-		row.simWatch("row");
-		col.simWatch("col");
-
-		r_d.simWatch("r_d");
-
-		tu.simWatch("tu");
-		tv.simWatch("tv");
-
 		DFEVar address = (tv * map_width) + tu;
-
 
 		io.output("address", dfeUInt(32)) <== address.cast(dfeUInt(32));
 

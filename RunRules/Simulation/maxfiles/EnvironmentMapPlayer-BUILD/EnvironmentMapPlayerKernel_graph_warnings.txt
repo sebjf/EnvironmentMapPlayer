@@ -46,6 +46,14 @@ stack trace of node origin follows:
 	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:34)
 	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:108)
 	
+*** After kernel graph-pass 'TriAddExtractionPass' ***
+node "Scalar input (map_height)" (ID 10) has unconnected outputs: [map_height]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.scalarInput(IO.java:1106)
+	environmentmapplayer.EnvironmentMapPlayerKernel.<init>(EnvironmentMapPlayerKernel.maxj:87)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:34)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:108)
+	
 *** After kernel graph-pass 'PO2FPMultOptimiser' ***
 node "Scalar input (map_height)" (ID 10) has unconnected outputs: [map_height]
 stack trace of node origin follows:
