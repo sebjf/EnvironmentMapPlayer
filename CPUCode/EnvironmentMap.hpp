@@ -36,22 +36,35 @@ public:
 
 		int texture_size_bytes = surface->w * surface->h * 4;
 
-/*
-		int i = 0;
-		for(int x = 0; x < surface->w; x++)
-		{
-			for(int y = 0; y < surface->h; y++){
-				((uint32_t*)surface->pixels)[i] = i;
-				i++;
-			}
-		}
-*/
-
 		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
 		max_set_param_uint64t(memact, "size", texture_size_bytes);
 		max_queue_input(memact,"environment_map_in",surface->pixels,texture_size_bytes);
 
 		max_run(m_engine, memact);
+	}
+
+	void WriteDebugValues(string filename)
+	{
+		SDL_Surface* img = IMG_Load(filename.c_str());
+		int texture_size_bytes = img->w * img->h * 4;
+		void* pixels = malloc(texture_size_bytes);
+
+		int i = 0;
+		for(int x = 0; x < img->w; x++)
+		{
+			for(int y = 0; y < img->h; y++){
+				((uint32_t*)pixels)[i] = i;
+				i++;
+			}
+		}
+
+		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
+		max_set_param_uint64t(memact, "size", texture_size_bytes);
+		max_queue_input(memact,"environment_map_in",pixels,texture_size_bytes);
+
+		max_run(m_engine, memact);
+
+		free(pixels);
 	}
 
 };

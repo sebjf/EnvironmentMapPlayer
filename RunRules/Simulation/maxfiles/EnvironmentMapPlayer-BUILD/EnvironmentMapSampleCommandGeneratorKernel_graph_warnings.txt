@@ -30,14 +30,6 @@ stack trace of node origin follows:
 	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:35)
 	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:108)
 	
-*** After kernel graph-pass 'PrepareSimulationPass' ***
-node "NodeDivMod" (ID 50) has unconnected outputs: [quotient]
-stack trace of node origin follows:
-	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.modulo(KernelMath.java:803)
-	environmentmapplayer.EnvironmentMapSampleCommandGeneratorKernel.<init>(EnvironmentMapSampleCommandGeneratorKernel.maxj:25)
-	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:35)
-	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:108)
-	
 *** After kernel graph-pass 'ScheduleApplier' ***
 node "NodeDivMod" (ID 50) has unconnected outputs: [quotient]
 stack trace of node origin follows:
