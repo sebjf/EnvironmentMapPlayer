@@ -52,3 +52,11 @@ hs_err_pid*
 *.dat
 *.be
 *.mxru
+
+RunRules/Simulation/binaries/
+RunRules/Simulation/objects/
+RunRules/DFE/binaries/
+RunRules/DFE/objects/
+RunRules/Simulation/debug*
+*.png
+*.dot

@@ -1,28 +1,81 @@
 package environmentmapplayer;
 
+import maxvideo.MaxVideoCounterKernel;
+import maxvideo.MaxVideoSignalKernel;
+
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
+import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+
+import displaystandards.DisplayStandard;
 
 public class EnvironmentMapPlayerManager extends CustomManager {
-
-	private static final String s_kernelName = "EnvironmentMapPlayerKernel";
 
 	public EnvironmentMapPlayerManager(EnvironmentMapPlayerEngineParameters engineParameters) throws Exception {
 		super(engineParameters);
 
-		KernelBlock block = addKernel(new EnvironmentMapPlayerKernel(makeKernelParameters(s_kernelName)));
+		DebugLevel myDebugLevel = new DebugLevel();
+		myDebugLevel.setHasStreamStatus(true);
+		debug.setDebugLevel(myDebugLevel);
 
-		for (String inputName: block.getAllInputs())
-			block.getInput(inputName).connect(addStreamFromCPU(inputName));
-		for (String outputName: block.getAllOutputs())
-			addStreamToCPU(outputName).connect(block.getOutput(outputName));
+		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		//createSLiCinterface(modeDefault());
+		DisplayStandard displayStandard = DisplayStandard.make_debug_100x100();
+
+		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
+
+		KernelBlock rayCasterKernel = addKernel(new EnvironmentMapPlayerKernel(makeKernelParameters("EnvironmentMapPlayerKernel")));
+		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernel(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernel")));
+		KernelBlock sampleReaderKernel = addKernel(new EnvironmentMapSampleReaderKernel(makeKernelParameters("EnvironmentMapSampleReaderKernel")));
+
+		rayCasterKernel.getInput("camera_u").connect(addStreamFromCPU("camera_u"));
+		rayCasterKernel.getInput("camera_v").connect(addStreamFromCPU("camera_v"));
+		rayCasterKernel.getInput("camera_w").connect(addStreamFromCPU("camera_w"));
+
+		rayCasterKernel.getInput("row").connect(videoCounterKernel.getOutput("y"));
+		rayCasterKernel.getInput("col").connect(videoCounterKernel.getOutput("x"));
+
+		commandGeneratorKernel.getInput("address").connect(rayCasterKernel.getOutput("address"));
+		DFELink sample_memory_stream = addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command"));
+
+
+		sampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
+		sampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
+
+		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
+
+		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("signalKernel_x"));
+		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("signalKernel_y"));
+
+		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
+
+		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+
 
 		config.setAllowNonMultipleTransitions(true);
 
 		configBuild(engineParameters);
+	}
+
+	private static EngineInterface memoryInitialisationInterface()
+	{
+		EngineInterface engine_interface = new EngineInterface("memoryInitialisation");
+
+		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT32);
+		InterfaceParam lmem_address = engine_interface.addConstant(0);
+		engine_interface.setLMemLinear("environment_map", lmem_address, lmem_size);
+		engine_interface.setStream("environment_map_in", CPUTypes.INT32, lmem_size / 4);
+
+		engine_interface.ignoreAll(Direction.IN_OUT);
+
+		return engine_interface;
 	}
 
 	/*
@@ -53,6 +106,9 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	public static void main(String[] args) throws Exception {
 		EnvironmentMapPlayerManager manager = new EnvironmentMapPlayerManager(new EnvironmentMapPlayerEngineParameters(args));
+
+		manager.createSLiCinterface(memoryInitialisationInterface());
+
 		manager.build();
 	}
 }
