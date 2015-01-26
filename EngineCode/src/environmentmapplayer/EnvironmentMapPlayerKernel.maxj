@@ -57,7 +57,6 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Convert the rays to texture coordinates */
 
 		//DFEVar u = 0.5 + ()
-
 		DFEVar v = 0.5 + (KernelMathEx.asin(r_d[1])/Math.PI);
 
 		/* Convert the coordinates to addresses */
