@@ -11,6 +11,7 @@
 #include <math.h>
 #include <vector>
 #include <boost/assign.hpp>
+#include <errno.h>
 
 
 #define DEG2RAD	0.0174532925
@@ -31,9 +32,18 @@ public:
 		camera_eye = boost::assign::list_of(0)(0)(0);
 		camera_lookat = boost::assign::list_of(0)(0)(1);
 		camera_up = boost::assign::list_of(0)(1)(0);
+		connected = false;
 	}
 
-	virtual ~Camera() {}
+	virtual ~Camera()
+	{
+		if(connected)
+		{
+			max_llstream_release(camera_u_stream);
+			max_llstream_release(camera_v_stream);
+			max_llstream_release(camera_w_stream);
+		}
+	}
 
 	void set_lookat(float inclination, float azimuth)
 	{
@@ -45,9 +55,69 @@ public:
         w = subtract(camera_eye, camera_lookat);
         u = divide(cross(camera_up,w),(norm(cross(camera_up,w))));
         v = cross(w,u);
+
+        update_camera_streams();
+	}
+
+	void connect(max_engine* engine)
+	{
+		printf("Preparing low latency stream for camera updates...");
+
+		static const int num_slots = 100;
+		static const int slot_size = 16;
+
+		const int buffer_size = num_slots * slot_size;
+
+		void* camera_u_buffer;
+		void* camera_v_buffer;
+		void* camera_w_buffer;
+
+		posix_memalign(&camera_u_buffer, 16, buffer_size);
+		posix_memalign(&camera_v_buffer, 16, buffer_size);
+		posix_memalign(&camera_w_buffer, 16, buffer_size);
+
+		camera_u_stream = max_llstream_setup(engine, "camera_u", num_slots, slot_size, camera_u_buffer);
+		camera_v_stream = max_llstream_setup(engine, "camera_v", num_slots, slot_size, camera_v_buffer);
+		camera_w_stream = max_llstream_setup(engine, "camera_w", num_slots, slot_size, camera_w_buffer);
+
+		connected = true;
+
+		update_camera_streams();
 	}
 
 private:
+
+	bool connected;
+	max_llstream_t* camera_u_stream;
+	max_llstream_t* camera_v_stream;
+	max_llstream_t* camera_w_stream;
+
+	void update_camera_streams()
+	{
+		if(connected)
+		{
+			void* camera_u_slots;
+			if(max_llstream_write_acquire(camera_u_stream, 1, &camera_u_slots))
+			{
+				memcpy(camera_u_slots, u.data(), sizeof(float) * 3);
+				max_llstream_write(camera_u_stream, 1);
+			}
+
+			void* camera_v_slots;
+			if(max_llstream_write_acquire(camera_v_stream, 1, &camera_v_slots))
+			{
+				memcpy(camera_v_slots, v.data(), sizeof(float) * 3);
+				max_llstream_write(camera_v_stream, 1);
+			}
+
+			void* camera_w_slots;
+			if(max_llstream_write_acquire(camera_w_stream, 1, &camera_w_slots))
+			{
+				memcpy(camera_w_slots, w.data(), sizeof(float) * 3);
+				max_llstream_write(camera_w_stream, 1);
+			}
+		}
+	}
 
 	vector<float> divide(vector<float> a, float b)
 	{

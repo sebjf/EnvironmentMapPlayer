@@ -179,8 +179,6 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar address = (tv * map_width) + tu;
 
 		io.output("address", dfeUInt(32)) <== address.cast(dfeUInt(32));
-
-		address.cast(dfeUInt(32)).simWatch("address");
 	}
 
 

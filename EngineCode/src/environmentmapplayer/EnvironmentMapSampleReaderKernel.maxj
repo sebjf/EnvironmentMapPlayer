@@ -17,31 +17,14 @@ public class EnvironmentMapSampleReaderKernel extends Kernel {
 		int pixel_size_bytes = 4;
 		int pixel_size_bits = pixel_size_bytes * 8;
 
-		final int max_shifter_size = 2^11;
-
 		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits));
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
 
 		DFEVar sample_offset_in_bits = sample_offset_in_pixels * pixel_size_bits;
 
-/*
-		DFEVar primary_shift = sample_offset_in_bits;
-		DFEVar secondary_shift = max_shifter_size - sample_offset_in_bits;
-
-		DFEVar sample_primary = burst.shiftRight(primary_shift);
-		DFEVar sample_secondary = burst.slice(max_shifter_size, burst_size_in_bits - max_shifter_size).shiftRight(secondary_shift);
-
-		DFEVar sample_content_shifted = sample_offset_in_bits <= max_shifter_size ? sample_primary : sample_secondary;
-*/
-
-		burst.simWatch("data");
-		sample_offset_in_pixels.simWatch("offset");
-
 		DFEVar sample_content_shifted = burst.shiftRight(sample_offset_in_bits.cast(dfeUInt(12)));
 		DFEVar sample_content = sample_content_shifted.slice(0,pixel_size_bits);
 
-		sample_content.cast(dfeUInt(32)).simWatch("content");
-		sample_content_shifted.simWatch("data_shifted");
 
 		io.output("sample", dfeUInt(24)) <== sample_content.slice(0,24).cast(dfeUInt(24));
 	}
