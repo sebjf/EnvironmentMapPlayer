@@ -6,6 +6,7 @@ import maxvideo.MaxVideoSignalKernel;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
@@ -25,9 +26,12 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
+		config.setDefaultStreamClockFrequency(200);
+		config.setOnCardMemoryFrequency(475);
+
 		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		DisplayStandard displayStandard = DisplayStandard.make_debug_100x100();
+		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x60();
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
 
@@ -51,15 +55,16 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
+		ManagerClock pixelClock = generateStreamClock("pixelClock", displayStandard.getDisplayClock());
+		videoSignalKernel.setClock(pixelClock);
+
 		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("signalKernel_x"));
 		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("signalKernel_y"));
 
 		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
 
-		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-
-
-		//config.setAllowNonMultipleTransitions(true);
+//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}

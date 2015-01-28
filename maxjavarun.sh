@@ -1,2 +1,2 @@
-maxJavaRun environmentmapplayer.EnvironmentMapPlayerManager DFEModel=CORIA maxFileName=EnvironmentMapPlayer target=DFE
+maxJavaRun environmentmapplayer.EnvironmentMapPlayerManager DFEModel='CORIA' maxFileName="EnvironmentMapPlayer" target='DFE'
 
