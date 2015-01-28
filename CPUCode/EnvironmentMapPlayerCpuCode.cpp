@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
@@ -13,8 +14,21 @@
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 
+bool run = true;
+
+void int_handler(int s){
+   run = false;
+   exit(1);
+}
+
 int main(void)
 {
+
+	struct sigaction sigIntHandler;
+	sigIntHandler.sa_handler = int_handler;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -83,20 +97,18 @@ int main(void)
 
 	camera.connect(engine);
 
-	while(1){
+	printf("Press CTRL+C key to exit.\n");
 
-		monitor.Refresh(256);
+	while(run){
+
+		monitor.Refresh(256*256);
 
 		MouseDelta d = mouse.readMouse(false);
 
 		if(d.changed()){
-
 			inclination += -d.y;
 			elevation += -d.x;
 			camera.set_lookat(inclination,elevation);
-
-			printf("Setting %i %i\n", inclination, elevation);
-
 		}
 
 	}

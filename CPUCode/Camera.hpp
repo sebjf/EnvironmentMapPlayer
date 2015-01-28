@@ -61,7 +61,7 @@ public:
 
 	void connect(max_engine* engine)
 	{
-		printf("Preparing low latency stream for camera updates...");
+		printf("Preparing low latency stream for camera updates...\n");
 
 		static const int num_slots = 100;
 		static const int slot_size = 16;
