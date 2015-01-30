@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
@@ -11,9 +12,23 @@
 #include "Camera.hpp"
 #include "EnvironmentMap.hpp"
 #include "VirtualMonitor.h"
+#include "Mouse.hpp"
+
+bool run = true;
+
+void int_handler(int s){
+   run = false;
+   exit(1);
+}
 
 int main(void)
 {
+
+	struct sigaction sigIntHandler;
+	sigIntHandler.sa_handler = int_handler;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -25,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/cube_unwrapped.jpg");
+	environmentMap.LoadEnvironmentMap("/home/sfriston/maxworkspace/EnvironmentMapPlayer/cube_unwrapped.jpg");
 
 	/* ignore memory input on subsequent runs */
 
@@ -53,22 +68,13 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
-	/* Camera parameters */
-
-	//sending these multiple times so there is enough data to do the transfer between the widths inside the dfe
-	for(int i = 0; i < 3; i++){
-		max_queue_input(act,"camera_u",camera.u.data(),sizeof(float)*4);
-		max_queue_input(act,"camera_v",camera.v.data(),sizeof(float)*4);
-		max_queue_input(act,"camera_w",camera.w.data(),sizeof(float)*4);
-	}
-
 
 	printf("Running on DFE...\n");
 
 	/* Prepare for output */
 
 
-	//Get a set amount of data, useful for when using simwatch
+	//Get a set amount of data, for when using simwatch
 
 /*
 	int n_rays = 252*252;
@@ -79,14 +85,32 @@ int main(void)
 
 	max_run(engine, act);
 
+
 	//Get a continuous stream and write to the display
 
 	VirtualMonitor monitor(256,256);
 	monitor.Connect(engine);
-	//monitor.EnableRawMode();
 
-	while(1){
-		monitor.Refresh(256);
+	Mouse mouse(false);
+	int inclination = 0;;
+	int elevation = 0;
+
+	camera.connect(engine);
+
+	printf("Press CTRL+C key to exit.\n");
+
+	while(run){
+
+		monitor.Refresh(256*256);
+
+		MouseDelta d = mouse.readMouse(false);
+
+		if(d.changed()){
+			inclination += -d.y;
+			elevation += -d.x;
+			camera.set_lookat(inclination,elevation);
+		}
+
 	}
 
 

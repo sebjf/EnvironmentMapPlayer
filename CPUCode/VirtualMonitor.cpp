@@ -154,7 +154,7 @@ VirtualMonitor::VirtualMonitor(int width, int height)
 
 void VirtualMonitor::Connect(max_engine_t* engine)
 {
-	printf("Preparing low latency stream for virtual monitor...");
+	printf("Preparing low latency stream for virtual monitor...\n");
 
 	max_llstream_t* read_llstream = 0;
 	read_llstream = max_llstream_setup(engine, "displayDataOut", monitor.NUM_SLOTS, monitor.SLOT_SIZE, monitor.displayData_ptr);

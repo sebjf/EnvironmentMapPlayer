@@ -1,5 +1,5 @@
 #
 # This file is managed by MaxIDE. Do NOT change.
 #
-HEADERS:= Camera.hpp EnvironmentMap.hpp VirtualMonitor.h 
-SOURCES:= EnvironmentMapPlayerCpuCode.cpp VirtualMonitor.cpp 
+HEADERS:= Camera.hpp EnvironmentMap.hpp Mouse.hpp VirtualMonitor.h 
+SOURCES:= EnvironmentMapPlayerCpuCode.cpp Mouse.cpp VirtualMonitor.cpp 

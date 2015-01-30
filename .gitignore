@@ -57,6 +57,8 @@ RunRules/Simulation/binaries/
 RunRules/Simulation/objects/
 RunRules/DFE/binaries/
 RunRules/DFE/objects/
+RunRules/DFE/maxfiles/EnvironmentMapPlayer-BUILD
+RunRules/Simulation/maxfiles/EnvironmentMapPlayer-BUILD
 RunRules/Simulation/debug*
 *.png
 *.dot
