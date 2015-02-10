@@ -31,6 +31,11 @@ public:
 	void LoadEnvironmentMap(string filename)
 	{
 		SDL_Surface* img = IMG_Load(filename.c_str());
+
+		if(!img){
+			printf("IMG_Load: %s\n", IMG_GetError());
+		}
+
 		SDL_Surface* surface = SDL_CreateRGBSurface(0, img->w, img->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 		SDL_BlitSurface(img,NULL,surface,NULL);
 

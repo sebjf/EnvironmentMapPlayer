@@ -31,7 +31,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x60();
+		DisplayStandard displayStandard = DisplayStandard.make_debug_100x100();
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
 
@@ -46,7 +46,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		rayCasterKernel.getInput("row").connect(videoCounterKernel.getOutput("y"));
 		rayCasterKernel.getInput("col").connect(videoCounterKernel.getOutput("x"));
 
-		commandGeneratorKernel.getInput("address").connect(rayCasterKernel.getOutput("address"));
+		commandGeneratorKernel.getInput("plane").connect(rayCasterKernel.getOutput("plane"));
+		commandGeneratorKernel.getInput("miplevel").connect(rayCasterKernel.getOutput("miplevel"));
+		commandGeneratorKernel.getInput("u").connect(rayCasterKernel.getOutput("u"));
+		commandGeneratorKernel.getInput("v").connect(rayCasterKernel.getOutput("v"));
+
 		DFELink sample_memory_stream = addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command"));
 
 
@@ -55,7 +59,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
-		ManagerClock pixelClock = generateStreamClock("pixelClock", displayStandard.getDisplayClock());
+		ManagerClock pixelClock = generateStreamClock("pixelClock", (int)displayStandard.getDisplayClock());
 		videoSignalKernel.setClock(pixelClock);
 
 		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("signalKernel_x"));
@@ -63,8 +67,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
 
-//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+//		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}

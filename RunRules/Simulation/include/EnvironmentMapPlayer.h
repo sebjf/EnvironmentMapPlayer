@@ -151,10 +151,6 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
 /**
  * \brief Basic static function for the interface 'default'.
  * 
- * \param [in] inscalar_EnvironmentMapPlayerKernel_map_height Input scalar parameter "EnvironmentMapPlayerKernel.map_height".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_map_width Input scalar parameter "EnvironmentMapPlayerKernel.map_width".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_height Input scalar parameter "EnvironmentMapPlayerKernel.segment_height".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_width Input scalar parameter "EnvironmentMapPlayerKernel.segment_width".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
@@ -175,10 +171,6 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
@@ -206,10 +198,6 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
- * \param [in] inscalar_EnvironmentMapPlayerKernel_map_height Input scalar parameter "EnvironmentMapPlayerKernel.map_height".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_map_width Input scalar parameter "EnvironmentMapPlayerKernel.map_width".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_height Input scalar parameter "EnvironmentMapPlayerKernel.segment_height".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_segment_width Input scalar parameter "EnvironmentMapPlayerKernel.segment_width".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
@@ -231,10 +219,6 @@ void EnvironmentMapPlayer(
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width,
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
@@ -259,10 +243,6 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  * 
  */
 typedef struct { 
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_height; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.map_height". */
-	uint64_t inscalar_EnvironmentMapPlayerKernel_map_width; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.map_width". */
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_height; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.segment_height". */
-	uint64_t inscalar_EnvironmentMapPlayerKernel_segment_width; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.segment_width". */
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres". */
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize". */
 	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance". */

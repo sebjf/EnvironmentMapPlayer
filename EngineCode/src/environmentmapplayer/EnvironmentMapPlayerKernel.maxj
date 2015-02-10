@@ -82,12 +82,6 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar col = io.input("col", dfeUInt(16)).cast(dfeuint);
 		DFEVar row = io.input("row", dfeUInt(16)).cast(dfeuint);
 
-		/* Inputs from host about the environment map */
-		DFEVar map_width = io.scalarInput("map_width", dfeuint);
-		DFEVar map_height = io.scalarInput("map_height", dfeuint);
-		DFEVar segment_width = io.scalarInput("segment_width",dfeuint);
-		DFEVar segment_height = io.scalarInput("segment_height",dfeuint);
-
 		/* Inputs from host defining how ray should be computed */
 
 		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize",dfefloat);
@@ -136,12 +130,12 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Lookup the parameters of the plane */
 
 		double[] plane_parameters_content = {
-				 1, 0, 0,   2, 1,   0, 0,-1,  0, 1, 0, // right
+				 1, 0, 0,   1, 1,   0, 0,-1,  0, 1, 0, // right
 				-1, 0, 0,   0, 1,   0, 0, 1,  0, 1, 0, // left
-				 0, 1, 0,   1, 2,   1, 0, 0,  0, 0,-1, // down
-				 0,-1, 0,   1, 0,   1, 0, 0,  0, 0, 1, // up
-				 0, 0, 1,   1, 1,   1, 0, 0,  0, 1, 0, // forward
-				 0, 0,-1,   3, 1,  -1, 0, 0,  0, 1, 0, // back
+				 0, 1, 0,   3, 2,   1, 0, 0,  0, 0,-1, // down
+				 0,-1, 0,   2, 0,   1, 0, 0,  0, 0, 1, // up
+				 0, 0, 1,   4, 1,   1, 0, 0,  0, 1, 0, // forward
+				 0, 0,-1,   5, 1,  -1, 0, 0,  0, 1, 0, // back
 		};
 
 		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(6))), planeParams_t, encodeMemoryContent(plane_parameters_content));
@@ -171,14 +165,14 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Convert the coordinates to addresses */
 
-		DFEVar horizontal_segment_offset = plane_parameters["offsetx"];
-		DFEVar tu = (u *  segment_width.cast(dfefloat)).cast(dfeuint) + (horizontal_segment_offset * segment_width);
-		DFEVar vertical_segment_offset = plane_parameters["offsety"];
-		DFEVar tv = (v * segment_height.cast(dfefloat)).cast(dfeuint) + (vertical_segment_offset * segment_height);
+		DFEVar miplevel = constant.var(9);
 
-		DFEVar address = (tv * map_width) + tu;
+		/* Transmit the sampling parameters to the sampler */
 
-		io.output("address", dfeUInt(32)) <== address.cast(dfeUInt(32));
+		io.output("plane", dfeUInt(8)).connect((DFEVar) plane_parameters["offsetx"].cast(dfeUInt(8)));
+		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));
+		io.output("u", dfeFloat(8, 24)).connect(u);
+		io.output("v", dfeFloat(8, 24)).connect(v);
 	}
 
 

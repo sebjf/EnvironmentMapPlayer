@@ -40,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/sfriston/maxworkspace/EnvironmentMapPlayer/cube_unwrapped.jpg");
+	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
 	/* ignore memory input on subsequent runs */
 
@@ -57,11 +57,6 @@ int main(void)
 	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 252);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.02);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
-
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","map_width", 2048);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","map_height", 1536);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","segment_width", 512);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","segment_height", 512);
 
 	/* Video signal parameters */
 
@@ -99,9 +94,11 @@ int main(void)
 
 	printf("Press CTRL+C key to exit.\n");
 
+	int counter = 0;
+
 	while(run){
 
-		monitor.Refresh(256*256);
+		monitor.Refresh(256);
 
 		MouseDelta d = mouse.readMouse(false);
 
@@ -111,6 +108,11 @@ int main(void)
 			camera.set_lookat(inclination,elevation);
 		}
 
+		counter++;
+
+		if(counter > 256){
+			run = false;
+		}
 	}
 
 
