@@ -8,13 +8,17 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
+	protected DFEVar clamp(DFEVar v, int min, int max)
+	{
+		v = v > max ? constant.var(max) : v;
+		v = v < min ? constant.var(min) : v;
+		return v;
+	}
+
 	protected EnvironmentMapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
 
 		flush.disabled();
-
-		final int tile_width = 8;
-		final int max_mip_level = 9;
 
 		/* Read sample parameters from ray caster */
 
@@ -23,15 +27,14 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 		DFEVar u = io.input("u", dfeFloat(8, 24));
 		DFEVar v = io.input("v", dfeFloat(8, 24));
 
-	/*	plane.simWatch("plane");
-		miplevel.simWatch("mip");
-		u.simWatch("u");
-		v.simWatch("v");*/
+		/* Restrict the mip level to those contained within the source map set */
+
+		miplevel = clamp(miplevel, MapParameters.min_mip_level, MapParameters.max_mip_level);
 
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 
 		DFEVar face_width_in_pixels = KernelMath.pow2(miplevel, dfeFloat(8,24));
-		DFEVar face_width_in_tiles = face_width_in_pixels / tile_width;
+		DFEVar face_width_in_tiles = face_width_in_pixels / MapParameters.tile_width_in_pixels;
 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
 
 		/* Based on the mip level, determine which tile contains the sample */
@@ -41,8 +44,8 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Calculate the offset into the tile of the individual sample */
 
-		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (tile_width * tile_column);
-		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (tile_width * tile_row);
+		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_column);
+		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_row);
 
 		/* Convert these coordinate sets into memory addresses */
 
@@ -50,26 +53,30 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
         DFEVar face_offset_in_tiles = plane.cast(dfeFloat(8,24)) * tiles_per_face;
 
         //Calculate the difference in size between two sequences of mip maps, to get the offset from the start (highest mip map) of the memory
-        int mip_sequence_size_max = (int)((1 - Math.pow(4, max_mip_level + 1)) / (1 - 4));
+        int distance_to_max_mip_in_pixels = (int)((1 - Math.pow(4, MapParameters.max_mip_level + 1)) / (1 - 4));
         //DFEVar mip_sequence_size_actual = (1 - KernelMath.pow2( KernelMath.pow2(miplevel + 1, dfeFloat(8,24)), dfeFloat(8,24))) / (1 - 4);
 
-        DFEVar mip_size_inner = KernelMath.pow2(miplevel + 1, dfeFloat(8,24));
-        DFEVar mip_size_outer = mip_size_inner * mip_size_inner;
-        DFEVar nominator = (1 - mip_size_outer);
-        DFEVar mip_sequence_size_actual = nominator / (1-4);
+        //The following offset calculations are made assuming division of a single face
+        DFEVar nominator_mip_width = KernelMath.pow2(miplevel + 1, dfeFloat(8,24));
+        DFEVar nominator_mip_size = nominator_mip_width * nominator_mip_width;
+        DFEVar nominator = (1 - nominator_mip_size);
+        DFEVar distance_to_mip_in_pixels = nominator / (1-4);
 
-        DFEVar mip_diff_size = mip_sequence_size_max - mip_sequence_size_actual;
-        DFEVar mip_offset_in_tiles = mip_diff_size * (6/tile_width^2);
+        DFEVar mip_offset_in_pixels = distance_to_max_mip_in_pixels - distance_to_mip_in_pixels;
+        DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (6/(Math.pow(MapParameters.tile_width_in_pixels, 2)));
 
 
         DFEVar addr_burst = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
-        DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * tile_width));
+        DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * MapParameters.tile_width_in_pixels));
 
-      /*  addr_burst.simWatch("addr");
-        addr_pixel.simWatch("pixel");*/
+        /* Determine whether the sample can be read from the existing cache or if we need to retreive a new tile */
+
+        DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
+        DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
+
+        io.output("cache_valid", dfeBool()).connect(cache_valid);
 
         /*  */
-
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
@@ -86,7 +93,7 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 		LMemCommandStream.makeKernelOutput(
 				"sample_command",
-				constant.var(true),
+				~cache_valid,
 				addr_burst.cast(dfeUInt(28)),
 				constant.var(dfeUInt(8),1),
 				constant.var(dfeUInt(7),1),

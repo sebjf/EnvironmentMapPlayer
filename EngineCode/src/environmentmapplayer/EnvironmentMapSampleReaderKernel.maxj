@@ -2,6 +2,7 @@ package environmentmapplayer;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public class EnvironmentMapSampleReaderKernel extends Kernel {
@@ -14,17 +15,19 @@ public class EnvironmentMapSampleReaderKernel extends Kernel {
 		int	burst_size_in_bytes = 384;
 		int burst_size_in_bits = burst_size_in_bytes * 8;
 
-		int pixel_size_bytes = 4;
-		int pixel_size_bits = pixel_size_bytes * 8;
+		int pixel_size_bits = MapParameters.pixel_size_in_bytes * 8;
 
-		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits));
+		DFEVar cache_valid = io.input("cache_valid", dfeBool());
+
+		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits),~cache_valid);
+		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
+
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
 
 		DFEVar sample_offset_in_bits = sample_offset_in_pixels * pixel_size_bits;
 
-		DFEVar sample_content_shifted = burst.shiftRight(sample_offset_in_bits.cast(dfeUInt(12)));
+		DFEVar sample_content_shifted = cached_burst.shiftRight(sample_offset_in_bits.cast(dfeUInt(12)));
 		DFEVar sample_content = sample_content_shifted.slice(0,pixel_size_bits);
-
 
 		io.output("sample", dfeUInt(24)) <== sample_content.slice(0,24).cast(dfeUInt(24));
 	}

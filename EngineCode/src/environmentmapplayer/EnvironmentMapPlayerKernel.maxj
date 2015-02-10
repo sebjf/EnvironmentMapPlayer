@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.Range;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
@@ -31,20 +33,23 @@ class EnvironmentMapPlayerKernel extends Kernel {
 	private static final DFEStructType planeParams_t =
 		new DFEStructType(
 				DFEStructType.sft("center", vector3),
-				DFEStructType.sft("offsetx", dfeuint),
-				DFEStructType.sft("offsety", dfeuint),
+				DFEStructType.sft("face_offset", dfeuint),
 				DFEStructType.sft("x_coefficients", vector3),
 				DFEStructType.sft("y_coefficients", vector3));
 
 
+	/* The next two functions convert a matrix of doubles into an array of Bits objects. Each Bits contains the data for one planeParams_t instance.
+	 * When provided to the mem.rom() constructor, the value provided in the DFEVar address specifies an offset into the Bits[]. */
+
 	private Bits[] encodeMemoryContent(double[] content)
 	{
-		int rows = content.length / 11;
+		int n_elements_per_row = 10;
+		int n_rows = content.length / n_elements_per_row;
 
 		ArrayList<Bits> content_segments = new ArrayList<Bits>();
-		for(int i = 0; i < rows; i++)
+		for(int i = 0; i < n_rows; i++)
 		{
-			double [] rowcontent = Arrays.copyOfRange(content, (i * 11), (i * 11) + 11);
+			double [] rowcontent = Arrays.copyOfRange(content, (i * n_elements_per_row), (i * n_elements_per_row) + n_elements_per_row);
 			content_segments.add(encodeStructContent(rowcontent));
 		}
 
@@ -56,10 +61,9 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		HashMap<String, Object> memoryMap = new HashMap<String,Object>();
 
 		memoryMap["center"] = Arrays.asList(content[0], content[1], content[2]);
-		memoryMap["offsetx"] = content[3];
-		memoryMap["offsety"] = content[4];
-		memoryMap["x_coefficients"] = Arrays.asList(content[5], content[6], content[7]);
-		memoryMap["y_coefficients"] = Arrays.asList(content[8], content[9], content[10]);
+		memoryMap["face_offset"] = content[3];
+		memoryMap["x_coefficients"] = Arrays.asList(content[4], content[5], content[6]);
+		memoryMap["y_coefficients"] = Arrays.asList(content[7], content[8], content[9]);
 
 		return planeParams_t.encodeConstant(memoryMap);
 	}
@@ -130,12 +134,12 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Lookup the parameters of the plane */
 
 		double[] plane_parameters_content = {
-				 1, 0, 0,   1, 1,   0, 0,-1,  0, 1, 0, // right
-				-1, 0, 0,   0, 1,   0, 0, 1,  0, 1, 0, // left
-				 0, 1, 0,   3, 2,   1, 0, 0,  0, 0,-1, // down
-				 0,-1, 0,   2, 0,   1, 0, 0,  0, 0, 1, // up
-				 0, 0, 1,   4, 1,   1, 0, 0,  0, 1, 0, // forward
-				 0, 0,-1,   5, 1,  -1, 0, 0,  0, 1, 0, // back
+				 1, 0, 0,   1,   0, 0,-1,  0, 1, 0, // right
+				-1, 0, 0,   0,   0, 0, 1,  0, 1, 0, // left
+				 0, 1, 0,   3,   1, 0, 0,  0, 0,-1, // down
+				 0,-1, 0,   2,   1, 0, 0,  0, 0, 1, // up
+				 0, 0, 1,   4,   1, 0, 0,  0, 1, 0, // forward
+				 0, 0,-1,   5,  -1, 0, 0,  0, 1, 0, // back
 		};
 
 		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(6))), planeParams_t, encodeMemoryContent(plane_parameters_content));
@@ -163,13 +167,29 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar u = (x / 2) + 0.5;
 		DFEVar v = (y / 2) + 0.5;
 
-		/* Convert the coordinates to addresses */
+		/* Determine the mip map level based on the previously sampled location */
 
-		DFEVar miplevel = constant.var(9);
+		DFEVar pu = stream.offset(u, -1);
+		DFEVar pv = stream.offset(v, -1);
+		DFEVar du = KernelMath.abs(u - pu);
+		DFEVar dv = KernelMath.abs(v - pv);
+		DFEVar step_size = KernelMath.max(du, dv);
+
+		// determines the size of the map such that 1 step is 1 pixel.
+		//changing 1 to a higher or lower number changes the width so each step covers a larger or smaller number of pixels respectivey.
+		DFEVar desired_map_width = 1/step_size;
+
+		//here we will use the range to clamp the possible mip map levels to those contained in the source dataset. the actual sample distance may
+		//be higher or lower, but the result would be clamped to these anyway.
+		Range mip_width_range = new KernelMath.Range(1,2048);
+		DFEVar miplevel = KernelMath.ceil(KernelMath.log2(mip_width_range, desired_map_width, dfeFloat(8,24)));
+
+
+		//DFEVar miplevel = constant.var(9);
 
 		/* Transmit the sampling parameters to the sampler */
 
-		io.output("plane", dfeUInt(8)).connect((DFEVar) plane_parameters["offsetx"].cast(dfeUInt(8)));
+		io.output("plane", dfeUInt(8)).connect((DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8)));
 		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));
 		io.output("u", dfeFloat(8, 24)).connect(u);
 		io.output("v", dfeFloat(8, 24)).connect(v);

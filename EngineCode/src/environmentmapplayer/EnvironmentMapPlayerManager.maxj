@@ -7,6 +7,7 @@ import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
+import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
@@ -53,7 +54,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		DFELink sample_memory_stream = addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command"));
 
-
+		sampleReaderKernel.getInput("cache_valid").connect(commandGeneratorKernel.getOutput("cache_valid"));
 		sampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
 		sampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
 
@@ -64,6 +65,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("signalKernel_x"));
 		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("signalKernel_y"));
+
+		//extend the buffer between the signal counters and the signal kernel to prevent a stall in this link, before the rest of the graph has charged
+		int signal_buffer_space_in_bits = 16 * 1024;
+		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
+		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
 		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
 
