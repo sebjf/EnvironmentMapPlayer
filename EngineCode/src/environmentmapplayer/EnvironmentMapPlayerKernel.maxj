@@ -176,7 +176,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar step_size = KernelMath.max(du, dv);
 
 		// determines the size of the map such that 1 step is 1 pixel.
-		//changing 1 to a higher or lower number changes the width so each step covers a larger or smaller number of pixels respectivey.
+		//changing 1 to a higher or lower number changes the width so each step covers a larger or smaller number of pixels respectively.
 		DFEVar desired_map_width = 1/step_size;
 
 		//here we will use the range to clamp the possible mip map levels to those contained in the source dataset. the actual sample distance may
