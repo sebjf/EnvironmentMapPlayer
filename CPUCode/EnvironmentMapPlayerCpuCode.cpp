@@ -40,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum.bmp");
+	environmentMap.LoadEnvironmentMap("/home/sfriston/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
 	/* ignore memory input on subsequent runs */
 
@@ -111,7 +111,7 @@ int main(void)
 		counter++;
 
 		if(counter > 256){
-			run = false;
+	//		run = false;
 		}
 	}
 
