@@ -6,6 +6,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#define EnvironmentMapPlayer_DisplayTotalWidth (1344)
+#define EnvironmentMapPlayer_DisplayTotalHeight (806)
 
 
 /*----------------------------------------------------------------------------*/
@@ -164,6 +166,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
+ * \param [out] outstream_displayDataOut Stream "displayDataOut".
+ * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
@@ -182,6 +186,8 @@ void EnvironmentMapPlayer(
 	size_t instream_size_camera_w,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
+	void *outstream_displayDataOut,
+	size_t outstream_size_displayDataOut,
 	size_t lmem_address_environment_map,
 	size_t lmem_arr_size_environment_map);
 
@@ -207,6 +213,8 @@ void EnvironmentMapPlayer(
  * \param [in] instream_size_camera_w The size of the stream instream_camera_w in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
+ * \param [out] outstream_displayDataOut Stream "displayDataOut".
+ * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  * \return A handle on the execution status, or NULL in case of error.
@@ -226,6 +234,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	size_t instream_size_camera_w,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
+	void *outstream_displayDataOut,
+	size_t outstream_size_displayDataOut,
 	size_t lmem_address_environment_map,
 	size_t lmem_arr_size_environment_map);
 
@@ -248,6 +258,8 @@ typedef struct {
 	size_t instream_size_camera_w; /**<  [in] The size of the stream instream_camera_w in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
 	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
+	void *outstream_displayDataOut; /**<  [out] Stream "displayDataOut". */
+	size_t outstream_size_displayDataOut; /**<  [in] The size of the stream outstream_displayDataOut in bytes. */
 	size_t lmem_address_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: base address, in bytes. */
 	size_t lmem_arr_size_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: array size, in bytes. */
 } EnvironmentMapPlayer_actions_t;

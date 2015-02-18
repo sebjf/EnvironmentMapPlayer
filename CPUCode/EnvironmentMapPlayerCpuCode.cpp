@@ -83,8 +83,8 @@ int main(void)
 
 	//Get a continuous stream and write to the display
 
-	VirtualMonitor monitor(256,256);
-//	monitor.Connect(engine);
+	VirtualMonitor monitor(maxfile);
+	monitor.Connect(engine);
 
 	Mouse mouse(false);
 	int inclination = 0;;
