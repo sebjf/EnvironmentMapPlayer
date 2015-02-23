@@ -32,7 +32,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		DisplayStandard displayStandard = DisplayStandard.make_1024x768x60();
+		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x60();
 		displayStandard.AddMaxFileConstants(this);
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
@@ -74,8 +74,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
 
-		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-//		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}
