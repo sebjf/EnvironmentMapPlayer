@@ -3,6 +3,7 @@ package environmentmapplayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
@@ -25,6 +26,7 @@ import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 class EnvironmentMapPlayerKernel extends Kernel {
 
+	private static final DFEType dfechar = dfeUInt(8);
 	private static final DFEType dfeuint = dfeInt(32);
 	private static final DFEType dfefloat = dfeFloat(8, 24);
 	private static final DFEVectorType<DFEVar> vector3 = new DFEVectorType<DFEVar>(dfeFloat(8,24),3);
@@ -34,38 +36,74 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		new DFEStructType(
 				DFEStructType.sft("center", vector3),
 				DFEStructType.sft("face_offset", dfeuint),
-				DFEStructType.sft("x_coefficients", vector3),
-				DFEStructType.sft("y_coefficients", vector3));
+				DFEStructType.sft("u_basis", vector3),
+				DFEStructType.sft("v_basis", vector3));
 
+	public static final DFEStructType planeDistance_t =
+		new DFEStructType(
+				DFEStructType.sft("t", dfefloat),
+				DFEStructType.sft("index", dfechar));
 
-	/* The next two functions convert a matrix of doubles into an array of Bits objects. Each Bits contains the data for one planeParams_t instance.
-	 * When provided to the mem.rom() constructor, the value provided in the DFEVar address specifies an offset into the Bits[]. */
-
-	private Bits[] encodeMemoryContent(double[] content)
+	private class Vector3
 	{
-		int n_elements_per_row = 10;
-		int n_rows = content.length / n_elements_per_row;
+		public float m_x;
+		public float m_y;
+		public float m_z;
 
-		ArrayList<Bits> content_segments = new ArrayList<Bits>();
-		for(int i = 0; i < n_rows; i++)
+		public Vector3(float x, float y, float z)
 		{
-			double [] rowcontent = Arrays.copyOfRange(content, (i * n_elements_per_row), (i * n_elements_per_row) + n_elements_per_row);
-			content_segments.add(encodeStructContent(rowcontent));
+			m_x = x;
+			m_y = y;
+			m_z = z;
 		}
 
-		return content_segments.toArray(new Bits[content_segments.size()]);
+		public List<Float> GetAsList()
+		{
+			return Arrays.asList(m_x, m_y, m_z);
+		}
+
+		public DFEVector<DFEVar> GetAsDFEVector()
+		{
+			return DFEVectorType.newInstance(Arrays.asList(constant.var(dfefloat, m_x), constant.var(dfefloat, m_y), constant.var(dfefloat, m_z)));
+		}
 	}
 
-	private Bits encodeStructContent(double[] content)
+	private class PlaneDefinition
 	{
-		HashMap<String, Object> memoryMap = new HashMap<String,Object>();
+		public Vector3 	m_center;
+		public int		m_face_offset;
+		public Vector3  m_uBasis;
+		public Vector3  m_vBasis;
 
-		memoryMap["center"] = Arrays.asList(content[0], content[1], content[2]);
-		memoryMap["face_offset"] = content[3];
-		memoryMap["x_coefficients"] = Arrays.asList(content[4], content[5], content[6]);
-		memoryMap["y_coefficients"] = Arrays.asList(content[7], content[8], content[9]);
+		public PlaneDefinition(float cx, float cy, float cz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
+		{
+			m_center = new Vector3(cx,cy,cz);
+			m_face_offset = face;
+			m_uBasis = new Vector3(ux, uy, uz);
+			m_vBasis = new Vector3(vx, vy, vz);
+		}
 
-		return planeParams_t.encodeConstant(memoryMap);
+		public Bits getAsBits()
+		{
+			HashMap<String, Object> memoryMap = new HashMap<String,Object>();
+
+			memoryMap["center"] = m_center.GetAsList();
+			memoryMap["face_offset"] = m_face_offset;
+			memoryMap["u_basis"] = m_uBasis.GetAsList();
+			memoryMap["v_basis"] = m_vBasis.GetAsList();
+
+			return planeParams_t.encodeConstant(memoryMap);
+		}
+	}
+
+	private Bits[] getPlaneParamsMemContent(PlaneDefinition[] planes)
+	{
+		ArrayList<Bits> content_segments = new ArrayList<Bits>();
+		for (PlaneDefinition def : planes)
+		{
+			content_segments.add(def.getAsBits());
+		}
+		return content_segments.toArray(new Bits[content_segments.size()]);
 	}
 
 	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type)
@@ -74,6 +112,18 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
 		T data = Reductions.streamHold(input.data, input.valid);
 		return data;
+	}
+
+	private DFEVar distanceToPlane(PlaneDefinition plane, DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d) throws Exception
+	{
+		/* calculate the distance to the intersection point */
+
+		DFEVector<DFEVar> a = plane.m_center.GetAsDFEVector();
+		DFEVector<DFEVar> n = KernelVectorMath.negate(a);
+
+		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
+
+		return t;
 	}
 
 	protected EnvironmentMapPlayerKernel(KernelParameters parameters) throws Exception {
@@ -122,42 +172,68 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVector<DFEVar> r_o = constant.vect(3, dfefloat, 0);
 		DFEVector<DFEVar> r_d = dn;
 
-		/* identify the plane the ray intersects */
+		/* Define the planes */
 
-		DFEVar plane_axis_index = KernelVectorMath.max(KernelVectorMath.abs(r_d), KernelVectorMath.indicesVector(r_d));
-		DFEVar plane_axis = KernelVectorMath.max(KernelVectorMath.abs(r_d), r_d);
-
-		plane_axis_index = plane_axis_index * 2;
-
-		DFEVar plane_index = (plane_axis < 0) ? (plane_axis_index + 1) : plane_axis_index;
-
-		/* Lookup the parameters of the plane */
-
-		double[] plane_parameters_content = {
-				 1, 0, 0,   1,   0, 0,-1,  0, 1, 0, // right
-				-1, 0, 0,   0,   0, 0, 1,  0, 1, 0, // left
-				 0, 1, 0,   3,   1, 0, 0,  0, 0,-1, // down
-				 0,-1, 0,   2,   1, 0, 0,  0, 0, 1, // up
-				 0, 0, 1,   4,   1, 0, 0,  0, 1, 0, // forward
-				 0, 0,-1,   5,  -1, 0, 0,  0, 1, 0, // back
+		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
+			new PlaneDefinition( 1, 0, 0,   1,   0, 0,-1,  0, 1, 0), // right
+			new PlaneDefinition(-1, 0, 0,   0,   0, 0, 1,  0, 1, 0), // left
+			new PlaneDefinition( 0, 1, 0,   3,   1, 0, 0,  0, 0,-1), // down
+			new PlaneDefinition( 0,-1, 0,   2,   1, 0, 0,  0, 0, 1), // up
+			new PlaneDefinition( 0, 0, 1,   4,   1, 0, 0,  0, 1, 0), // forward
+			new PlaneDefinition( 0, 0,-1,   5,  -1, 0, 0,  0, 1, 0)  // back
 		};
 
-		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(6))), planeParams_t, encodeMemoryContent(plane_parameters_content));
+		/* identify the plane the ray intersects */
+
+		/* This loop should result in the first plane being evaluated, and then compared with the second. Whichever is closer proceeds to be compared with the third, and so on.
+		 * Consequently, the selection process is a long pipeline of higher latency, but shorter paths between each computation than would result from multiple parallel comparisons,
+		 * making it easier to meet timing. */
+
+		/* For the */
+
+		DFEStruct closestPlane = planeDistance_t.newInstance(this);
+		closestPlane["t"] = constant.var(dfefloat, 9999999999999.0f);
+		closestPlane["index"] = constant.var(dfechar, 255);
+
+		for (int i = 0; i < plane_parameters_content.length; i++)
+		{
+			/* Create a result for this comparison */
+
+			DFEStruct currentPlane = planeDistance_t.newInstance(this);
+			currentPlane["index"] = constant.var(dfechar, i);
+			currentPlane["t"] = distanceToPlane(plane_parameters_content[i], r_o, r_d); 	//Get distance to the current contender for closest plane
+
+			/* Ensure the intersection point is in front of the plane (positive) */
+
+			DFEVar cur_t = currentPlane["t"];
+			cur_t = cur_t > 0 ? cur_t : constant.var(dfefloat, 9999999999999.0f);
+
+			/* If closer, replace the current plane identifier */
+
+			DFEVar clos_t = closestPlane["t"];
+			closestPlane = cur_t < clos_t ? currentPlane : closestPlane;
+		}
+
+		DFEVar plane_index = closestPlane["index"];
+
+		/* Get the full set of parameters for the closest plane */
+
+		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(6))), planeParams_t, getPlaneParamsMemContent(plane_parameters_content));
 
 		/* calculate the intersection point */
 
 		DFEVector<DFEVar> a = plane_parameters["center"];
 		DFEVector<DFEVar> n = KernelVectorMath.negate(a);
 
-		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, r_o), n) / KernelVectorMath.dot(n, r_d);
+		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, r_o), n) / KernelVectorMath.dot(n, r_d); //We could replace this with the result in previousResult
 		DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, t));
 
 		/* find the local coordinates on the plane */
 
 		DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
 
-		DFEVector<DFEVar> xc = plane_parameters["x_coefficients"];
-		DFEVector<DFEVar> yc = plane_parameters["y_coefficients"];
+		DFEVector<DFEVar> xc = plane_parameters["u_basis"];
+		DFEVector<DFEVar> yc = plane_parameters["v_basis"];
 
 		DFEVar x = KernelVectorMath.dot(dV,xc);
 		DFEVar y = KernelVectorMath.dot(dV,yc);
