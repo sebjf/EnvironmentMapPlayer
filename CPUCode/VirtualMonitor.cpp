@@ -167,6 +167,11 @@ void VirtualMonitor::Connect(max_engine_t* engine)
 
 }
 
+void VirtualMonitor::Refresh()
+{
+	Refresh(monitor.width);
+}
+
 void VirtualMonitor::Refresh(int pixels_to_update)
 {
 	if(!monitor.connected)

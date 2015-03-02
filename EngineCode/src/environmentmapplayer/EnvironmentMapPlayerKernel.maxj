@@ -261,8 +261,6 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar miplevel = KernelMath.ceil(KernelMath.log2(mip_width_range, desired_map_width, dfeFloat(8,24)));
 
 
-		//DFEVar miplevel = constant.var(9);
-
 		/* Transmit the sampling parameters to the sampler */
 
 		io.output("plane", dfeUInt(8)).connect((DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8)));

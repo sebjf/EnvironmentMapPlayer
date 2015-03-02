@@ -40,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum_simple.bmp");
+	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
 	/* ignore memory input on subsequent runs */
 
@@ -66,22 +66,10 @@ int main(void)
 
 	printf("Running on DFE...\n");
 
-	/* Prepare for output */
-
-
-	//Get a set amount of data, for when using simwatch
-
-/*
-	int n_rays = 252*252;
-	int outputdatasize_bytes = 8 * n_rays;
-	void* outputdata = malloc(outputdatasize_bytes);
-	max_queue_output(act, "displayDataOut", outputdata, outputdatasize_bytes);
-*/
-
 	max_run(engine, act);
 
 
-	//Get a continuous stream and write to the display
+	//Get a continuous stream and write to the virtual display when simulating
 
 	VirtualMonitor monitor(maxfile);
 	monitor.Connect(engine);
@@ -98,7 +86,7 @@ int main(void)
 
 	while(run){
 
-		monitor.Refresh(256);
+		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
 
@@ -111,20 +99,13 @@ int main(void)
 		counter++;
 
 		if(counter > 256){
-			run = false;
+		//	run = false;
 		}
 	}
 
 
 	max_unload(engine);
 	
-/*
-	for(int i = 0; i < n_rays; ++i)
-	{
-		printf("d %i: %X\n", i, ((uint32_t*)outputdata)[i]);
-	}
-*/
-
 	printf("Done.\n");
 	return 0;
 }

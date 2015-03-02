@@ -60,6 +60,7 @@ public:
 
 	void Connect(max_engine_t* engine);
 	void Refresh(int pixels_to_draw);
+	void Refresh();
 
 	void EnableRawMode()
 	{
