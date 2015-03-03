@@ -40,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum.bmp");
+	environmentMap.LoadEnvironmentMap("/home/sfriston/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
 	/* ignore memory input on subsequent runs */
 
@@ -72,7 +72,7 @@ int main(void)
 	//Get a continuous stream and write to the virtual display when simulating
 
 	VirtualMonitor monitor(maxfile);
-	monitor.Connect(engine);
+//	monitor.Connect(engine);
 
 	Mouse mouse(false);
 	int inclination = 0;;
