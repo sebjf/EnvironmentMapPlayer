@@ -40,7 +40,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap("/home/demo/maxworkspace/EnvironmentMapPlayer/museum.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
 	/* ignore memory input on subsequent runs */
 

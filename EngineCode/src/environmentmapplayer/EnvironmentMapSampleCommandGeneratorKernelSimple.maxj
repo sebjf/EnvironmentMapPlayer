@@ -35,6 +35,7 @@ public class EnvironmentMapSampleCommandGeneratorKernelSimple extends Kernel {
 		DFEVar address_in_bursts = KernelMath.floor(address_in_pixels / pixels_per_burst).cast(dfeUInt(32));
 		DFEVar sample_offset_into_burst_in_pixels = KernelMath.modulo(address_in_pixels.cast(dfeUInt(32)), pixels_per_burst);
 
+		sample_offset_into_burst_in_pixels = (plane === 255) ? constant.var(100) : sample_offset_into_burst_in_pixels;
 
         io.output("cache_valid", dfeBool()).connect(constant.var(false));
 

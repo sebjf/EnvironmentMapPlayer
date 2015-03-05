@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.Range;
@@ -39,8 +40,9 @@ class EnvironmentMapPlayerKernel extends Kernel {
 				DFEStructType.sft("u_basis", vector3),
 				DFEStructType.sft("v_basis", vector3));
 
-	public static final DFEStructType planeDistance_t =
+	public static final DFEStructType planeIntersectionResults_t =
 		new DFEStructType(
+				DFEStructType.sft("valid", dfeBool()),
 				DFEStructType.sft("t", dfefloat),
 				DFEStructType.sft("index", dfechar));
 
@@ -66,6 +68,11 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		{
 			return DFEVectorType.newInstance(Arrays.asList(constant.var(dfefloat, m_x), constant.var(dfefloat, m_y), constant.var(dfefloat, m_z)));
 		}
+
+		public float Length()
+		{
+			return (float) Math.sqrt(m_x*m_x + m_y*m_y + m_z*m_z) ;
+		}
 	}
 
 	private class PlaneDefinition
@@ -75,7 +82,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		public Vector3  m_uBasis;
 		public Vector3  m_vBasis;
 
-		public PlaneDefinition(float cx, float cy, float cz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
+		public PlaneDefinition(float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
 		{
 			m_center = new Vector3(cx,cy,cz);
 			m_face_offset = face;
@@ -94,6 +101,40 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 			return planeParams_t.encodeConstant(memoryMap);
 		}
+
+		public DFEStruct doIntersectionTest(DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d, KernelLib kernel) throws Exception
+		{
+			DFEStruct results = planeIntersectionResults_t.newInstance(kernel);
+
+			//calculate intersection point distance
+
+			DFEVector<DFEVar> a = m_center.GetAsDFEVector();
+			DFEVector<DFEVar> n = KernelVectorMath.negate(a);
+
+			DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
+
+			//calculate intersection point
+
+			DFEVector<DFEVar> P = ray_o + (t * ray_d);
+
+			//find the uv coordinates of the intersection point
+
+			DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
+
+			DFEVar u = KernelVectorMath.dot(dV, m_uBasis.GetAsDFEVector()) / (m_uBasis.Length() * m_uBasis.Length());
+			DFEVar v = KernelVectorMath.dot(dV, m_vBasis.GetAsDFEVector()) / (m_vBasis.Length() * m_vBasis.Length());
+
+			//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
+
+			//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
+			DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
+
+			results["t"] = t;
+			results["valid"] = b_isWithinBounds;
+
+			return results;
+		}
+
 	}
 
 	private Bits[] getPlaneParamsMemContent(PlaneDefinition[] planes)
@@ -112,18 +153,6 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
 		T data = Reductions.streamHold(input.data, input.valid);
 		return data;
-	}
-
-	private DFEVar distanceToPlane(PlaneDefinition plane, DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d) throws Exception
-	{
-		/* calculate the distance to the intersection point */
-
-		DFEVector<DFEVar> a = plane.m_center.GetAsDFEVector();
-		DFEVector<DFEVar> n = KernelVectorMath.negate(a);
-
-		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
-
-		return t;
 	}
 
 	protected EnvironmentMapPlayerKernel(KernelParameters parameters) throws Exception {
@@ -175,13 +204,13 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Define the planes */
 
 		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
-			new PlaneDefinition( 1, 0, 0,   1,   0, 0,-1,  0, 1, 0), // right
-			new PlaneDefinition(-1, 0, 0,   0,   0, 0, 1,  0, 1, 0), // left
-			new PlaneDefinition( 0, 1, 0,   3,   1, 0, 0,  0, 0,-1), // down
-			new PlaneDefinition( 0,-1, 0,   2,   1, 0, 0,  0, 0, 1), // up
-			new PlaneDefinition( 0, 0, 1,   4,   1, 0, 0,  0, 1, 0), // forward
-			new PlaneDefinition( 0, 0,-1,   5,  -1, 0, 0,  0, 1, 0)  // back
+				new PlaneDefinition( -1.463400e+00f, -2.260000e-02f, 7.970000e-02f, 1, 0, 0, 0, 0, 0, 2, 0, -2, 0),
+				new PlaneDefinition( 5.000000e-03f, -1.640000e-02f, 1.987200e+00f, 0, 0, 1, 4, 2, 0, 0, 0, -2, 0),
+				new PlaneDefinition( 5.000000e-03f, -1.009100e+00f, 6.840000e-02f, 0, 1, 0, 3, 2, 0, 0, 0, 0, -2),
+				new PlaneDefinition( 5.000000e-03f, 9.850000e-01f, 6.150000e-02f, 0, -1, 0, 2, 2, 0, 0, 0, 0, 2),
+				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0)  // back
 		};
+
 
 		/* identify the plane the ray intersects */
 
@@ -191,7 +220,8 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* For the */
 
-		DFEStruct closestPlane = planeDistance_t.newInstance(this);
+		DFEStruct closestPlane = planeIntersectionResults_t.newInstance(this);
+		closestPlane["valid"] = constant.var(false);
 		closestPlane["t"] = constant.var(dfefloat, 9999999999999.0f);
 		closestPlane["index"] = constant.var(dfechar, 255);
 
@@ -199,19 +229,19 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		{
 			/* Create a result for this comparison */
 
-			DFEStruct currentPlane = planeDistance_t.newInstance(this);
+			DFEStruct currentPlane = plane_parameters_content[i].doIntersectionTest(r_o, r_d, this);
 			currentPlane["index"] = constant.var(dfechar, i);
-			currentPlane["t"] = distanceToPlane(plane_parameters_content[i], r_o, r_d); 	//Get distance to the current contender for closest plane
 
-			/* Ensure the intersection point is in front of the plane (positive) */
+			/* Ensure the intersection point is in front of the plane (positive) and that it is valid */
 
 			DFEVar cur_t = currentPlane["t"];
-			cur_t = cur_t > 0 ? cur_t : constant.var(dfefloat, 9999999999999.0f);
+			cur_t = (cur_t > 0) ? cur_t : constant.var(dfefloat, 9999999999999.0f);
 
 			/* If closer, replace the current plane identifier */
 
+			DFEVar cur_valid = currentPlane["valid"];
 			DFEVar clos_t = closestPlane["t"];
-			closestPlane = cur_t < clos_t ? currentPlane : closestPlane;
+			closestPlane = ((cur_t < clos_t) & cur_valid) ? currentPlane : closestPlane;
 		}
 
 		DFEVar plane_index = closestPlane["index"];
@@ -235,13 +265,14 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVector<DFEVar> xc = plane_parameters["u_basis"];
 		DFEVector<DFEVar> yc = plane_parameters["v_basis"];
 
-		DFEVar x = KernelVectorMath.dot(dV,xc);
-		DFEVar y = KernelVectorMath.dot(dV,yc);
+		//dot product is the sum of element wise multiplication - this is equivalent to squaring the length.
+		DFEVar x = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
+		DFEVar y = KernelVectorMath.dot(dV,yc) / KernelVectorMath.dot(yc, yc);
 
 		/* convert local coordinates to texture coordinates */
 
-		DFEVar u = (x / 2) + 0.5;
-		DFEVar v = (y / 2) + 0.5;
+		DFEVar u = (x) + 0.5;
+		DFEVar v = (y) + 0.5;
 
 		/* Determine the mip map level based on the previously sampled location */
 

@@ -32,7 +32,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x60();
+		DisplayStandard displayStandard = DisplayStandard.make_debug_256x256();
 		displayStandard.AddMaxFileConstants(this);
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
