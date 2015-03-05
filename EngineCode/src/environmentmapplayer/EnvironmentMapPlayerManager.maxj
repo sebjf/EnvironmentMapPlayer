@@ -27,7 +27,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(200.0f);
+		config.setDefaultStreamClockFrequency((int)200.0f);
 		config.setOnCardMemoryFrequency(475);
 
 		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
@@ -64,7 +64,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
-		ManagerClock pixelClock = generateStreamClock("pixelClock", displayStandard.getDisplayClock());
+		ManagerClock pixelClock = generateStreamClock("pixelClock", (int)displayStandard.getDisplayClock());
 		videoSignalKernel.setClock(pixelClock);
 
 		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("signalKernel_x"));
@@ -77,8 +77,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
 
-//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+//		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}

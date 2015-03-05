@@ -36,6 +36,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 	private static final DFEStructType planeParams_t =
 		new DFEStructType(
 				DFEStructType.sft("center", vector3),
+				DFEStructType.sft("normal", vector3),
 				DFEStructType.sft("face_offset", dfeuint),
 				DFEStructType.sft("u_basis", vector3),
 				DFEStructType.sft("v_basis", vector3));
@@ -78,6 +79,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 	private class PlaneDefinition
 	{
 		public Vector3 	m_center;
+		public Vector3	m_normal;
 		public int		m_face_offset;
 		public Vector3  m_uBasis;
 		public Vector3  m_vBasis;
@@ -85,6 +87,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		public PlaneDefinition(float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
 		{
 			m_center = new Vector3(cx,cy,cz);
+			m_normal = new Vector3(nx,ny,nz);
 			m_face_offset = face;
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
@@ -95,6 +98,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			HashMap<String, Object> memoryMap = new HashMap<String,Object>();
 
 			memoryMap["center"] = m_center.GetAsList();
+			memoryMap["normal"] = m_normal.GetAsList();
 			memoryMap["face_offset"] = m_face_offset;
 			memoryMap["u_basis"] = m_uBasis.GetAsList();
 			memoryMap["v_basis"] = m_vBasis.GetAsList();
@@ -109,7 +113,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			//calculate intersection point distance
 
 			DFEVector<DFEVar> a = m_center.GetAsDFEVector();
-			DFEVector<DFEVar> n = KernelVectorMath.negate(a);
+			DFEVector<DFEVar> n = m_normal.GetAsDFEVector();
 
 			DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
 
@@ -119,7 +123,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 			//find the uv coordinates of the intersection point
 
-			DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
+			DFEVector<DFEVar> dV = P - a;
 
 			DFEVar u = KernelVectorMath.dot(dV, m_uBasis.GetAsDFEVector()) / (m_uBasis.Length() * m_uBasis.Length());
 			DFEVar v = KernelVectorMath.dot(dV, m_vBasis.GetAsDFEVector()) / (m_vBasis.Length() * m_vBasis.Length());
@@ -129,8 +133,12 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
 			DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
 
+			//ensure that the plane is in front of the user (t is positive)
+
+			DFEVar b_isInFront = (t > 0);
+
 			results["t"] = t;
-			results["valid"] = b_isWithinBounds;
+			results["valid"] = b_isWithinBounds & b_isInFront;
 
 			return results;
 		}
@@ -232,14 +240,10 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			DFEStruct currentPlane = plane_parameters_content[i].doIntersectionTest(r_o, r_d, this);
 			currentPlane["index"] = constant.var(dfechar, i);
 
-			/* Ensure the intersection point is in front of the plane (positive) and that it is valid */
-
-			DFEVar cur_t = currentPlane["t"];
-			cur_t = (cur_t > 0) ? cur_t : constant.var(dfefloat, 9999999999999.0f);
-
-			/* If closer, replace the current plane identifier */
+			/* If closer and the intersection is valid, replace the current plane identifier */
 
 			DFEVar cur_valid = currentPlane["valid"];
+			DFEVar cur_t = currentPlane["t"];
 			DFEVar clos_t = closestPlane["t"];
 			closestPlane = ((cur_t < clos_t) & cur_valid) ? currentPlane : closestPlane;
 		}
@@ -253,7 +257,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* calculate the intersection point */
 
 		DFEVector<DFEVar> a = plane_parameters["center"];
-		DFEVector<DFEVar> n = KernelVectorMath.negate(a);
+		DFEVector<DFEVar> n = plane_parameters["normal"];
 
 		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, r_o), n) / KernelVectorMath.dot(n, r_d); //We could replace this with the result in previousResult
 		DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, t));
