@@ -42,6 +42,8 @@ int main(void)
 	EnvironmentMap environmentMap(engine,maxfile);
 	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/museum.bmp");
 
+	//max_set_mem_uint64t(act,)
+
 	/* ignore memory input on subsequent runs */
 
 	max_ignore_lmem(act,"environment_map");

@@ -97,6 +97,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		return engine_interface;
 	}
 
+
 	/*
 	private static EngineInterface modeDefault() {
 		EngineInterface engine_interface = new EngineInterface();

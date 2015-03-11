@@ -1,9 +1,15 @@
 package environmentmapplayer;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
@@ -76,6 +82,44 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		}
 	}
 
+	private class AlphaMap
+	{
+		public AlphaMap(String filename) throws IOException, URISyntaxException
+		{
+			BufferedImage image = ImageIO.read(new File(getClass().getResource(filename).toURI()));
+
+			m_width = image.getWidth();
+			m_height = image.getHeight();
+
+			m_data = new Bits[(int) (m_width * m_height)];
+
+			for(int x = 0; x < m_width; x++)
+			{
+				for(int y = 0; y < m_height; y++)
+				{
+					int address = (int) ((y * m_width) + x);
+					Bits b = new Bits(1);
+					b.setBit(0, (image.getRGB(x, y) & 0x00FFFFFF) != 0); //Mask off alpha from ARGB type before checking if colour that defines alpha map is zero.
+					m_data[address] = b;
+				}
+			}
+
+		}
+
+		float m_width;
+		float m_height;
+		Bits[] m_data;
+
+		public DFEVar isOpaque(DFEVar u, DFEVar v)
+		{
+			DFEVar y = (v * m_height).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
+			DFEVar x = (u * m_width).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
+			DFEVar address = ((y * (int)m_width) + x).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
+
+			return mem.rom(address, dfeBool(), m_data);
+		}
+	}
+
 	private class PlaneDefinition
 	{
 		public Vector3 	m_center;
@@ -84,6 +128,8 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		public Vector3  m_uBasis;
 		public Vector3  m_vBasis;
 
+		public AlphaMap m_alphamap;
+
 		public PlaneDefinition(float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
 		{
 			m_center = new Vector3(cx,cy,cz);
@@ -91,6 +137,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			m_face_offset = face;
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
+			m_alphamap = null;
 		}
 
 		public Bits getAsBits()
@@ -137,8 +184,15 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 			DFEVar b_isInFront = (t > 0);
 
+			DFEVar b_isValid = b_isWithinBounds & b_isInFront;
+
+			if (m_alphamap != null)
+			{
+				b_isValid = b_isValid & m_alphamap.isOpaque(u + 0.5, v + 0.5);
+			}
+
 			results["t"] = t;
-			results["valid"] = b_isWithinBounds & b_isInFront;
+			results["valid"] = b_isValid;
 
 			return results;
 		}
@@ -219,10 +273,12 @@ class EnvironmentMapPlayerKernel extends Kernel {
 				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0)  // back
 		};
 
+		plane_parameters_content[1].m_alphamap = new AlphaMap("4_alpha.png");
+
 
 		/* identify the plane the ray intersects */
 
-		/* This loop should result in the first plane being evaluated, and then compared with the second. Whichever is closer proceeds to be compared with the third, and so on.
+		/* This loop should result in the first plane beicd ng evaluated, and then compared with the second. Whichever is closer proceeds to be compared with the third, and so on.
 		 * Consequently, the selection process is a long pipeline of higher latency, but shorter paths between each computation than would result from multiple parallel comparisons,
 		 * making it easier to meet timing. */
 
