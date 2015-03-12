@@ -31,7 +31,7 @@ public:
 	{
 		camera_eye = boost::assign::list_of(0)(0)(0);
 		camera_lookat = boost::assign::list_of(0)(0)(1);
-		camera_up = boost::assign::list_of(0)(1)(0);
+		camera_up = boost::assign::list_of(0)(-1)(0);
 		connected = false;
 	}
 

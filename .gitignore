@@ -64,5 +64,7 @@ RunRules/DFE/maxfiles/*.tns
 RunRules/DFE/maxfiles/EnvironmentMapPlayer-BUILD
 RunRules/Simulation/maxfiles/EnvironmentMapPlayer-BUILD
 RunRules/Simulation/debug*
-*.png
+RunRules/DFE/*.png
+RunRules/Simulation/*.png
+EngineCode/bin/
 *.dot
