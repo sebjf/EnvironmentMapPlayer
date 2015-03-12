@@ -208,7 +208,10 @@ class EnvironmentMapPlayerKernel extends Kernel {
 				new PlaneDefinition( 5.000000e-03f, -1.640000e-02f, 1.987200e+00f, 0, 0, 1, 4, 2, 0, 0, 0, -2, 0),
 				new PlaneDefinition( 5.000000e-03f, -1.009100e+00f, 6.840000e-02f, 0, 1, 0, 3, 2, 0, 0, 0, 0, -2),
 				new PlaneDefinition( 5.000000e-03f, 9.850000e-01f, 6.150000e-02f, 0, -1, 0, 2, 2, 0, 0, 0, 0, 2),
-				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0)  // back
+				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0),
+				new PlaneDefinition( 5.000000e-03f, -1.009100e+00f, 6.840000e-02f, 0, 1, 0, 3, 2, 0, 0, 0, 0, -2),
+				new PlaneDefinition( 5.000000e-03f, 9.850000e-01f, 6.150000e-02f, 0, -1, 0, 2, 2, 0, 0, 0, 0, 2),
+				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0)// back
 		};
 
 
