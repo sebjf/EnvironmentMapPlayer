@@ -47,11 +47,6 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_column);
 		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_row);
 
-		/* Convert these coordinate sets into memory addresses */
-
-		DFEVar tile_offset_in_tiles = (tile_row * face_width_in_tiles) + tile_column; //In the current implementation one tile is one burst
-        DFEVar face_offset_in_tiles = plane.cast(dfeFloat(8,24)) * tiles_per_face;
-
         //Calculate the difference in size between two sequences of mip maps, to get the offset from the start (highest mip map) of the memory
         int distance_to_max_mip_in_pixels = (int)((1 - Math.pow(4, MapParameters.max_mip_level + 1)) / (1 - 4));
         //DFEVar mip_sequence_size_actual = (1 - KernelMath.pow2( KernelMath.pow2(miplevel + 1, dfeFloat(8,24)), dfeFloat(8,24))) / (1 - 4);
@@ -63,13 +58,19 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
         DFEVar distance_to_mip_in_pixels = nominator / (1-4);
 
         DFEVar mip_offset_in_pixels = distance_to_max_mip_in_pixels - distance_to_mip_in_pixels;
-        DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (6/(Math.pow(MapParameters.tile_width_in_pixels, 2)));
+        DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (MapParameters.num_faces/(Math.pow(MapParameters.tile_width_in_pixels, 2)));
+
+
+		/* Convert these coordinate sets into memory addresses */
+
+		DFEVar tile_offset_in_tiles = (tile_row * face_width_in_tiles) + tile_column; //In the current implementation one tile is one burst
+        DFEVar face_offset_in_tiles = plane.cast(dfeFloat(8,24)) * tiles_per_face;
 
 
         DFEVar addr_burst = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
         DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * MapParameters.tile_width_in_pixels));
 
-        /* Determine whether the sample can be read from the existing cache or if we need to retreive a new tile */
+        /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
 
         DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
         DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
