@@ -45,12 +45,19 @@ public:
 		}
 	}
 
+	void set_eye(float x, float y, float z)
+	{
+		camera_eye[0] = x;
+		camera_eye[1] = y;
+		camera_eye[2] = z;
+	}
+
 	void set_lookat(float inclination, float azimuth)
 	{
 		inclination = DEG2RAD * inclination;
 		azimuth = DEG2RAD * azimuth;
 
-		camera_lookat = boost::assign::list_of(cos(inclination)*sin(azimuth))(sin(inclination))(cos(inclination)*cos(azimuth));
+		camera_lookat = add(camera_eye, boost::assign::list_of(cos(inclination)*sin(azimuth))(sin(inclination))(cos(inclination)*cos(azimuth)));
 
         w = subtract(camera_eye, camera_lookat);
         u = divide(cross(camera_up,w),(norm(cross(camera_up,w))));
@@ -117,6 +124,15 @@ private:
 				max_llstream_write(camera_w_stream, 1);
 			}
 		}
+	}
+
+	vector<float> add(vector<float> a, vector<float> b)
+	{
+		vector<float> ans(3);
+		ans[0] = (a[0] + b[0]);
+		ans[1] = (a[1] + b[1]);
+		ans[2] = (a[2] + b[2]);
+		return ans;
 	}
 
 	vector<float> divide(vector<float> a, float b)
