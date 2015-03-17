@@ -19,7 +19,7 @@ public class EnvironmentMapSampleCommandGeneratorKernelSimple extends Kernel {
 		DFEVar u = io.input("u", dfeFloat(8, 24));
 		DFEVar v = io.input("v", dfeFloat(8, 24));
 
-		int face_width = 512;
+		int face_width = 768;
 		int face_height = face_width;
 
         DFEVar face_offset_in_rows = KernelMath.floor((plane.cast(dfeUInt(32)) * face_height).cast(dfeFloat(8, 24)) + (v * face_height));

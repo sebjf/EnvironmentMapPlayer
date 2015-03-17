@@ -122,6 +122,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 	private class PlaneDefinition
 	{
+		public String	m_name;
 		public Vector3 	m_center;
 		public Vector3	m_normal;
 		public int		m_face_offset;
@@ -130,14 +131,26 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		public AlphaMap m_alphamap;
 
-		public PlaneDefinition(float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
+		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
 		{
+			m_name = name;
 			m_center = new Vector3(cx,cy,cz);
 			m_normal = new Vector3(nx,ny,nz);
 			m_face_offset = face;
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
 			m_alphamap = null;
+		}
+
+		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz, String alphaMapFilename ) throws IOException, URISyntaxException
+		{
+			m_name = name;
+			m_center = new Vector3(cx,cy,cz);
+			m_normal = new Vector3(nx,ny,nz);
+			m_face_offset = face;
+			m_uBasis = new Vector3(ux, uy, uz);
+			m_vBasis = new Vector3(vx, vy, vz);
+			m_alphamap = new AlphaMap(alphaMapFilename);
 		}
 
 		public Bits getAsBits()
@@ -266,18 +279,15 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		/* Define the planes */
 
 		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
-				new PlaneDefinition( -1.463400e+00f, -2.260000e-02f, 7.970000e-02f, 1, 0, 0, 0, 0, 0, 2, 0, -2, 0),
-				new PlaneDefinition( 5.000000e-03f, -1.640000e-02f, 1.987200e+00f, 0, 0, 1, 4, 2, 0, 0, 0, -2, 0),
-				new PlaneDefinition( 5.000000e-03f, -1.009100e+00f, 6.840000e-02f, 0, 1, 0, 3, 2, 0, 0, 0, 0, -2),
-				new PlaneDefinition( 5.000000e-03f, 9.850000e-01f, 6.150000e-02f, 0, -1, 0, 2, 2, 0, 0, 0, 0, 2),
-				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0),
-				new PlaneDefinition( 5.000000e-03f, -1.009100e+00f, 6.840000e-02f, 0, 1, 0, 3, 2, 0, 0, 0, 0, -2),
-				new PlaneDefinition( 5.000000e-03f, 9.850000e-01f, 6.150000e-02f, 0, -1, 0, 2, 2, 0, 0, 0, 0, 2),
-				new PlaneDefinition( 9.984000e-01f, -2.700000e-03f, 6.150000e-02f, -1, 0, 0, 1, 0, 0, -2, 0, -2, 0)// back
+				new PlaneDefinition("left", -150f, -1.105046e+02f, 0f, -1f, 0f, 0f,   0,    -1.000000e-04f, 0f, -600f, 1.000000e-04f, -900f, 0f),
+				new PlaneDefinition("right", 150f, -1.105154e+02f, 0f, -1f, 0f, 0f,   1,    0f, -1.000000e-04f, -600f, 0f, -900f, 0f),
+				new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f),
+				new PlaneDefinition("floor", 0f, 3.975240e+01f, 0f, 0f, 1f, 0f,   3,    300f, 0f, 0f, 0f, 0f, -600f, "floor_alpha_proc.bmp"),
+				new PlaneDefinition("middle", 0f, -1.105900e+02f, 0f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 1.000000e-04f),
+				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 0f, 0f, -1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f),
+				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 0f, 0f, -1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f),
+				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 0f, 1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f)
 		};
-
-		plane_parameters_content[1].m_alphamap = new AlphaMap("4_alpha.png");
-
 
 		/* identify the plane the ray intersects */
 
