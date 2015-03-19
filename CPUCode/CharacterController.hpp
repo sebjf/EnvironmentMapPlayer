@@ -38,7 +38,14 @@ public:
 		scale = 500;
 	}
 
-	void Update()
+	void set_position(float x, float y, float z)
+	{
+		position[X] = x;
+		position[Y] = y;
+		position[Z] = z;
+	}
+
+	void update()
 	{
 		rd = read(fd, &ev, sizeof(struct input_event));
 		if(rd >= (int)sizeof(struct input_event)){

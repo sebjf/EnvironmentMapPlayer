@@ -41,7 +41,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map_simple.bmp");
 
 	//max_set_mem_uint64t(act,)
 
@@ -52,13 +52,12 @@ int main(void)
 	/* Specify camera properties */
 
 	Camera camera;
-	camera.set_eye(0, 50, 50);
 	camera.set_lookat(0,0);
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", 1280);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 1024);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", 252);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 252);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.01);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
 
@@ -85,6 +84,7 @@ int main(void)
 	int elevation = 0;
 
 	CharacterController characterController("/dev/input/by-id/usb-DELL_Dell_USB_Entry_Keyboard-event-kbd");
+	characterController.set_position(0, 100, -200);
 
 	camera.connect(engine);
 
@@ -97,7 +97,7 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-		characterController.Update();
+		characterController.update();
 
 		camera.camera_eye = characterController.position;
 

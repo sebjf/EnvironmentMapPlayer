@@ -129,6 +129,8 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		public Vector3  m_uBasis;
 		public Vector3  m_vBasis;
 
+		public boolean m_doBoundsTesting;
+
 		public AlphaMap m_alphamap;
 
 		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz )
@@ -140,6 +142,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
 			m_alphamap = null;
+			m_doBoundsTesting  = true;
 		}
 
 		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz, String alphaMapFilename ) throws IOException, URISyntaxException
@@ -151,6 +154,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
 			m_alphamap = new AlphaMap(alphaMapFilename);
+			m_doBoundsTesting = true;
 		}
 
 		public Bits getAsBits()
@@ -177,31 +181,37 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 			DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
 
-			//calculate intersection point
-
-			DFEVector<DFEVar> P = ray_o + (t * ray_d);
-
-			//find the uv coordinates of the intersection point
-
-			DFEVector<DFEVar> dV = P - a;
-
-			DFEVar u = KernelVectorMath.dot(dV, m_uBasis.GetAsDFEVector()) / (m_uBasis.Length() * m_uBasis.Length());
-			DFEVar v = KernelVectorMath.dot(dV, m_vBasis.GetAsDFEVector()) / (m_vBasis.Length() * m_vBasis.Length());
-
-			//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
-
-			//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
-			DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
-
 			//ensure that the plane is in front of the user (t is positive)
 
 			DFEVar b_isInFront = (t > 0);
 
-			DFEVar b_isValid = b_isWithinBounds & b_isInFront;
+			DFEVar b_isValid = b_isInFront;
 
-			if (m_alphamap != null)
-			{
-				b_isValid = b_isValid & m_alphamap.isOpaque(u + 0.5, v + 0.5);
+			if(m_doBoundsTesting | (m_alphamap != null)){
+
+				//calculate intersection point
+
+				DFEVector<DFEVar> P = ray_o + (t * ray_d);
+
+				//find the uv coordinates of the intersection point
+
+				DFEVector<DFEVar> dV = P - a;
+
+				DFEVar u = KernelVectorMath.dot(dV, m_uBasis.GetAsDFEVector()) / (m_uBasis.Length() * m_uBasis.Length());
+				DFEVar v = KernelVectorMath.dot(dV, m_vBasis.GetAsDFEVector()) / (m_vBasis.Length() * m_vBasis.Length());
+
+				//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
+
+				//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
+				DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
+
+				b_isValid = b_isValid & b_isWithinBounds;
+
+				if (m_alphamap != null)
+				{
+					b_isValid = b_isValid & m_alphamap.isOpaque(u + 0.5, v + 0.5);
+				}
+
 			}
 
 			results["t"] = t;
@@ -247,16 +257,18 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeuint);
 		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeuint);
 
-		/* Compute camera orthonormal basis */
-
-		//
-
 		/* Read camera properties on non-blocking stream */
 
-		DFEVector<DFEVar> cam_u = KernelVectorMath.select(makeNonBlockingInput("camera_u", vector4),0,3);
-		DFEVector<DFEVar> cam_v = KernelVectorMath.select(makeNonBlockingInput("camera_v", vector4),0,3);
-		DFEVector<DFEVar> cam_w = KernelVectorMath.select(makeNonBlockingInput("camera_w", vector4),0,3);
-		DFEVector<DFEVar> cam_e = KernelVectorMath.select(makeNonBlockingInput("camera_eye", vector4),0,3);
+		DFEVector<DFEVar> camera_eye = KernelVectorMath.select(makeNonBlockingInput("camera_eye", vector4),0,3);
+		DFEVector<DFEVar> camera_lookat = KernelVectorMath.select(makeNonBlockingInput("camera_lookat", vector4),0,3);
+		DFEVector<DFEVar> camera_up = KernelVectorMath.select(makeNonBlockingInput("camera_up", vector4),0,3);
+
+		/* Compute camera orthonormal basis */
+
+		DFEVector<DFEVar> cam_w = KernelVectorMath.subtract(camera_eye, camera_lookat);
+			DFEVector<DFEVar> cross_up_w = KernelVectorMath.cross(camera_up, cam_w);
+		DFEVector<DFEVar> cam_u = cross_up_w/KernelVectorMath.norm(cross_up_w);
+		DFEVector<DFEVar> cam_v = KernelVectorMath.cross(cam_w, cam_u);
 
 		/* Compute the ray in the camera reference frame */
 
@@ -274,7 +286,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Define the rendering rays */
 
-		DFEVector<DFEVar> r_o = cam_e;
+		DFEVector<DFEVar> r_o = camera_eye;
 		DFEVector<DFEVar> r_d = dn;
 
 		/* Define the planes */
@@ -284,10 +296,14 @@ class EnvironmentMapPlayerKernel extends Kernel {
 				new PlaneDefinition("right", 150f, -1.105154e+02f, 0f, -1f, 0f, 0f,   1,    0f, -1.000000e-04f, -600f, 0f, -900f, 0f),
 				new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f),
 				new PlaneDefinition("floor", 0f, 3.975240e+01f, 0f, 0f, 1f, 0f,   3,    300f, 0f, 0f, 0f, 0f, -600f, "floor_alpha_proc.bmp"),
-				new PlaneDefinition("middle", 0f, -1.105900e+02f, 0f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 1.000000e-04f),
+				new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, "middle_alpha_proc.bmp"),
 				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 0f, 0f, -1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f),
 				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 0f, 0f, -1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f),
-				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 0f, 1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f)
+				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 0f, 1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f),
+				new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, "middle_alpha_proc.bmp"),
+				new PlaneDefinition("infill", -4.021490e+01f, 1.321234e+02f, -1.347000e+00f, -1f, 0f, 0f,   8,    0f, 0f, -8f, 0f, -200f, 0f),
+				new PlaneDefinition("infill", 4.272190e+01f, 1.321234e+02f, -1.347000e+00f, -1f, 0f, 0f,   8,    0f, 0f, -8f, 0f, -200f, 0f),
+				new PlaneDefinition("infill", 5.037000e-01f, 2.325115e+02f, -1.347050e+00f, 0f, -1f, 0f,   8,    0f, 0f, -8f, 90f, 0f, -1.000000e-04f)
 		};
 
 		/* identify the plane the ray intersects */
@@ -322,7 +338,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Get the full set of parameters for the closest plane */
 
-		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(6))), planeParams_t, getPlaneParamsMemContent(plane_parameters_content));
+		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(plane_parameters_content.length))), planeParams_t, getPlaneParamsMemContent(plane_parameters_content));
 
 		/* calculate the intersection point */
 

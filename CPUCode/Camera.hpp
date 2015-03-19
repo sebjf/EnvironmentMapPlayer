@@ -23,9 +23,6 @@ public:
 	vector<float> camera_eye;
 	vector<float> camera_lookat;
 	vector<float> camera_up;
-	vector<float> u;
-	vector<float> v;
-	vector<float> w;
 
 	Camera()
 	{
@@ -39,9 +36,9 @@ public:
 	{
 		if(connected)
 		{
+			max_llstream_release(camera_e_stream);
+			max_llstream_release(camera_l_stream);
 			max_llstream_release(camera_u_stream);
-			max_llstream_release(camera_v_stream);
-			max_llstream_release(camera_w_stream);
 		}
 	}
 
@@ -59,10 +56,6 @@ public:
 
 		camera_lookat = add(camera_eye, boost::assign::list_of(cos(inclination)*sin(azimuth))(sin(inclination))(cos(inclination)*cos(azimuth)));
 
-        w = subtract(camera_eye, camera_lookat);
-        u = divide(cross(camera_up,w),(norm(cross(camera_up,w))));
-        v = cross(w,u);
-
         update_camera_streams();
 	}
 
@@ -75,20 +68,17 @@ public:
 
 		const int buffer_size = num_slots * slot_size;
 
+		void* camera_e_buffer;
+		void* camera_l_buffer;
 		void* camera_u_buffer;
-		void* camera_v_buffer;
-		void* camera_w_buffer;
-		void* camera_eye_buffer;
 
+		posix_memalign(&camera_e_buffer, 16, buffer_size);
+		posix_memalign(&camera_l_buffer, 16, buffer_size);
 		posix_memalign(&camera_u_buffer, 16, buffer_size);
-		posix_memalign(&camera_v_buffer, 16, buffer_size);
-		posix_memalign(&camera_w_buffer, 16, buffer_size);
-		posix_memalign(&camera_eye_buffer, 16, buffer_size);
 
-		camera_u_stream = max_llstream_setup(engine, "camera_u", num_slots, slot_size, camera_u_buffer);
-		camera_v_stream = max_llstream_setup(engine, "camera_v", num_slots, slot_size, camera_v_buffer);
-		camera_w_stream = max_llstream_setup(engine, "camera_w", num_slots, slot_size, camera_w_buffer);
-		camera_eye_stream = max_llstream_setup(engine, "camera_eye", num_slots, slot_size, camera_eye_buffer);
+		camera_e_stream = max_llstream_setup(engine, "camera_eye", 		num_slots, slot_size, camera_e_buffer);
+		camera_l_stream = max_llstream_setup(engine, "camera_lookat", 	num_slots, slot_size, camera_l_buffer);
+		camera_u_stream = max_llstream_setup(engine, "camera_up",		num_slots, slot_size, camera_u_buffer);
 
 		connected = true;
 
@@ -98,43 +88,36 @@ public:
 private:
 
 	bool connected;
+	max_llstream_t* camera_e_stream;
+	max_llstream_t* camera_l_stream;
 	max_llstream_t* camera_u_stream;
-	max_llstream_t* camera_v_stream;
-	max_llstream_t* camera_w_stream;
-	max_llstream_t* camera_eye_stream;
 
 
 	void update_camera_streams()
 	{
 		if(connected)
 		{
+			void* camera_e_slots;
+			if(max_llstream_write_acquire(camera_e_stream, 1, &camera_e_slots))
+			{
+				memcpy(camera_e_slots, camera_eye.data(), sizeof(float) * 3);
+				max_llstream_write(camera_e_stream, 1);
+			}
+
+			void* camera_l_slots;
+			if(max_llstream_write_acquire(camera_l_stream, 1, &camera_l_slots))
+			{
+				memcpy(camera_l_slots, camera_lookat.data(), sizeof(float) * 3);
+				max_llstream_write(camera_l_stream, 1);
+			}
+
 			void* camera_u_slots;
 			if(max_llstream_write_acquire(camera_u_stream, 1, &camera_u_slots))
 			{
-				memcpy(camera_u_slots, u.data(), sizeof(float) * 3);
+				memcpy(camera_u_slots, camera_up.data(), sizeof(float) * 3);
 				max_llstream_write(camera_u_stream, 1);
 			}
 
-			void* camera_v_slots;
-			if(max_llstream_write_acquire(camera_v_stream, 1, &camera_v_slots))
-			{
-				memcpy(camera_v_slots, v.data(), sizeof(float) * 3);
-				max_llstream_write(camera_v_stream, 1);
-			}
-
-			void* camera_w_slots;
-			if(max_llstream_write_acquire(camera_w_stream, 1, &camera_w_slots))
-			{
-				memcpy(camera_w_slots, w.data(), sizeof(float) * 3);
-				max_llstream_write(camera_w_stream, 1);
-			}
-
-			void* camera_eye_slots;
-			if(max_llstream_write_acquire(camera_eye_stream, 1, &camera_eye_slots))
-			{
-				memcpy(camera_eye_slots, camera_eye.data(), sizeof(float) * 3);
-				max_llstream_write(camera_eye_stream, 1);
-			}
 		}
 	}
 
