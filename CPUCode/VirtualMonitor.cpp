@@ -143,6 +143,7 @@ VirtualMonitor::VirtualMonitor(max_file_t* maxfile)
 	InitialiseMonitor(monitor, width, height);
 	file = NULL;
 	enable_raw_mode = false;
+	m_maxfile = maxfile;
 }
 
 VirtualMonitor::VirtualMonitor(int width, int height)
@@ -150,11 +151,21 @@ VirtualMonitor::VirtualMonitor(int width, int height)
 	InitialiseMonitor(monitor, width, height);
 	file = NULL;
 	enable_raw_mode = false;
+	m_maxfile = NULL;
 }
 
 void VirtualMonitor::Connect(max_engine_t* engine)
 {
 	printf("Preparing low latency stream for virtual monitor...\n");
+
+	if(m_maxfile != NULL)
+	{
+		if(!max_has_handle_stream(m_maxfile, "displayDataOut"))
+		{
+			printf("Maxfile does not have a displayDataOut stream.\n");
+			return;
+		}
+	}
 
 	max_llstream_t* read_llstream = 0;
 	read_llstream = max_llstream_setup(engine, "displayDataOut", monitor.NUM_SLOTS, monitor.SLOT_SIZE, monitor.displayData_ptr);

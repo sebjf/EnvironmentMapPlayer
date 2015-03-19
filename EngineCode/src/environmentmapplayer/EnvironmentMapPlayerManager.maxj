@@ -47,6 +47,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		rayCasterKernel.getInput("camera_u").connect(addStreamFromCPU("camera_u",StreamMode.LOW_LATENCY_ENABLED));
 		rayCasterKernel.getInput("camera_v").connect(addStreamFromCPU("camera_v",StreamMode.LOW_LATENCY_ENABLED));
 		rayCasterKernel.getInput("camera_w").connect(addStreamFromCPU("camera_w",StreamMode.LOW_LATENCY_ENABLED));
+		rayCasterKernel.getInput("camera_eye").connect(addStreamFromCPU("camera_eye", StreamMode.LOW_LATENCY_ENABLED));
 
 		rayCasterKernel.getInput("row").connect(videoCounterKernel.getOutput("y"));
 		rayCasterKernel.getInput("col").connect(videoCounterKernel.getOutput("x"));

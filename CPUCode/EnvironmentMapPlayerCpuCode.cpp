@@ -13,6 +13,7 @@
 #include "EnvironmentMap.hpp"
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
+#include "CharacterController.hpp"
 
 bool run = true;
 
@@ -56,8 +57,8 @@ int main(void)
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", 252);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 252);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", 1280);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 1024);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.01);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
 
@@ -77,9 +78,13 @@ int main(void)
 	VirtualMonitor monitor(maxfile);
 	monitor.Connect(engine);
 
+	/* Set up the input devices */
+
 	Mouse mouse(false);
 	int inclination = 0;;
 	int elevation = 0;
+
+	CharacterController characterController("/dev/input/by-id/usb-DELL_Dell_USB_Entry_Keyboard-event-kbd");
 
 	camera.connect(engine);
 
@@ -92,14 +97,19 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
+		characterController.Update();
+
+		camera.camera_eye = characterController.position;
 
 		if(d.changed()){
 			inclination += -d.y;
 			elevation += -d.x;
-			camera.set_lookat(inclination,elevation);
 		}
 
+		camera.set_lookat(inclination,elevation);
+
 		counter++;
+
 
 		if(counter > 256){
 		//	run = false;

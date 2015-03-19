@@ -78,14 +78,17 @@ public:
 		void* camera_u_buffer;
 		void* camera_v_buffer;
 		void* camera_w_buffer;
+		void* camera_eye_buffer;
 
 		posix_memalign(&camera_u_buffer, 16, buffer_size);
 		posix_memalign(&camera_v_buffer, 16, buffer_size);
 		posix_memalign(&camera_w_buffer, 16, buffer_size);
+		posix_memalign(&camera_eye_buffer, 16, buffer_size);
 
 		camera_u_stream = max_llstream_setup(engine, "camera_u", num_slots, slot_size, camera_u_buffer);
 		camera_v_stream = max_llstream_setup(engine, "camera_v", num_slots, slot_size, camera_v_buffer);
 		camera_w_stream = max_llstream_setup(engine, "camera_w", num_slots, slot_size, camera_w_buffer);
+		camera_eye_stream = max_llstream_setup(engine, "camera_eye", num_slots, slot_size, camera_eye_buffer);
 
 		connected = true;
 
@@ -98,6 +101,8 @@ private:
 	max_llstream_t* camera_u_stream;
 	max_llstream_t* camera_v_stream;
 	max_llstream_t* camera_w_stream;
+	max_llstream_t* camera_eye_stream;
+
 
 	void update_camera_streams()
 	{
@@ -122,6 +127,13 @@ private:
 			{
 				memcpy(camera_w_slots, w.data(), sizeof(float) * 3);
 				max_llstream_write(camera_w_stream, 1);
+			}
+
+			void* camera_eye_slots;
+			if(max_llstream_write_acquire(camera_eye_stream, 1, &camera_eye_slots))
+			{
+				memcpy(camera_eye_slots, camera_eye.data(), sizeof(float) * 3);
+				max_llstream_write(camera_eye_stream, 1);
 			}
 		}
 	}

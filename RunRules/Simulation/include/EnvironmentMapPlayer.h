@@ -6,8 +6,8 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define EnvironmentMapPlayer_DisplayTotalHeight (256)
-#define EnvironmentMapPlayer_DisplayTotalWidth (256)
+#define EnvironmentMapPlayer_DisplayTotalHeight (1066)
+#define EnvironmentMapPlayer_DisplayTotalWidth (1688)
 #define EnvironmentMapPlayer_PCIE_ALIGNMENT (16)
 
 
@@ -159,6 +159,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
+ * \param [in] instream_camera_eye Stream "camera_eye".
+ * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_u Stream "camera_u".
  * \param [in] instream_size_camera_u The size of the stream instream_camera_u in bytes.
  * \param [in] instream_camera_v Stream "camera_v".
@@ -179,6 +181,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
+	const void *instream_camera_eye,
+	size_t instream_size_camera_eye,
 	const void *instream_camera_u,
 	size_t instream_size_camera_u,
 	const void *instream_camera_v,
@@ -206,6 +210,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
+ * \param [in] instream_camera_eye Stream "camera_eye".
+ * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_u Stream "camera_u".
  * \param [in] instream_size_camera_u The size of the stream instream_camera_u in bytes.
  * \param [in] instream_camera_v Stream "camera_v".
@@ -227,6 +233,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
+	const void *instream_camera_eye,
+	size_t instream_size_camera_eye,
 	const void *instream_camera_u,
 	size_t instream_size_camera_u,
 	const void *instream_camera_v,
@@ -251,6 +259,8 @@ typedef struct {
 	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres". */
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity". */
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */
+	const void *instream_camera_eye; /**<  [in] Stream "camera_eye". */
+	size_t instream_size_camera_eye; /**<  [in] The size of the stream instream_camera_eye in bytes. */
 	const void *instream_camera_u; /**<  [in] Stream "camera_u". */
 	size_t instream_size_camera_u; /**<  [in] The size of the stream instream_camera_u in bytes. */
 	const void *instream_camera_v; /**<  [in] Stream "camera_v". */

@@ -69,6 +69,7 @@ public:
 
 private:
 	VirtualMonitorInfo monitor;
+	max_file_t* m_maxfile;
 	std::ofstream* file;
 	bool enable_raw_mode; //When set the flags are ignored and all colour data is drawn to the screen
 };

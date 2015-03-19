@@ -256,6 +256,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 		DFEVector<DFEVar> cam_u = KernelVectorMath.select(makeNonBlockingInput("camera_u", vector4),0,3);
 		DFEVector<DFEVar> cam_v = KernelVectorMath.select(makeNonBlockingInput("camera_v", vector4),0,3);
 		DFEVector<DFEVar> cam_w = KernelVectorMath.select(makeNonBlockingInput("camera_w", vector4),0,3);
+		DFEVector<DFEVar> cam_e = KernelVectorMath.select(makeNonBlockingInput("camera_eye", vector4),0,3);
 
 		/* Compute the ray in the camera reference frame */
 
@@ -273,7 +274,7 @@ class EnvironmentMapPlayerKernel extends Kernel {
 
 		/* Define the rendering rays */
 
-		DFEVector<DFEVar> r_o = constant.vect(3, dfefloat, 0);
+		DFEVector<DFEVar> r_o = cam_e;
 		DFEVector<DFEVar> r_d = dn;
 
 		/* Define the planes */
