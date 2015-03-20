@@ -15,7 +15,7 @@ public class EnvironmentMapSampleReaderKernel extends Kernel {
 		int	burst_size_in_bytes = 384;
 		int burst_size_in_bits = burst_size_in_bytes * 8;
 
-		int pixel_size_bits = MapParameters.pixel_size_in_bytes * 8;
+		int pixel_size_bits = EnvironmentParameters.pixel_size_in_bytes * 8;
 
 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
 

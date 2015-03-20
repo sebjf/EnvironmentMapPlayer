@@ -38,8 +38,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(makeKernelParameters("MaxVideoCounterKernel"), displayStandard));
 
 		KernelBlock rayCasterKernel = addKernel(new EnvironmentMapPlayerKernel(makeKernelParameters("EnvironmentMapPlayerKernel")));
-//		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernel(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernel")));
-		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernelSimple(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernelSimple")));
+		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernel(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernel")));
+//		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernelSimple(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernelSimple")));
 
 		KernelBlock sampleReaderKernel = addKernel(new EnvironmentMapSampleReaderKernel(makeKernelParameters("EnvironmentMapSampleReaderKernel")));
 

@@ -29,12 +29,12 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Restrict the mip level to those contained within the source map set */
 
-		miplevel = clamp(miplevel, MapParameters.min_mip_level, MapParameters.max_mip_level);
+		miplevel = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
 
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 
 		DFEVar face_width_in_pixels = KernelMath.pow2(miplevel, dfeFloat(8,24));
-		DFEVar face_width_in_tiles = face_width_in_pixels / MapParameters.tile_width_in_pixels;
+		DFEVar face_width_in_tiles = face_width_in_pixels / EnvironmentParameters.tile_width_in_pixels;
 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
 
 		/* Based on the mip level, determine which tile contains the sample */
@@ -44,11 +44,11 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Calculate the offset into the tile of the individual sample */
 
-		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_column);
-		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (MapParameters.tile_width_in_pixels * tile_row);
+		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (EnvironmentParameters.tile_width_in_pixels * tile_column);
+		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (EnvironmentParameters.tile_width_in_pixels * tile_row);
 
         //Calculate the difference in size between two sequences of mip maps, to get the offset from the start (highest mip map) of the memory
-        int distance_to_max_mip_in_pixels = (int)((1 - Math.pow(4, MapParameters.max_mip_level + 1)) / (1 - 4));
+        int distance_to_max_mip_in_pixels = (int)((1 - Math.pow(4, EnvironmentParameters.max_mip_level + 1)) / (1 - 4));
         //DFEVar mip_sequence_size_actual = (1 - KernelMath.pow2( KernelMath.pow2(miplevel + 1, dfeFloat(8,24)), dfeFloat(8,24))) / (1 - 4);
 
         //The following offset calculations are made assuming division of a single face
@@ -58,7 +58,7 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
         DFEVar distance_to_mip_in_pixels = nominator / (1-4);
 
         DFEVar mip_offset_in_pixels = distance_to_max_mip_in_pixels - distance_to_mip_in_pixels;
-        DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (MapParameters.num_faces/(Math.pow(MapParameters.tile_width_in_pixels, 2)));
+        DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (EnvironmentParameters.num_faces/(Math.pow(EnvironmentParameters.tile_width_in_pixels, 2)));
 
 
 		/* Convert these coordinate sets into memory addresses */
@@ -68,7 +68,7 @@ public class EnvironmentMapSampleCommandGeneratorKernel extends Kernel {
 
 
         DFEVar addr_burst = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
-        DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * MapParameters.tile_width_in_pixels));
+        DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * EnvironmentParameters.tile_width_in_pixels));
 
         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
 

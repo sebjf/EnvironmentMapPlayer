@@ -41,7 +41,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map_simple.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
 
 	//max_set_mem_uint64t(act,)
 
@@ -56,8 +56,8 @@ int main(void)
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", 252);
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", 252);
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
+	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.01);
 	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
 
