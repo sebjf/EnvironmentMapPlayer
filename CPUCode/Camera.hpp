@@ -28,7 +28,7 @@ public:
 	{
 		camera_eye = boost::assign::list_of(0)(0)(0);
 		camera_lookat = boost::assign::list_of(0)(0)(1);
-		camera_up = boost::assign::list_of(0)(-1)(0);
+		camera_up = boost::assign::list_of(0)(-1)(0);	//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
 		connected = false;
 	}
 
