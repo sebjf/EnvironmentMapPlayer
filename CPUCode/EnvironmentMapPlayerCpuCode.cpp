@@ -42,13 +42,13 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine, maxfile);
-//	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
 
 	/* Initialise the sample parameter map */
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.LoadSampleParameterMap();
+	sampleParameterMap.InitialiseBasicMap();
 
 	/* ignore memory input on subsequent runs */
 
