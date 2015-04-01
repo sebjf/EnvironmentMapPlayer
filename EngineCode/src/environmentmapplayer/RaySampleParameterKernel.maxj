@@ -27,6 +27,8 @@ class RaySampleParameterKernel extends Kernel {
 
 		flush.disabled();
 
+		optimization.pushPipeliningFactor(0.25);
+
 		DFEVar col = io.input("col", dfeInt(16)).cast(dfeUInt(32));
 		DFEVar row = io.input("row", dfeInt(16)).cast(dfeUInt(32));
 
@@ -72,6 +74,8 @@ class RaySampleParameterKernel extends Kernel {
 		/* Output the sample data */
 
 		io.output("sampleParameters", SampleParameters_t).connect(SampleParameters_t.unpack(sample_content));
+
+		optimization.popPipeliningFactor();
 
 	}
 

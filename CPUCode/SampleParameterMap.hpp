@@ -82,6 +82,69 @@ public:
 		UpdateParameterMap();
 	}
 
+	void InitialiseBarrelDistortionMap()
+	{
+		for(int y = 0; y < m_height; y++)
+		{
+			for(int x = 0; x < m_width; x++)
+			{
+				m_SampleParameters[x][y].col = x;
+				m_SampleParameters[x][y].row = y;
+				m_SampleParameters[x][y].cam_scalar = 0;
+
+				// first move into texture and then normalised device coordinates
+
+				float rx = ((x / (float)m_width ) * 2) - 1;
+				float ry = ((y / (float)m_height) * 2) - 1;
+
+				// subtract the lens center from the sample in ndc
+
+				float lens_center_x = 0.15;
+				rx = rx - lens_center_x;
+
+				// correct for the aspect ratio of the viewport
+
+				float u_aspect = (float)m_width / (float)m_height;
+				ry = ry / u_aspect;
+
+				// calculate distortion scale
+
+				float radius2 = (rx * rx) + (ry * ry);
+				float distortion[] = { 1, .22f, .24f, 0.0f };
+
+				float distortion_scale =
+					(distortion[0]) +
+					(distortion[1] * radius2) +
+					(distortion[2] * radius2 * radius2) +
+					(distortion[3] * radius2 * radius2 * radius2);
+
+				rx = rx * distortion_scale;
+				ry = ry * distortion_scale;
+
+				// move the distorted coordiantes from ndc back into columns and
+				// rows
+
+				ry = ry * u_aspect;
+				rx = rx + lens_center_x;
+
+				rx = rx + 1;
+				ry = ry + 1;
+
+				rx = rx / 2;
+				ry = ry / 2;
+
+				rx = rx * m_width;
+				ry = ry * m_height;
+
+				m_SampleParameters[x][y].col = rx;
+				m_SampleParameters[x][y].row = ry;
+				m_SampleParameters[x][y].cam_scalar = 0;
+			}
+		}
+
+		UpdateParameterMap();
+	}
+
 private:
 
 	void UpdateParameterMap()
