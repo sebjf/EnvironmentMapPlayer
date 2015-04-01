@@ -11,6 +11,7 @@
 
 #include "Camera.hpp"
 #include "EnvironmentMap.hpp"
+#include "SampleParameterMap.hpp"
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
@@ -40,10 +41,14 @@ int main(void)
 
 	/* Initialise environment map */
 
-	EnvironmentMap environmentMap(engine,maxfile);
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
+	EnvironmentMap environmentMap(engine, maxfile);
+//	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
 
-	//max_set_mem_uint64t(act,)
+	/* Initialise the sample parameter map */
+
+	SampleParameterMap sampleParameterMap(engine, maxfile);
+	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
+	sampleParameterMap.LoadSampleParameterMap();
 
 	/* ignore memory input on subsequent runs */
 
@@ -52,14 +57,17 @@ int main(void)
 	/* Specify camera properties */
 
 	Camera camera;
+	camera.set_eye(0, 100, -200);
 	camera.set_lookat(0,0);
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
-	max_set_uint64t(act,"EnvironmentMapPlayerKernel","viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
-	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_pixelsize", 0.01);
-	max_set_double(act,"EnvironmentMapPlayerKernel","viewplane_viewdistance", 1);
+	max_set_uint64t(act, "RaySampleParameterKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+
+	max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
+	max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", 0.01);
+	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
 
 	/* Video signal parameters */
 
@@ -97,9 +105,9 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-		characterController.update();
+	//	characterController.update();
 
-		camera.camera_eye = characterController.position;
+	//	camera.camera_eye = characterController.position;
 
 		if(d.changed()){
 			inclination += -d.y;

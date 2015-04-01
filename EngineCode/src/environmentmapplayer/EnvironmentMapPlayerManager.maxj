@@ -30,9 +30,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		config.setDefaultStreamClockFrequency((int)200.0f);
 		config.setOnCardMemoryFrequency(475);
 
-		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
-		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x60();
+		DisplayStandard displayStandard = DisplayStandard.make_debug_256x256();
 		displayStandard.AddMaxFileConstants(this);
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(
@@ -40,20 +39,42 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 				new MaxVideoCounterKernel.CounterOutput("0", true),
 				new MaxVideoCounterKernel.CounterOutput("_signal", false)));
 
-		KernelBlock rayCasterKernel = addKernel(new EnvironmentMapPlayerKernel(makeKernelParameters("EnvironmentMapPlayerKernel")));
-		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernel(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernel")));
-//		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernelSimple(makeKernelParameters("EnvironmentMapSampleCommandGeneratorKernelSimple")));
+		KernelBlock raySampleParameterKernel = addKernel(new RaySampleParameterKernel(makeKernelParameters("RaySampleParameterKernel"), displayStandard));
 
-		KernelBlock sampleReaderKernel = addKernel(new EnvironmentMapSampleReaderKernel(makeKernelParameters("EnvironmentMapSampleReaderKernel")));
+		KernelBlock rayCasterKernel = addKernel(new RayCasterKernel(makeKernelParameters("RayCasterKernel")));
 
+		KernelBlock commandGeneratorKernel = addKernel(new MapSampleCommandGeneratorKernel(makeKernelParameters("MapSampleCommandGeneratorKernel")));
+//		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernelSimple(makeKernelParameters("MapSampleCommandGeneratorKernelSimple")));
+
+		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
+
+		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
+
+
+		/* Connect the Ray Caster to the inputs from the CPU */
 
 		rayCasterKernel.getInput("camera_eye").connect(addStreamFromCPU("camera_eye",StreamMode.LOW_LATENCY_ENABLED));
 		rayCasterKernel.getInput("camera_lookat").connect(addStreamFromCPU("camera_lookat",StreamMode.LOW_LATENCY_ENABLED));
 		rayCasterKernel.getInput("camera_up").connect(addStreamFromCPU("camera_up",StreamMode.LOW_LATENCY_ENABLED));
 
-		rayCasterKernel.getInput("col").connect(videoCounterKernel.getOutput("x0"));
-		rayCasterKernel.getInput("row").connect(videoCounterKernel.getOutput("y0"));
+		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
+		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
+
+		raySampleParameterKernel.getInput("col").connect(videoCounterKernel.getOutput("x0"));
+		raySampleParameterKernel.getInput("row").connect(videoCounterKernel.getOutput("y0"));
+
+		rayCasterKernel.getInput("sampleParameters").connect(raySampleParameterKernel.getOutput("sampleParameters"));
+
+		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("x_signal"));
+		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("y_signal"));
+
+		/* Connect the sample parameter kernel to memory */
+
+		raySampleParameterKernel.getInput("sample_parameter_read_data").connect(addStreamFromOnCardMemory("sample_parameter_memory_stream", raySampleParameterKernel.getOutput("sample_parameter_read_command")));
+
+
+		/* Connect the Ray Caster and Colour Sampling Kernels Together */
 
 		commandGeneratorKernel.getInput("plane").connect(rayCasterKernel.getOutput("plane"));
 		commandGeneratorKernel.getInput("miplevel").connect(rayCasterKernel.getOutput("miplevel"));
@@ -62,24 +83,25 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		DFELink sample_memory_stream = addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command"));
 
-		sampleReaderKernel.getInput("cache_valid").connect(commandGeneratorKernel.getOutput("cache_valid"));
-		sampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
-		sampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
+		mapSampleReaderKernel.getInput("cache_valid").connect(commandGeneratorKernel.getOutput("cache_valid"));
+		mapSampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
+		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
 
-		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
-		ManagerClock pixelClock = generateStreamClock("pixelClock", (int)displayStandard.getDisplayClock());
-		videoSignalKernel.setClock(pixelClock);
+		/* Connect up the video signal generator kernel and the clock signals  */
 
-		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("x_signal"));
-		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("y_signal"));
+		videoSignalKernel.getInput("rgb").connect(mapSampleReaderKernel.getOutput("sample"));
 
 		//extend the buffer between the signal counters and the signal kernel to prevent a stall in this link, before the rest of the graph has charged
 		int signal_buffer_space_in_bits = 16 * 1024;
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
-		videoSignalKernel.getInput("rgb").connect(sampleReaderKernel.getOutput("sample"));
+		ManagerClock pixelClock = generateStreamClock("pixelClock", (int)displayStandard.getDisplayClock());
+		videoSignalKernel.setClock(pixelClock);
+
+
+		/* Finally configure the video data outputs */
 
 		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 //		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
@@ -92,7 +114,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		EngineInterface engine_interface = new EngineInterface("memoryInitialisation");
 
 		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT32);
-		InterfaceParam lmem_address = engine_interface.addConstant(0);
+		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT32);
 		engine_interface.setLMemLinear("environment_map", lmem_address, lmem_size);
 		engine_interface.setStream("environment_map_in", CPUTypes.INT32, lmem_size / 4);
 

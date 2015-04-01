@@ -21,11 +21,14 @@ private:
 	max_engine_t* m_engine;
 	max_file_t* m_maxfile;
 
+	int m_map_size_in_bytes;
+
 public:
 	EnvironmentMap(max_engine_t* engine, max_file_t* maxfile)
 	{
 		this->m_engine = engine;
 		this->m_maxfile = maxfile;
+		m_map_size_in_bytes = 0;
 	}
 
 	void LoadEnvironmentMap(string filename)
@@ -39,13 +42,23 @@ public:
 		SDL_Surface* surface = SDL_CreateRGBSurface(0, img->w, img->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 		SDL_BlitSurface(img,NULL,surface,NULL);
 
+		printf("writing environment map...\n");
+
 		int texture_size_bytes = surface->w * surface->h * 4;
+
+		m_map_size_in_bytes = texture_size_bytes;
 
 		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
 		max_set_param_uint64t(memact, "size", texture_size_bytes);
+		max_set_param_uint64t(memact, "address", 0);
 		max_queue_input(memact,"environment_map_in",surface->pixels,texture_size_bytes);
 
 		max_run(m_engine, memact);
+	}
+
+	int GetMapSizeInBursts()
+	{
+		return ceil((float)m_map_size_in_bytes / 384.0f);
 	}
 
 	void WriteDebugValues(string filename)
