@@ -48,7 +48,7 @@ int main(void)
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.InitialiseBarrelDistortionMap();
+	sampleParameterMap.InitialiseBasicStereoscopicMap();
 
 	/* ignore memory input on subsequent runs */
 
@@ -63,6 +63,8 @@ int main(void)
 	/* Rendering parameters */
 
 	max_set_uint64t(act, "RaySampleParameterKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+
+	max_set_double(act, "RayCasterKernel", "ipd", 6.5f);
 
 	max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
 	max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));

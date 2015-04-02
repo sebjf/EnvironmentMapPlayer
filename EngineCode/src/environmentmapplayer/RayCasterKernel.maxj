@@ -249,6 +249,8 @@ class RayCasterKernel extends Kernel {
 		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeuint);
 		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeuint);
 
+		DFEVar ipd = io.scalarInput("ipd", dfefloat);
+
 		optimization.pushPipeliningFactor(0.5);
 
 		/* Read camera properties on non-blocking stream */
@@ -271,6 +273,7 @@ class RayCasterKernel extends Kernel {
 
 		DFEVar col = sampleParameters["col"];
 		DFEVar row = sampleParameters["row"];
+		DFEVar camOffsetScalar = sampleParameters["cam_scalar"];
 
 		DFEVar x_cam = viewplane_pixelsize * (col.cast(dfefloat) - (viewplane_hres.cast(dfefloat)/2));
 		DFEVar y_cam = viewplane_pixelsize * (row.cast(dfefloat) - (viewplane_vres.cast(dfefloat)/2));
@@ -286,7 +289,7 @@ class RayCasterKernel extends Kernel {
 
 		/* Define the rendering rays */
 
-		DFEVector<DFEVar> r_o = camera_eye;
+		DFEVector<DFEVar> r_o = camera_eye + (KernelVectorMath.multiply(camOffsetScalar.cast(dfefloat) * ipd, cam_u));
 		DFEVector<DFEVar> r_d = dn;
 
 		/* Define the planes */

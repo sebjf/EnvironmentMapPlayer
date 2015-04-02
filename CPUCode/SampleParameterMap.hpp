@@ -67,6 +67,26 @@ public:
 		return m_offset_in_bursts * BURSTSIZE_BYTES;
 	}
 
+	void InitialiseBasicStereoscopicMap()
+	{
+		for(int y = 0; y < m_height; y++)
+		{
+			for(int x = 0; x < m_width; x++)
+			{
+				m_SampleParameters[x][y].col = x;
+				m_SampleParameters[x][y].row = y;
+				m_SampleParameters[x][y].cam_scalar = -1;
+
+				if(x > m_width / 2){
+					m_SampleParameters[x][y].col -= (m_width/2);
+					m_SampleParameters[x][y].cam_scalar = 1;
+				}
+			}
+		}
+
+		UpdateParameterMap();
+	}
+
 	void InitialiseBasicMap()
 	{
 		for(int y = 0; y < m_height; y++)
