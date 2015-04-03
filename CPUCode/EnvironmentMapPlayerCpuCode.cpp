@@ -48,7 +48,7 @@ int main(void)
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.InitialiseBasicStereoscopicMap();
+	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/distortionMap");
 
 	/* ignore memory input on subsequent runs */
 
