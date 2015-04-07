@@ -27,11 +27,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency((int)200.0f);
+		config.setDefaultStreamClockFrequency(200.0f);
 		config.setOnCardMemoryFrequency(475);
 
 
-		DisplayStandard displayStandard = DisplayStandard.make_debug_256x256();
+		DisplayStandard displayStandard = DisplayStandard.make_1280x1024x75();
 		displayStandard.AddMaxFileConstants(this);
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(
@@ -97,14 +97,14 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
-		ManagerClock pixelClock = generateStreamClock("pixelClock", (int)displayStandard.getDisplayClock());
+		ManagerClock pixelClock = generateStreamClock("pixelClock", displayStandard.getDisplayClock());
 		videoSignalKernel.setClock(pixelClock);
 
 
 		/* Finally configure the video data outputs */
 
-		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-//		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}
