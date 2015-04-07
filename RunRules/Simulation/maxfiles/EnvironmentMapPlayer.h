@@ -6,10 +6,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define EnvironmentMapPlayer_DisplayActiveWidth (252)
-#define EnvironmentMapPlayer_DisplayActiveHeight (252)
-#define EnvironmentMapPlayer_DisplayTotalHeight (256)
-#define EnvironmentMapPlayer_DisplayTotalWidth (256)
+#define EnvironmentMapPlayer_DisplayActiveWidth (720)
+#define EnvironmentMapPlayer_DisplayActiveHeight (1280)
+#define EnvironmentMapPlayer_DisplayTotalHeight (1343)
+#define EnvironmentMapPlayer_DisplayTotalWidth (976)
 #define EnvironmentMapPlayer_PCIE_ALIGNMENT (16)
 
 

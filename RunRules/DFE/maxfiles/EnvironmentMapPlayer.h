@@ -22,10 +22,12 @@ extern "C" {
 /**
  * \brief Basic static function for the interface 'memoryInitialisation'.
  * 
+ * \param [in] param_address Interface Parameter "address".
  * \param [in] param_size Interface Parameter "size".
  * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
  */
 void EnvironmentMapPlayer_memoryInitialisation(
+	int32_t param_address,
 	int32_t param_size,
 	const int32_t *instream_environment_map_in);
 
@@ -37,11 +39,13 @@ void EnvironmentMapPlayer_memoryInitialisation(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
+ * \param [in] param_address Interface Parameter "address".
  * \param [in] param_size Interface Parameter "size".
  * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_memoryInitialisation_nonblock(
+	int32_t param_address,
 	int32_t param_size,
 	const int32_t *instream_environment_map_in);
 
@@ -50,6 +54,7 @@ max_run_t *EnvironmentMapPlayer_memoryInitialisation_nonblock(
  * 
  */
 typedef struct { 
+	int32_t param_address; /**<  [in] Interface Parameter "address". */
 	int32_t param_size; /**<  [in] Interface Parameter "size". */
 	const int32_t *instream_environment_map_in; /**<  [in] The stream should be of size (param_size / 4) bytes. */
 } EnvironmentMapPlayer_memoryInitialisation_actions_t;
@@ -154,12 +159,14 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
 /**
  * \brief Basic static function for the interface 'default'.
  * 
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
+ * \param [in] inscalar_RayCasterKernel_ipd Input scalar parameter "RayCasterKernel.ipd".
+ * \param [in] inscalar_RayCasterKernel_viewplane_hres Input scalar parameter "RayCasterKernel.viewplane_hres".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
+ * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
+ * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
+ * \param [in] inscalar_RaySampleParameterKernel_sampleParameterMapAddress Input scalar parameter "RaySampleParameterKernel.sampleParameterMapAddress".
  * \param [in] instream_camera_eye Stream "camera_eye".
  * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_lookat Stream "camera_lookat".
@@ -172,12 +179,14 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
+	double inscalar_RayCasterKernel_ipd,
+	uint64_t inscalar_RayCasterKernel_viewplane_hres,
+	double inscalar_RayCasterKernel_viewplane_pixelsize,
+	double inscalar_RayCasterKernel_viewplane_viewdistance,
+	uint64_t inscalar_RayCasterKernel_viewplane_vres,
+	uint64_t inscalar_RaySampleParameterKernel_sampleParameterMapAddress,
 	const void *instream_camera_eye,
 	size_t instream_size_camera_eye,
 	const void *instream_camera_lookat,
@@ -197,12 +206,14 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_hres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance".
- * \param [in] inscalar_EnvironmentMapPlayerKernel_viewplane_vres Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
+ * \param [in] inscalar_RayCasterKernel_ipd Input scalar parameter "RayCasterKernel.ipd".
+ * \param [in] inscalar_RayCasterKernel_viewplane_hres Input scalar parameter "RayCasterKernel.viewplane_hres".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
+ * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
+ * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
+ * \param [in] inscalar_RaySampleParameterKernel_sampleParameterMapAddress Input scalar parameter "RaySampleParameterKernel.sampleParameterMapAddress".
  * \param [in] instream_camera_eye Stream "camera_eye".
  * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_lookat Stream "camera_lookat".
@@ -216,12 +227,14 @@ void EnvironmentMapPlayer(
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres,
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize,
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance,
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
+	double inscalar_RayCasterKernel_ipd,
+	uint64_t inscalar_RayCasterKernel_viewplane_hres,
+	double inscalar_RayCasterKernel_viewplane_pixelsize,
+	double inscalar_RayCasterKernel_viewplane_viewdistance,
+	uint64_t inscalar_RayCasterKernel_viewplane_vres,
+	uint64_t inscalar_RaySampleParameterKernel_sampleParameterMapAddress,
 	const void *instream_camera_eye,
 	size_t instream_size_camera_eye,
 	const void *instream_camera_lookat,
@@ -238,12 +251,14 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  * 
  */
 typedef struct { 
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_hres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_hres". */
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_pixelsize". */
-	double inscalar_EnvironmentMapPlayerKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_viewdistance". */
-	uint64_t inscalar_EnvironmentMapPlayerKernel_viewplane_vres; /**<  [in] Input scalar parameter "EnvironmentMapPlayerKernel.viewplane_vres". */
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity". */
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */
+	double inscalar_RayCasterKernel_ipd; /**<  [in] Input scalar parameter "RayCasterKernel.ipd". */
+	uint64_t inscalar_RayCasterKernel_viewplane_hres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_hres". */
+	double inscalar_RayCasterKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_pixelsize". */
+	double inscalar_RayCasterKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_viewdistance". */
+	uint64_t inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
+	uint64_t inscalar_RaySampleParameterKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleParameterKernel.sampleParameterMapAddress". */
 	const void *instream_camera_eye; /**<  [in] Stream "camera_eye". */
 	size_t instream_size_camera_eye; /**<  [in] The size of the stream instream_camera_eye in bytes. */
 	const void *instream_camera_lookat; /**<  [in] Stream "camera_lookat". */

@@ -13,6 +13,8 @@
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
 #include <math.h>
+#include <stdio.h>
+#include <fstream>
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
@@ -65,6 +67,26 @@ public:
 	int GetOffsetInBytes()
 	{
 		return m_offset_in_bursts * BURSTSIZE_BYTES;
+	}
+
+	void InitialiseMapFromFile(string filename)
+	{
+		std::ifstream file(filename.c_str(), std::ios::binary | std::ios::ate);
+		file.seekg(0, std::ios::end);
+		std::streamsize size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
+		for(int y = 0; y < m_height; y++)
+		{
+			for(int x = 0; x < m_width; x++)
+			{
+				file.read((char*)&(m_SampleParameters[x][y]),sizeof(SampleParameters_t));
+			}
+		}
+
+		file.close();
+
+		UpdateParameterMap();
 	}
 
 	void InitialiseBasicStereoscopicMap()

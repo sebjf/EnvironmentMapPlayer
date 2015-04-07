@@ -275,8 +275,8 @@ class RayCasterKernel extends Kernel {
 		DFEVar row = sampleParameters["row"];
 		DFEVar camOffsetScalar = sampleParameters["cam_scalar"];
 
-		DFEVar x_cam = viewplane_pixelsize * (col.cast(dfefloat) - (viewplane_hres.cast(dfefloat)/2));
-		DFEVar y_cam = viewplane_pixelsize * (row.cast(dfefloat) - (viewplane_vres.cast(dfefloat)/2));
+		DFEVar x_cam = viewplane_pixelsize * (col.cast(dfefloat));// - (viewplane_hres.cast(dfefloat)/2));
+		DFEVar y_cam = viewplane_pixelsize * (row.cast(dfefloat));// - (viewplane_vres.cast(dfefloat)/2));
 
 		/* Compute the ray in the world reference frame */
 
