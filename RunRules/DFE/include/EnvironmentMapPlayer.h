@@ -6,10 +6,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define EnvironmentMapPlayer_DisplayTotalWidth (1688)
-#define EnvironmentMapPlayer_DisplayActiveHeight (1024)
-#define EnvironmentMapPlayer_DisplayActiveWidth (1280)
-#define EnvironmentMapPlayer_DisplayTotalHeight (1066)
+#define EnvironmentMapPlayer_DisplayTotalWidth (976)
+#define EnvironmentMapPlayer_DisplayActiveHeight (1280)
+#define EnvironmentMapPlayer_DisplayActiveWidth (720)
+#define EnvironmentMapPlayer_DisplayTotalHeight (1343)
 
 
 /*----------------------------------------------------------------------------*/
