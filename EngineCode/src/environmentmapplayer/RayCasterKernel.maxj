@@ -311,7 +311,7 @@ class RayCasterKernel extends Kernel {
 
 		/* identify the plane the ray intersects */
 
-		/* This loop should result in the first plane beicd ng evaluated, and then compared with the second. Whichever is closer proceeds to be compared with the third, and so on.
+		/* This loop should result in the first plane being evaluated, and then compared with the second. Whichever is closer proceeds to be compared with the third, and so on.
 		 * Consequently, the selection process is a long pipeline of higher latency, but shorter paths between each computation than would result from multiple parallel comparisons,
 		 * making it easier to meet timing. */
 

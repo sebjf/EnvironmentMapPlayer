@@ -16,6 +16,8 @@
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
 
+#include "Oculus/OculusHMD.hpp"
+
 bool run = true;
 
 void int_handler(int s){
@@ -31,6 +33,10 @@ int main(void)
 	sigemptyset(&sigIntHandler.sa_mask);
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
+
+	/* Connect to the rift for head tracking */
+
+	OculusHMD hmd;
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
