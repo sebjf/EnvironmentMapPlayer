@@ -6,7 +6,6 @@ import maxvideo.MaxVideoSignalKernel;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
-import com.maxeler.maxcompiler.v2.managers.custom.ManagerClock;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
@@ -31,7 +30,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		config.setOnCardMemoryFrequency(475);
 
 
-		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2_Half();
+		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
 
 		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(
@@ -97,14 +96,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
-		ManagerClock pixelClock = generateStreamClock("pixelClock", displayStandard.getDisplayClock());
-		videoSignalKernel.setClock(pixelClock);
-
-
 		/* Finally configure the video data outputs */
 
 //		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-		getVideoStream("videoStream", pixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+		getVideoStream("videoStream", displayStandard.PixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}
