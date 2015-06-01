@@ -35,7 +35,6 @@ int main(void)
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
 	max_file_t *maxfile = EnvironmentMapPlayer_init();
-	max_set_max_runnable_timing_score(maxfile, 200);
 	max_engine_t *engine = max_load(maxfile, "*");
 
 	max_actions_t* act = max_actions_init(maxfile, NULL);

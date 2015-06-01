@@ -92,7 +92,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		videoSignalKernel.getInput("rgb").connect(mapSampleReaderKernel.getOutput("sample"));
 
 		//extend the buffer between the signal counters and the signal kernel to prevent a stall in this link, before the rest of the graph has charged
-		int signal_buffer_space_in_bits = 16 * 1024;
+		int signal_buffer_space_in_bits = 16 * 3024;
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
 		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
