@@ -38,7 +38,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 				new MaxVideoCounterKernel.CounterOutput("0", true),
 				new MaxVideoCounterKernel.CounterOutput("_signal", false)));
 
-		KernelBlock raySampleParameterKernel = addKernel(new RaySampleParameterKernel(makeKernelParameters("RaySampleParameterKernel"), displayStandard));
+		KernelBlock raySampleCommandGeneratorKernel = addKernel(new RaySampleCommandGeneratorKernel(makeKernelParameters("RaySampleCommandGeneratorKernel"), displayStandard));
+		KernelBlock raySampleReaderKernel = addKernel(new RaySampleReaderKernel(makeKernelParameters("RaySampleReaderKernel")));
 
 		KernelBlock rayCasterKernel = addKernel(new RayCasterKernel(makeKernelParameters("RayCasterKernel")));
 
@@ -60,18 +61,19 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
 
-		raySampleParameterKernel.getInput("col").connect(videoCounterKernel.getOutput("x0"));
-		raySampleParameterKernel.getInput("row").connect(videoCounterKernel.getOutput("y0"));
+		raySampleCommandGeneratorKernel.getInput("col").connect(videoCounterKernel.getOutput("x0"));
+		raySampleCommandGeneratorKernel.getInput("row").connect(videoCounterKernel.getOutput("y0"));
 
-		rayCasterKernel.getInput("sampleParameters").connect(raySampleParameterKernel.getOutput("sampleParameters"));
+		rayCasterKernel.getInput("sampleParameters").connect(raySampleReaderKernel.getOutput("sampleParameters"));
 
 		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("x_signal"));
 		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("y_signal"));
 
-		/* Connect the sample parameter kernel to memory */
+		/* Connect the sample parameter command generator & reader kernels to memory and eachother*/
 
-		raySampleParameterKernel.getInput("sample_parameter_read_data").connect(addStreamFromOnCardMemory("sample_parameter_memory_stream", raySampleParameterKernel.getOutput("sample_parameter_read_command")));
-
+		raySampleReaderKernel.getInput("sample_parameter_read_data").connect(addStreamFromOnCardMemory("sample_parameter_memory_stream", raySampleCommandGeneratorKernel.getOutput("sample_parameter_read_command")));
+		raySampleReaderKernel.getInput("cache_valid").connect(raySampleCommandGeneratorKernel.getOutput("cache_valid"));
+		raySampleReaderKernel.getInput("sample_offset_into_burst_in_samples").connect(raySampleCommandGeneratorKernel.getOutput("sample_offset_into_burst_in_samples"));
 
 		/* Connect the Ray Caster and Colour Sampling Kernels Together */
 

@@ -48,7 +48,7 @@ int main(void)
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/distortionMap");
+	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/distortionMap_1920");
 
 	/* ignore memory input on subsequent runs */
 
@@ -62,7 +62,7 @@ int main(void)
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act, "RaySampleParameterKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+	max_set_uint64t(act, "RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 
 	max_set_double(act, "RayCasterKernel", "ipd", 6.5f);
 

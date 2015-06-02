@@ -240,7 +240,7 @@ class RayCasterKernel extends Kernel {
 
 		/* Inputs from manager that request this kernel to draw a specific ray */
 
-		DFEStruct sampleParameters = io.input("sampleParameters", RaySampleParameterKernel.SampleParameters_t);
+		DFEStruct sampleParameters = io.input("sampleParameters", RaySampleCommandGeneratorKernel.SampleParameters_t);
 
 		/* Inputs from host defining how ray should be computed */
 
