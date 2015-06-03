@@ -10,6 +10,7 @@ import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
@@ -26,9 +27,12 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(200.0f);
+		config.setDefaultStreamClockFrequency(220.0f);
 		config.setOnCardMemoryFrequency(475);
 
+		MemoryControllerConfig mcc = new MemoryControllerConfig();
+		mcc.setCMDQSize(63);
+		config.setMemoryControllerConfig(mcc);
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
