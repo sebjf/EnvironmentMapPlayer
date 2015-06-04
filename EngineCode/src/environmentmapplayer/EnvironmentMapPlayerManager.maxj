@@ -1,19 +1,18 @@
 package environmentmapplayer;
 
-import maxvideo.MaxVideoCounterKernel;
 import maxvideo.MaxVideoSignalKernel;
+import maxvideo.VideoCounter;
 
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
-import com.maxeler.maxcompiler.v2.managers.DFEManager.StreamMode;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
-import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
+import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 import displaystandards.DisplayStandard;
@@ -36,11 +35,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
-
-		KernelBlock videoCounterKernel = addKernel(new MaxVideoCounterKernel(
-				makeKernelParameters("MaxVideoCounterKernel"), displayStandard,
-				new MaxVideoCounterKernel.CounterOutput("0", true),
-				new MaxVideoCounterKernel.CounterOutput("_signal", false)));
+		VideoCounter.displayStandard = displayStandard;
 
 		KernelBlock raySampleCommandGeneratorKernel = addKernel(new RaySampleCommandGeneratorKernel(makeKernelParameters("RaySampleCommandGeneratorKernel"), displayStandard));
 		KernelBlock raySampleReaderKernel = addKernel(new RaySampleReaderKernel(makeKernelParameters("RaySampleReaderKernel")));
@@ -65,13 +60,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
 
-		raySampleCommandGeneratorKernel.getInput("col").connect(videoCounterKernel.getOutput("x0"));
-		raySampleCommandGeneratorKernel.getInput("row").connect(videoCounterKernel.getOutput("y0"));
-
 		rayCasterKernel.getInput("sampleParameters").connect(raySampleReaderKernel.getOutput("sampleParameters"));
-
-		videoSignalKernel.getInput("x").connect(videoCounterKernel.getOutput("x_signal"));
-		videoSignalKernel.getInput("y").connect(videoCounterKernel.getOutput("y_signal"));
 
 		/* Connect the sample parameter command generator & reader kernels to memory and eachother*/
 
@@ -96,11 +85,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		/* Connect up the video signal generator kernel and the clock signals  */
 
 		videoSignalKernel.getInput("rgb").connect(mapSampleReaderKernel.getOutput("sample"));
-
-		//extend the buffer between the signal counters and the signal kernel to prevent a stall in this link, before the rest of the graph has charged
-		int signal_buffer_space_in_bits = 16 * 3024;
-		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("x"), signal_buffer_space_in_bits);
-		_CustomManagers.setStreamBufferSpaceRequirement(videoSignalKernel.getInput("y"), signal_buffer_space_in_bits);
 
 		/* Finally configure the video data outputs */
 

@@ -16,8 +16,6 @@
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
 
-#include "Oculus/OculusHMD.hpp"
-
 bool run = true;
 
 void int_handler(int s){
@@ -33,10 +31,6 @@ int main(void)
 	sigemptyset(&sigIntHandler.sa_mask);
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
-
-	/* Connect to the rift for head tracking */
-
-	OculusHMD hmd;
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -54,7 +48,7 @@ int main(void)
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/distortionMap_1920");
+	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 
 	/* ignore memory input on subsequent runs */
 
@@ -113,9 +107,9 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-	//	characterController.update();
+		//characterController.update();
 
-	//	camera.camera_eye = characterController.position;
+		camera.camera_eye = characterController.position;
 
 		if(d.changed()){
 			inclination += -d.y;

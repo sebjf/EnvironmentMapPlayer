@@ -1,5 +1,7 @@
 package environmentmapplayer;
 
+import maxvideo.VideoCounter;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
@@ -27,8 +29,9 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 
 		optimization.pushPipeliningFactor(0.25);
 
-		DFEVar col = io.input("col", dfeInt(16)).cast(dfeUInt(32));
-		DFEVar row = io.input("row", dfeInt(16)).cast(dfeUInt(32));
+		VideoCounter counters = new VideoCounter(this, VideoCounter.Scope.ActiveOnly);
+		DFEVar col = counters.x.cast(dfeInt(32));
+		DFEVar row = counters.y.cast(dfeInt(32));
 
 		DFEVar offset = io.scalarInput("sampleParameterMapAddress", dfeUInt(32));
 

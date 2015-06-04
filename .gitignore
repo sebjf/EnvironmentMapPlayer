@@ -63,6 +63,7 @@ RunRules/DFE/maxfiles/*.sof
 RunRules/DFE/maxfiles/*.tns
 RunRules/DFE/maxfiles/EnvironmentMapPlayer-BUILD
 RunRules/Simulation/maxfiles/EnvironmentMapPlayer-BUILD
+RunRules/Simulation/maxfiles/*
 RunRules/Simulation/debug*
 RunRules/DFE/*.png
 RunRules/Simulation/*.png
