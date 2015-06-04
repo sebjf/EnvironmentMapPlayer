@@ -13,6 +13,7 @@
 Mouse::Mouse(bool invert_y)
 :Scale(0.0833),
  InvertY(invert_y),
+ connected(false),
  xpos(0),
  ypos(0),
  m_mouse_cooldown(0)
@@ -20,6 +21,9 @@ Mouse::Mouse(bool invert_y)
 	mouse = fopen("/dev/input/mouse1","rb");
 	if(mouse == NULL){
 		printf("Could not open mouse. Are you running with elevated permissions?\n");
+	}else
+	{
+		connected = true;
 	}
 };
 
@@ -80,6 +84,11 @@ struct MouseDelta Mouse::readMouse(bool block)
 	value.y = 0;
 	value.lmb = false;
 	value.valid = false;
+
+	if(!connected)
+	{
+		return value;
+	}
 
 	if(mouseInputAvailable() || block){
 

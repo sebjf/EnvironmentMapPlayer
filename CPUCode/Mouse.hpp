@@ -59,6 +59,7 @@ public:
 	struct MouseDelta readMouse(bool block);
 	float Scale;
 	bool InvertY;
+	bool connected;
 
 	virtual MouseState readDevice();
 	virtual void reset();
