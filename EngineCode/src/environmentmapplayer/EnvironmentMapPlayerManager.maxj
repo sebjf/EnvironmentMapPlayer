@@ -4,6 +4,7 @@ import maxvideo.MaxVideoCounterKernel;
 import maxvideo.MaxVideoSignalKernel;
 
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+import com.maxeler.maxcompiler.v2.managers.DFEManager.StreamMode;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
@@ -13,7 +14,6 @@ import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.Memo
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
-import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
 
 import displaystandards.DisplayStandard;
@@ -27,7 +27,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(220.0f);
+		config.setDefaultStreamClockFrequency((int)220.0f);
 		config.setOnCardMemoryFrequency(475);
 
 		MemoryControllerConfig mcc = new MemoryControllerConfig();
@@ -104,8 +104,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Finally configure the video data outputs */
 
-//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-		getVideoStream("videoStream", displayStandard.PixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
+		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+//		getVideoStream("videoStream", displayStandard.PixelClock).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);
 	}
