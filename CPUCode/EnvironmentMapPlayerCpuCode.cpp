@@ -107,9 +107,9 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-	//	characterController.update();
+		//characterController.update();
 
-	//	camera.camera_eye = characterController.position;
+		camera.camera_eye = characterController.position;
 
 		if(d.changed()){
 			inclination += -d.y;
