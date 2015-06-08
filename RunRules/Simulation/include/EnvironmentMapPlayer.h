@@ -9,7 +9,7 @@ extern "C" {
 #define EnvironmentMapPlayer_DisplayActiveWidth (1080)
 #define EnvironmentMapPlayer_DisplayActiveHeight (1920)
 #define EnvironmentMapPlayer_DisplayTotalHeight (1933)
-#define EnvironmentMapPlayer_DisplayTotalWidth (1158)
+#define EnvironmentMapPlayer_DisplayTotalWidth (1138)
 #define EnvironmentMapPlayer_PCIE_ALIGNMENT (16)
 
 
