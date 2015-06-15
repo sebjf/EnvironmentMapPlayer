@@ -22,7 +22,7 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 				DFEStructType.sft("row", dfefloat),
 				DFEStructType.sft("cam_scalar", dfeInt(8)));
 
-	public static final int burstCount = 2;
+	public static final int burstCount = 4;
 	public static final int burstSizeInBytes = 384;
 
 	protected RaySampleCommandGeneratorKernel(KernelParameters parameters, DisplayStandard displayStandard) throws Exception {
