@@ -30,7 +30,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		config.setOnCardMemoryFrequency(400);
 
 		MemoryControllerConfig mcc = new MemoryControllerConfig();
-		mcc.setCMDQSize(63);
+		mcc.setCMDQSize(64);
+		//mcc.setCmdFIFOPipelineRegInBlockRAM(false); //trade off lut usage for better timing.
 		config.setMemoryControllerConfig(mcc);
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
@@ -62,11 +63,9 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		rayCasterKernel.getInput("sampleParameters").connect(raySampleReaderKernel.getOutput("sampleParameters"));
 
-		/* Connect the sample parameter command generator & reader kernels to memory and eachother*/
+		/* Connect the sample parameter command generator & reader kernels to memory */
 
 		raySampleReaderKernel.getInput("sample_parameter_read_data").connect(addStreamFromOnCardMemory("sample_parameter_memory_stream", raySampleCommandGeneratorKernel.getOutput("sample_parameter_read_command")));
-		raySampleReaderKernel.getInput("cache_valid").connect(raySampleCommandGeneratorKernel.getOutput("cache_valid"));
-		raySampleReaderKernel.getInput("sample_offset_into_burst_in_samples").connect(raySampleCommandGeneratorKernel.getOutput("sample_offset_into_burst_in_samples"));
 
 		/* Connect the Ray Caster and Colour Sampling Kernels Together */
 
@@ -89,7 +88,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		/* Finally configure the video data outputs */
 
 //		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
-
 		getVideoStream("videoStream", 165.0f).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		configBuild(engineParameters);

@@ -19,6 +19,7 @@
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
 #define BURSTSIZE_BYTES 384
+#define BURSTCOUNT 		4
 
 class SampleParameterMap
 {
@@ -191,10 +192,10 @@ private:
 
 	void UpdateParameterMap()
 	{
-		int samples_per_burst = (int)floor( BURSTSIZE_BYTES / sizeof(SampleParameters_t));
+		int samples_per_word = (int)floor( (BURSTSIZE_BYTES * BURSTCOUNT) / sizeof(SampleParameters_t));
 		float total_samples = m_width * m_height;
-		float total_bursts = ceil(total_samples / samples_per_burst);
-		m_sampleParameterDataSize = total_bursts * BURSTSIZE_BYTES;
+		float total_words = ceil(total_samples / samples_per_word);
+		m_sampleParameterDataSize = total_words * BURSTSIZE_BYTES * BURSTCOUNT;
 
 		m_sampleParameterData = new char[m_sampleParameterDataSize];
 
@@ -205,8 +206,8 @@ private:
 			for(int x = 0; x < m_width; x++)
 			{
 				int address_in_samples = x + (y * m_width);
-				int address_in_bursts = floor((float)address_in_samples / (float)samples_per_burst);
-				int offset_in_samples = address_in_samples % samples_per_burst;
+				int address_in_bursts = floor((float)address_in_samples / (float)samples_per_word) * BURSTCOUNT;
+				int offset_in_samples = address_in_samples % samples_per_word;
 
 				int address_in_bytes = (address_in_bursts * BURSTSIZE_BYTES) + (offset_in_samples * sizeof(SampleParameters_t));
 

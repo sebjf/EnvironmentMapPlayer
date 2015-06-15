@@ -167,6 +167,7 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
  * \param [in] instream_camera_eye Stream "camera_eye".
  * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_lookat Stream "camera_lookat".
@@ -187,6 +188,7 @@ void EnvironmentMapPlayer(
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
+	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
 	const void *instream_camera_eye,
 	size_t instream_size_camera_eye,
 	const void *instream_camera_lookat,
@@ -214,6 +216,7 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
  * \param [in] instream_camera_eye Stream "camera_eye".
  * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
  * \param [in] instream_camera_lookat Stream "camera_lookat".
@@ -235,6 +238,7 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
+	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
 	const void *instream_camera_eye,
 	size_t instream_size_camera_eye,
 	const void *instream_camera_lookat,
@@ -259,6 +263,7 @@ typedef struct {
 	double inscalar_RayCasterKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_viewdistance". */
 	uint64_t inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
+	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
 	const void *instream_camera_eye; /**<  [in] Stream "camera_eye". */
 	size_t instream_size_camera_eye; /**<  [in] The size of the stream instream_camera_eye in bytes. */
 	const void *instream_camera_lookat; /**<  [in] Stream "camera_lookat". */

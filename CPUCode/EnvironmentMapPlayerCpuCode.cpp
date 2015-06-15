@@ -62,6 +62,7 @@ int main(void)
 
 	/* Rendering parameters */
 
+	max_set_uint64t(act, "RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 	max_set_uint64t(act, "RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 
 	max_set_double(act, "RayCasterKernel", "ipd", 6.5f);
