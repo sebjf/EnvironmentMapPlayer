@@ -4,14 +4,12 @@ import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
-import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
-import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
@@ -28,17 +26,27 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(210.0f);
-		config.setOnCardMemoryFrequency(475);
+		config.setDefaultStreamClockFrequency(180.0f);
+		config.setOnCardMemoryFrequency(400);
 
-		MemoryControllerConfig mcc = new MemoryControllerConfig();
-		mcc.setCMDQSize(64);
+		/*MemoryControllerConfig mcc = new MemoryControllerConfig();
+		config.setOnCardMemoryFrequency(800);
+		mcc.setMAX4qMode(true);
+		mcc.setBurstSize(8);
+		mcc.setEnableParityMode(true, true, 72, false);
+		mcc.setEnableFlagCommands(true);
+		config.setMemoryControllerConfig(mcc);*/
+
+	//	MemoryControllerConfig mcc = new MemoryControllerConfig();
+	//	mcc.setCMDQSize(64);
 		//mcc.setCmdFIFOPipelineRegInBlockRAM(false); //trade off lut usage for better timing.
-		config.setMemoryControllerConfig(mcc);
+	//	mcc.setEnableParityMode(false, false, 0, false);
+	//	config.setMemoryControllerConfig(mcc);
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
 		VideoCounter.displayStandard = displayStandard;
+
 
 		KernelBlock raySampleCommandGeneratorKernel = addKernel(new RaySampleCommandGeneratorKernel(makeKernelParameters("RaySampleCommandGeneratorKernel"), displayStandard));
 		KernelBlock raySampleReaderKernel = addKernel(new RaySampleReaderKernel(makeKernelParameters("RaySampleReaderKernel")));
@@ -51,7 +59,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
 
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
-
 
 		/* Connect the Ray Caster to the inputs from the CPU */
 
@@ -92,7 +99,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 //		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-		int videoDataStreamBufferSize = 64 * 2048;
+		int videoDataStreamBufferSize = 64 * 64;
 		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
 		getVideoStream("videoStream", 165.0f).connect(videoDataStream);
 
@@ -138,7 +145,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		buildConfig.setMPPRCostTableSearchRange(1, 4);
 		buildConfig.setMPPRParallelism(4);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
-		buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
+		//buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
 	}
 
 	public static void main(String[] args) throws Exception {

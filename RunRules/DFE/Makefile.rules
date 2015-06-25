@@ -62,7 +62,7 @@ include/EnvironmentMapPlayer.h: maxfiles/EnvironmentMapPlayer.h
 maxfiles/EnvironmentMapPlayer.max maxfiles/EnvironmentMapPlayer.h:
 # Ensure that maxfiles do not get build by this Makefile when running in MaxIDE
 ifndef MAXIDE_RUN
-	test -f $@ || env  MAX_BUILDPARAMS=" DFEModel=CORIA  target=DFE  maxFileName=EnvironmentMapPlayer "  ant -v -f EnvironmentMapPlayer.xml
+	test -f $@ || env  MAX_BUILDPARAMS=" DFEModel=MAIA  target=DFE  maxFileName=EnvironmentMapPlayer "  ant -v -f EnvironmentMapPlayer.xml
 else
 	test -f $@ || ( echo 'Maxfile unavailable: $@' >/dev/stderr ; exit 1 )
 endif

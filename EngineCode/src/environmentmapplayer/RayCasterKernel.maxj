@@ -251,7 +251,7 @@ class RayCasterKernel extends Kernel {
 
 		DFEVar ipd = io.scalarInput("ipd", dfefloat);
 
-		optimization.pushPipeliningFactor(0.5);
+		optimization.pushPipeliningFactor(0.75);
 
 		/* Read camera properties on non-blocking stream */
 
