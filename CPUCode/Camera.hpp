@@ -20,15 +20,34 @@ using namespace std;
 
 class Camera {
 public:
-	vector<float> camera_eye;
-	vector<float> camera_lookat;
-	vector<float> camera_up;
+
+	struct vector3
+	{
+		float x;
+		float y;
+		float z;
+
+		vector3(){}
+		vector3(float ix, float iy, float iz){ x = ix; y = iy; z = iz; }
+	};
+
+	struct CameraUpdate
+	{
+		vector3 camera_eye;
+		vector3 camera_lookat;
+		vector3 camera_up;
+		char	padding[12];
+	};
+
+	CameraUpdate camera_settings;
+
 
 	Camera()
 	{
-		camera_eye = boost::assign::list_of(0)(0)(0);
-		camera_lookat = boost::assign::list_of(0)(0)(1);
-		camera_up = boost::assign::list_of(0)(-1)(0);	//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
+		memset(&camera_settings, 0, sizeof(CameraUpdate));
+		camera_settings.camera_lookat.z = 1;
+		camera_settings.camera_up.y = -1; 		//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
+
 		connected = false;
 	}
 
@@ -36,17 +55,15 @@ public:
 	{
 		if(connected)
 		{
-			max_llstream_release(camera_e_stream);
-			max_llstream_release(camera_l_stream);
-			max_llstream_release(camera_u_stream);
+			max_llstream_release(camera_stream);
 		}
 	}
 
 	void set_eye(float x, float y, float z)
 	{
-		camera_eye[0] = x;
-		camera_eye[1] = y;
-		camera_eye[2] = z;
+		camera_settings.camera_eye.x = x;
+		camera_settings.camera_eye.y = y;
+		camera_settings.camera_eye.z = z;
 	}
 
 	void set_lookat(float inclination, float azimuth)
@@ -54,7 +71,7 @@ public:
 		inclination = DEG2RAD * inclination;
 		azimuth = DEG2RAD * azimuth;
 
-		camera_lookat = add(camera_eye, boost::assign::list_of(cos(inclination)*sin(azimuth))(sin(inclination))(cos(inclination)*cos(azimuth)));
+		camera_settings.camera_lookat = add(camera_settings.camera_eye, vector3((cos(inclination)*sin(azimuth)),(sin(inclination)),(cos(inclination)*cos(azimuth))));
 
         update_camera_streams();
 	}
@@ -63,22 +80,14 @@ public:
 	{
 		printf("Preparing low latency stream for camera updates...\n");
 
-		static const int num_slots = 100;
-		static const int slot_size = 16;
+		static const int num_slots = 50;
+		static const int slot_size = sizeof(CameraUpdate);
 
 		const int buffer_size = num_slots * slot_size;
 
-		void* camera_e_buffer;
-		void* camera_l_buffer;
-		void* camera_u_buffer;
-
-		posix_memalign(&camera_e_buffer, 16, buffer_size);
-		posix_memalign(&camera_l_buffer, 16, buffer_size);
-		posix_memalign(&camera_u_buffer, 16, buffer_size);
-
-		camera_e_stream = max_llstream_setup(engine, "camera_eye", 		num_slots, slot_size, camera_e_buffer);
-		camera_l_stream = max_llstream_setup(engine, "camera_lookat", 	num_slots, slot_size, camera_l_buffer);
-		camera_u_stream = max_llstream_setup(engine, "camera_up",		num_slots, slot_size, camera_u_buffer);
+		void* camera_buffer;
+		posix_memalign(&camera_buffer, 4096, buffer_size);
+		camera_stream = max_llstream_setup(engine, "cameraUpdates", num_slots, slot_size, camera_buffer);
 
 		connected = true;
 
@@ -88,37 +97,28 @@ public:
 private:
 
 	bool connected;
-	max_llstream_t* camera_e_stream;
-	max_llstream_t* camera_l_stream;
-	max_llstream_t* camera_u_stream;
-
+	max_llstream_t* camera_stream;
 
 	void update_camera_streams()
 	{
 		if(connected)
 		{
-			void* camera_e_slots;
-			if(max_llstream_write_acquire(camera_e_stream, 1, &camera_e_slots))
+			void* camera_slots;
+			if(max_llstream_write_acquire(camera_stream, 1, &camera_slots))
 			{
-				memcpy(camera_e_slots, camera_eye.data(), sizeof(float) * 3);
-				max_llstream_write(camera_e_stream, 1);
+				memcpy(camera_slots, &camera_settings, sizeof(CameraUpdate));
+				max_llstream_write(camera_stream, 1);
 			}
-
-			void* camera_l_slots;
-			if(max_llstream_write_acquire(camera_l_stream, 1, &camera_l_slots))
-			{
-				memcpy(camera_l_slots, camera_lookat.data(), sizeof(float) * 3);
-				max_llstream_write(camera_l_stream, 1);
-			}
-
-			void* camera_u_slots;
-			if(max_llstream_write_acquire(camera_u_stream, 1, &camera_u_slots))
-			{
-				memcpy(camera_u_slots, camera_up.data(), sizeof(float) * 3);
-				max_llstream_write(camera_u_stream, 1);
-			}
-
 		}
+	}
+
+	vector3 add(vector3 a, vector3 b)
+	{
+		vector3 ans;
+		ans.x = (a.x + b.x);
+		ans.y = (a.y + b.y);
+		ans.z = (a.z + b.z);
+		return ans;
 	}
 
 	vector<float> add(vector<float> a, vector<float> b)

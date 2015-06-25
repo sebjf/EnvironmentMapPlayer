@@ -9,7 +9,7 @@ extern "C" {
 #define EnvironmentMapPlayer_DisplayActiveWidth (1080)
 #define EnvironmentMapPlayer_DisplayActiveHeight (1920)
 #define EnvironmentMapPlayer_DisplayTotalHeight (1933)
-#define EnvironmentMapPlayer_DisplayTotalWidth (1138)
+#define EnvironmentMapPlayer_DisplayTotalWidth (1158)
 #define EnvironmentMapPlayer_PCIE_ALIGNMENT (16)
 
 
@@ -169,12 +169,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [in] instream_camera_eye Stream "camera_eye".
- * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
- * \param [in] instream_camera_lookat Stream "camera_lookat".
- * \param [in] instream_size_camera_lookat The size of the stream instream_camera_lookat in bytes.
- * \param [in] instream_camera_up Stream "camera_up".
- * \param [in] instream_size_camera_up The size of the stream instream_camera_up in bytes.
+ * \param [in] instream_cameraUpdates Stream "cameraUpdates".
+ * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [out] outstream_displayDataOut Stream "displayDataOut".
@@ -192,12 +188,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	const void *instream_camera_eye,
-	size_t instream_size_camera_eye,
-	const void *instream_camera_lookat,
-	size_t instream_size_camera_lookat,
-	const void *instream_camera_up,
-	size_t instream_size_camera_up,
+	const void *instream_cameraUpdates,
+	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
 	void *outstream_displayDataOut,
@@ -222,12 +214,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [in] instream_camera_eye Stream "camera_eye".
- * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
- * \param [in] instream_camera_lookat Stream "camera_lookat".
- * \param [in] instream_size_camera_lookat The size of the stream instream_camera_lookat in bytes.
- * \param [in] instream_camera_up Stream "camera_up".
- * \param [in] instream_size_camera_up The size of the stream instream_camera_up in bytes.
+ * \param [in] instream_cameraUpdates Stream "cameraUpdates".
+ * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [out] outstream_displayDataOut Stream "displayDataOut".
@@ -246,12 +234,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	const void *instream_camera_eye,
-	size_t instream_size_camera_eye,
-	const void *instream_camera_lookat,
-	size_t instream_size_camera_lookat,
-	const void *instream_camera_up,
-	size_t instream_size_camera_up,
+	const void *instream_cameraUpdates,
+	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
 	void *outstream_displayDataOut,
@@ -273,12 +257,8 @@ typedef struct {
 	uint64_t inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
-	const void *instream_camera_eye; /**<  [in] Stream "camera_eye". */
-	size_t instream_size_camera_eye; /**<  [in] The size of the stream instream_camera_eye in bytes. */
-	const void *instream_camera_lookat; /**<  [in] Stream "camera_lookat". */
-	size_t instream_size_camera_lookat; /**<  [in] The size of the stream instream_camera_lookat in bytes. */
-	const void *instream_camera_up; /**<  [in] Stream "camera_up". */
-	size_t instream_size_camera_up; /**<  [in] The size of the stream instream_camera_up in bytes. */
+	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
+	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
 	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
 	void *outstream_displayDataOut; /**<  [out] Stream "displayDataOut". */

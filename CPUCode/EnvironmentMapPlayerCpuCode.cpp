@@ -60,6 +60,7 @@ int main(void)
 	camera.set_eye(0, 100, -200);
 	camera.set_lookat(0,0);
 
+
 	/* Rendering parameters */
 
 	max_set_uint64t(act, "RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
@@ -110,7 +111,7 @@ int main(void)
 		MouseDelta d = mouse.readMouse(false);
 		//characterController.update();
 
-		camera.camera_eye = characterController.position;
+		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[3]);
 
 		if(d.changed()){
 			inclination += -d.y;

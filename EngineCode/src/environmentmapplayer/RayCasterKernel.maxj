@@ -53,6 +53,13 @@ class RayCasterKernel extends Kernel {
 				DFEStructType.sft("t", dfefloat),
 				DFEStructType.sft("index", dfechar));
 
+	public static final DFEStructType cameraUpdate_t =
+		new DFEStructType(
+				DFEStructType.sft("camera_eye", vector3),
+				DFEStructType.sft("camera_lookat", vector3),
+				DFEStructType.sft("camera_up", vector3),
+				DFEStructType.sft("padding", dfeRawBits(96)));
+
 	private class Vector3
 	{
 		public float m_x;
@@ -255,9 +262,10 @@ class RayCasterKernel extends Kernel {
 
 		/* Read camera properties on non-blocking stream */
 
-		DFEVector<DFEVar> camera_eye = KernelVectorMath.select(makeNonBlockingInput("camera_eye", vector4),0,3);
-		DFEVector<DFEVar> camera_lookat = KernelVectorMath.select(makeNonBlockingInput("camera_lookat", vector4),0,3);
-		DFEVector<DFEVar> camera_up = KernelVectorMath.select(makeNonBlockingInput("camera_up", vector4),0,3);
+		DFEStruct cameraUpdate = makeNonBlockingInput("cameraUpdates", cameraUpdate_t);
+		DFEVector<DFEVar> camera_eye 	= cameraUpdate["camera_eye"];
+		DFEVector<DFEVar> camera_lookat = cameraUpdate["camera_lookat"];
+		DFEVector<DFEVar> camera_up 	= cameraUpdate["camera_up"];
 
 		/* Compute camera orthonormal basis */
 
