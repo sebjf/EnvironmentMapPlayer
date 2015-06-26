@@ -168,12 +168,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [in] instream_camera_eye Stream "camera_eye".
- * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
- * \param [in] instream_camera_lookat Stream "camera_lookat".
- * \param [in] instream_size_camera_lookat The size of the stream instream_camera_lookat in bytes.
- * \param [in] instream_camera_up Stream "camera_up".
- * \param [in] instream_size_camera_up The size of the stream instream_camera_up in bytes.
+ * \param [in] instream_cameraUpdates Stream "cameraUpdates".
+ * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
@@ -189,12 +185,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	const void *instream_camera_eye,
-	size_t instream_size_camera_eye,
-	const void *instream_camera_lookat,
-	size_t instream_size_camera_lookat,
-	const void *instream_camera_up,
-	size_t instream_size_camera_up,
+	const void *instream_cameraUpdates,
+	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
 	size_t lmem_address_environment_map,
@@ -217,12 +209,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [in] instream_camera_eye Stream "camera_eye".
- * \param [in] instream_size_camera_eye The size of the stream instream_camera_eye in bytes.
- * \param [in] instream_camera_lookat Stream "camera_lookat".
- * \param [in] instream_size_camera_lookat The size of the stream instream_camera_lookat in bytes.
- * \param [in] instream_camera_up Stream "camera_up".
- * \param [in] instream_size_camera_up The size of the stream instream_camera_up in bytes.
+ * \param [in] instream_cameraUpdates Stream "cameraUpdates".
+ * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
  * \param [in] instream_size_environment_map_in The size of the stream instream_environment_map_in in bytes.
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
@@ -239,12 +227,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	const void *instream_camera_eye,
-	size_t instream_size_camera_eye,
-	const void *instream_camera_lookat,
-	size_t instream_size_camera_lookat,
-	const void *instream_camera_up,
-	size_t instream_size_camera_up,
+	const void *instream_cameraUpdates,
+	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
 	size_t instream_size_environment_map_in,
 	size_t lmem_address_environment_map,
@@ -264,12 +248,8 @@ typedef struct {
 	uint64_t inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
-	const void *instream_camera_eye; /**<  [in] Stream "camera_eye". */
-	size_t instream_size_camera_eye; /**<  [in] The size of the stream instream_camera_eye in bytes. */
-	const void *instream_camera_lookat; /**<  [in] Stream "camera_lookat". */
-	size_t instream_size_camera_lookat; /**<  [in] The size of the stream instream_camera_lookat in bytes. */
-	const void *instream_camera_up; /**<  [in] Stream "camera_up". */
-	size_t instream_size_camera_up; /**<  [in] The size of the stream instream_camera_up in bytes. */
+	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
+	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
 	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
 	size_t lmem_address_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: base address, in bytes. */
