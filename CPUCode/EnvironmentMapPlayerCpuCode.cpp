@@ -57,8 +57,8 @@ int main(void)
 	/* Specify camera properties */
 
 	Camera camera;
-	camera.set_eye(0, 100, -200);
-	camera.set_lookat(0,0);
+	camera.set_eye(0, 100, -50);
+	camera.set_lookat(90,90);
 
 
 	/* Rendering parameters */
@@ -68,10 +68,12 @@ int main(void)
 
 	max_set_double(act, "RayCasterKernel", "ipd", 6.5f);
 
-	max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
-	max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
+	//max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
+	//max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", 0.01);
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
+
+	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0x101010);
 
 	/* Video signal parameters */
 
@@ -92,17 +94,15 @@ int main(void)
 	/* Set up the input devices */
 
 	Mouse mouse(false);
-	int inclination = 0;;
-	int elevation = 0;
+	int inclination = 60;
+	int elevation = 90;
 
 	CharacterController characterController("/dev/input/by-id/usb-DELL_Dell_USB_Entry_Keyboard-event-kbd");
-	characterController.set_position(0, 100, -200);
+	characterController.set_position(0, 100, -50);
 
 	camera.connect(engine);
 
 	printf("Press CTRL+C key to exit.\n");
-
-	int counter = 0;
 
 	while(run){
 
@@ -120,12 +120,6 @@ int main(void)
 
 		camera.set_lookat(inclination,elevation);
 
-		counter++;
-
-
-		if(counter > 256){
-		//	run = false;
-		}
 	}
 
 

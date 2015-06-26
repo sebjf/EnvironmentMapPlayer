@@ -73,8 +73,6 @@ public:
 	void InitialiseMapFromFile(string filename)
 	{
 		std::ifstream file(filename.c_str(), std::ios::binary | std::ios::ate);
-		file.seekg(0, std::ios::end);
-		std::streamsize size = file.tellg();
 		file.seekg(0, std::ios::beg);
 
 		for(int y = 0; y < m_height; y++)

@@ -75,9 +75,15 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
         DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
 
-        io.output("cache_valid", dfeBool()).connect(cache_valid);
 
-        /*  */
+
+        /* overwrite the commands if the plane value indicates we should be setting the null colour */
+        DFEVar command_invalid = plane.eq(255);
+
+        /* signal to send the null colour by setting the sample offset to > 96 pixels. set the cache valid so we dont waste a memory read. */
+
+        cache_valid = command_invalid ? constant.var(true) : cache_valid;
+        addr_pixel = command_invalid ? constant.var(192) : addr_pixel;
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
@@ -91,6 +97,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		LMemCommandStream.makeKernelOutput("sample_command", constant.var(true), memoryCommand);
 		*/
+
+        io.output("cache_valid", dfeBool()).connect(cache_valid);
 
 		LMemCommandStream.makeKernelOutput(
 				"sample_command",

@@ -6,7 +6,6 @@ import maxvideo.VideoCounter;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
-import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
@@ -87,19 +86,18 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		mapSampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
 
-
 		/* Connect up the video signal generator kernel and the clock signals  */
 
 		videoSignalKernel.getInput("rgb").connect(mapSampleReaderKernel.getOutput("sample"));
 
 		/* Finally configure the video data outputs */
 
-	//	addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
-		DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-		int videoDataStreamBufferSize = 64 * 64;
-		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
-		getVideoStream("videoStream", 165.0f).connect(videoDataStream);
+	//	DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
+	//	int videoDataStreamBufferSize = 64 * 64;
+	//	_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
+	//	getVideoStream("videoStream", 165.0f).connect(videoDataStream);
 
 		configBuild(engineParameters);
 	}

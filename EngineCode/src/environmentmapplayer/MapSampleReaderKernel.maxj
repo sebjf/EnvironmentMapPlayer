@@ -16,6 +16,8 @@ public class MapSampleReaderKernel extends Kernel {
 
 		flush.disabled();
 
+		DFEVar bgColour = io.scalarInput("backgroundColour", dfeUInt(24));
+
 		int	burst_size_in_bytes = 384;
 		int burst_size_in_bits = burst_size_in_bytes * 8;
 
@@ -34,11 +36,11 @@ public class MapSampleReaderKernel extends Kernel {
 		{
 			samples.add(cached_burst.slice(i * bits_per_pixel, bits_per_pixel));
 		}
-		DFEVar sample_content = control.mux(sample_offset_in_pixels.cast(dfeUInt(MathUtils.bitsToAddress(samples.size()))), samples);
+		DFEVar sample_content = control.mux(sample_offset_in_pixels.cast(dfeUInt(MathUtils.bitsToAddress(samples.size()))), samples).slice(0,24).cast(dfeUInt(24));
 
-		sample_content = (sample_offset_in_pixels > 96) ? constant.var(0) : sample_content;
+		sample_content = (sample_offset_in_pixels > 96) ? bgColour : sample_content;
 
-		io.output("sample", dfeUInt(24)) <== sample_content.slice(0,24).cast(dfeUInt(24));
+		io.output("sample", dfeUInt(24)) <== sample_content;
 	}
 
 

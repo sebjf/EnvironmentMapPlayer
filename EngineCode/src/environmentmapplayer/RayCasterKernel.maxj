@@ -145,6 +145,8 @@ class RayCasterKernel extends Kernel {
 		public boolean m_doBoundsTesting;
 		public AlphaMap m_alphaMap;
 
+		public boolean m_twoSided;
+
 		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz, AlphaMap alphaMap ) throws IOException, URISyntaxException
 		{
 			m_name = name;
@@ -154,7 +156,8 @@ class RayCasterKernel extends Kernel {
 			m_uBasis = new Vector3(ux, uy, uz);
 			m_vBasis = new Vector3(vx, vy, vz);
 			m_alphaMap = alphaMap;
-			m_doBoundsTesting = true;
+			m_doBoundsTesting = false;
+			m_twoSided= false;
 		}
 
 		public Bits getAsBits()
@@ -187,7 +190,8 @@ class RayCasterKernel extends Kernel {
 
 			DFEVar b_isValid = b_isInFront;
 
-			if(m_doBoundsTesting | (m_alphaMap != null)){
+
+			if(m_alphaMap != null){
 
 				//calculate intersection point
 
@@ -253,8 +257,7 @@ class RayCasterKernel extends Kernel {
 
 		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize", dfefloat);
 		DFEVar viewplane_viewdistance = io.scalarInput("viewplane_viewdistance", dfefloat);
-		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfeuint);
-		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfeuint);
+
 
 		DFEVar ipd = io.scalarInput("ipd", dfefloat);
 
@@ -303,18 +306,15 @@ class RayCasterKernel extends Kernel {
 		/* Define the planes */
 
 		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
-				new PlaneDefinition("left", -150f, -1.105046e+02f, 0f, -1f, 0f, 0f,   0,    -1.000000e-04f, 0f, -600f, 1.000000e-04f, -900f, 0f, null),
-				new PlaneDefinition("right", 150f, -1.105154e+02f, 0f, -1f, 0f, 0f,   1,    0f, -1.000000e-04f, -600f, 0f, -900f, 0f, null),
-				new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f, null),
-				new PlaneDefinition("floor", 0f, 3.975240e+01f, 0f, 0f, 1f, 0f,   3,    300f, 0f, 0f, 0f, 0f, -600f, new AlphaMapStatic("floor_alpha_proc.bmp")),
-				new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
-				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 0f, 0f, -1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f, null),
-				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 0f, 0f, -1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f, null),
-				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 0f, 1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
-				new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
-				new PlaneDefinition("infill", -4.021490e+01f, 1.321234e+02f, -1.347000e+00f, -1f, 0f, 0f,   8,    0f, 0f, -8f, 0f, -200f, 0f, null),
-				new PlaneDefinition("infill", 4.272190e+01f, 1.321234e+02f, -1.347000e+00f, -1f, 0f, 0f,   8,    0f, 0f, -8f, 0f, -200f, 0f, null),
-				new PlaneDefinition("infill", 5.037000e-01f, 2.325115e+02f, -1.347050e+00f, 0f, -1f, 0f,   8,    0f, 0f, -8f, 90f, 0f, -1.000000e-04f, null)
+				new PlaneDefinition("left", -150f, -1.105046e+02f, 0f, 			    1f, 0f, 0f,   0,    -1.000000e-04f, 0f, -600f, 1.000000e-04f, -900f, 0f, null),
+				new PlaneDefinition("right", 150f, -1.105154e+02f, 0f, 			   -1f, 0f, 0f,   1,    0f, -1.000000e-04f, -600f, 0f, -900f, 0f, null),
+				new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 	0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f, null),
+				new PlaneDefinition("floor", 0f, 3.975240e+01f, 0f, 				0f, 1f, 0f,   3,    300f, 0f, 0f, 0f, 0f, -600f, new AlphaMapStatic("floor_alpha_proc.bmp")),
+				new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f,	0f, 0f,-1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
+				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 				0f, 0f,-1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f, null),
+				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 				0f, 0f, 1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f, null),
+				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 				0f,-1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
+				new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 	0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp"))
 		};
 
 		/* identify the plane the ray intersects */
@@ -354,7 +354,14 @@ class RayCasterKernel extends Kernel {
 		DFEVector<DFEVar> a = plane_parameters["center"];
 		DFEVector<DFEVar> n = plane_parameters["normal"];
 
-		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, r_o), n) / KernelVectorMath.dot(n, r_d); //We could replace this with the result in previousResult
+		/* planes are one sided by default. if we are viewing the back of a plane, write the 'null colour' to the screen. this is also used to create
+		 * the doorframe */
+
+		DFEVar dot_nd = KernelVectorMath.dot(n, r_d);
+		DFEVar isBackSide = dot_nd > 0;
+		plane_index = isBackSide ? constant.var(dfechar, 255) : plane_index;
+
+		DFEVar t = closestPlane["t"];
 		DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, t));
 
 		/* find the local coordinates on the plane */
@@ -394,7 +401,11 @@ class RayCasterKernel extends Kernel {
 
 		/* Transmit the sampling parameters to the sampler */
 
-		io.output("plane", dfeUInt(8)).connect((DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8)));
+		/* if no intersection, or an intersection with the back side is selected, instruct the sampler to write the null colour to the screen */
+		DFEVar face_offset = (DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8));
+		face_offset = plane_index.eq(255) ? constant.var(255) : face_offset;
+
+		io.output("plane", dfeUInt(8)).connect(face_offset);
 		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));
 		io.output("u", dfeFloat(8, 24)).connect(u);
 		io.output("v", dfeFloat(8, 24)).connect(v);
