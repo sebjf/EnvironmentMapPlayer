@@ -6,6 +6,7 @@ import maxvideo.VideoCounter;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
+import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
@@ -92,12 +93,12 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Finally configure the video data outputs */
 
-		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+	//	addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
-	//	DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-	//	int videoDataStreamBufferSize = 64 * 64;
-	//	_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
-	//	getVideoStream("videoStream", 165.0f).connect(videoDataStream);
+		DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
+		int videoDataStreamBufferSize = 64 * 64;
+		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
+		getVideoStream("videoStream", 165.0f).connect(videoDataStream);
 
 		configBuild(engineParameters);
 	}
@@ -138,8 +139,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	private void configBuild(EnvironmentMapPlayerEngineParameters params) {
 		BuildConfig buildConfig = getBuildConfig();
-		buildConfig.setMPPRCostTableSearchRange(1, 4);
-		buildConfig.setMPPRParallelism(4);
+		buildConfig.setMPPRCostTableSearchRange(1, 18);
+		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
 		//buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
 	}
