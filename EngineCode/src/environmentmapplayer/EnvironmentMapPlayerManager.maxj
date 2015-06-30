@@ -4,6 +4,7 @@ import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
@@ -142,7 +143,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		buildConfig.setMPPRCostTableSearchRange(1, 18);
 		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
-		//buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
+		buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
 	}
 
 	public static void main(String[] args) throws Exception {
