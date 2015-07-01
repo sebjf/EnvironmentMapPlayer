@@ -308,13 +308,13 @@ class RayCasterKernel extends Kernel {
 		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
 				new PlaneDefinition("left", -150f, -1.105046e+02f, 0f, 			    1f, 0f, 0f,   0,    -1.000000e-04f, 0f, -600f, 1.000000e-04f, -900f, 0f, null),
 				new PlaneDefinition("right", 150f, -1.105154e+02f, 0f, 			   -1f, 0f, 0f,   1,    0f, -1.000000e-04f, -600f, 0f, -900f, 0f, null),
-				new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 	0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f, null),
+		//		new PlaneDefinition("base", 2.890000e-02f, -4.964662e+02f, 150f, 	0f, 1f, 0f,   2,    300f, 0f, 0f, 0f, 0f, -300f, null),
 				new PlaneDefinition("floor", 0f, 3.975240e+01f, 0f, 				0f, 1f, 0f,   3,    300f, 0f, 0f, 0f, 0f, -600f, new AlphaMapStatic("floor_alpha_proc.bmp")),
-				new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f,	0f, 0f,-1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
+		//		new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f,	0f, 0f,-1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
 				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 				0f, 0f,-1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f, null),
 				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 				0f, 0f, 1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f, null),
-				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 				0f,-1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
-				new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 	0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp"))
+		//		new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 				0f,-1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
+		//		new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 	0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp"))
 		};
 
 		/* identify the plane the ray intersects */
