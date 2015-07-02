@@ -13,6 +13,7 @@
 #include <boost/assign.hpp>
 #include <errno.h>
 
+#include <OVR.h>
 
 #define DEG2RAD	0.0174532925
 
@@ -73,7 +74,15 @@ public:
 
 		camera_settings.camera_lookat = add(camera_settings.camera_eye, vector3((cos(inclination)*sin(azimuth)),(sin(inclination)),(cos(inclination)*cos(azimuth))));
 
-        update_camera_streams();
+		update_camera_streams();
+	}
+
+	void set_ovr(OVR::Vector3<float> lookat, OVR::Vector3<float> up)
+	{
+		camera_settings.camera_lookat = add(camera_settings.camera_eye, vector3(lookat.x, lookat.y, lookat.z));
+		camera_settings.camera_up = vector3(up.x,up.y,up.z);
+
+		update_camera_streams();
 	}
 
 	void connect(max_engine* engine)
