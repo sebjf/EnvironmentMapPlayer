@@ -191,7 +191,7 @@ class RayCasterKernel extends Kernel {
 			DFEVar b_isValid = b_isInFront;
 
 
-			if(m_alphaMap != null){
+			if(m_alphaMap != null || m_doBoundsTesting){
 
 				//calculate intersection point
 
@@ -313,7 +313,7 @@ class RayCasterKernel extends Kernel {
 		//		new PlaneDefinition("middle", 0f, -1.105900e+02f, -5.921550e+00f,	0f, 0f,-1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp")),
 				new PlaneDefinition("front", 0f, -1.104750e+02f, 300f, 				0f, 0f,-1f,   5,    -300f, 1.000000e-04f, 0f, -2.000000e-04f, -900f, 0f, null),
 				new PlaneDefinition("back", 0f, -1.106055e+02f, -300f, 				0f, 0f, 1f,   6,    -300f, 0f, 0f, -2.000000e-04f, -900f, 0f, null),
-		//		new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 				0f,-1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
+				new PlaneDefinition("ceiling", 0f, 3.394031e+02f, 0f, 				0f,-1f, 0f,   7,    300f, 0f, 0f, 0f, 0f, -600f, null),
 		//		new PlaneDefinition("middle", 0f, -1.105900e+02f, 3.283550e+00f, 	0f, 0f, 1f,   4,    300f, -1.000000e-04f, 1.000000e-04f, -2.000000e-04f, -900f, 0f, new AlphaMapStatic("middle_alpha_proc.bmp"))
 		};
 
@@ -403,7 +403,7 @@ class RayCasterKernel extends Kernel {
 
 		/* if no intersection, or an intersection with the back side is selected, instruct the sampler to write the null colour to the screen */
 		DFEVar face_offset = (DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8));
-		face_offset = plane_index.eq(255) ? constant.var(255) : face_offset;
+		face_offset = plane_index.eq(255) ? constant.var(dfeUInt(8),255) : face_offset;
 
 		io.output("plane", dfeUInt(8)).connect(face_offset);
 		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));

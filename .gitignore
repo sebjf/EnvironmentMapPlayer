@@ -55,10 +55,9 @@ hs_err_pid*
 
 RunRules/Simulation/maxfiles/
 RunRules/Simulation/binaries/
-RunRules/Simulation/objects/
-RunRules/DFE/objects/
 RunRules/DFE/maxfiles/
-RunRules/Simulation/maxfiles/EnvironmentMapPlayer-BUILD
+*-BUILD/
+objects/
 RunRules/Simulation/maxfiles/*
 RunRules/Simulation/debug*
 RunRules/DFE/*.png

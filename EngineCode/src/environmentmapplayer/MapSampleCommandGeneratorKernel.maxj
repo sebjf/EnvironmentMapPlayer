@@ -14,6 +14,14 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		v = v < min ? constant.var(min) : v;
 		return v;
 	}
+	protected DFEVar clampmin(DFEVar v, int min, int max)
+	{
+		v = v > max ? constant.var(min) : v;
+		v = v < min ? constant.var(min) : v;
+		return v;
+	}
+
+	protected final boolean cullInvalidMipSamples = false;
 
 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
@@ -29,13 +37,25 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Restrict the mip level to those contained within the source map set */
 
-		miplevel = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
+		DFEVar miplevelclamped = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
+
+		if(cullInvalidMipSamples){
+			plane = miplevel.eq(miplevelclamped) ? plane : constant.var(dfeUInt(8),255); //if the mip level is out of range, just draw black
+		}
+		else
+		{
+			miplevel = miplevelclamped;
+		}
 
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 
 		DFEVar face_width_in_pixels = KernelMath.pow2(miplevel, dfeFloat(8,24));
 		DFEVar face_width_in_tiles = face_width_in_pixels / EnvironmentParameters.tile_width_in_pixels;
 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
+
+		/* clamp u and v to prevent wasteful lmem accesses into erroneous locations */
+		u = clamp(u, 0, 1);
+		v = clamp(u, 0, 1);
 
 		/* Based on the mip level, determine which tile contains the sample */
 
@@ -83,7 +103,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         /* signal to send the null colour by setting the sample offset to > 96 pixels. set the cache valid so we dont waste a memory read. */
 
         cache_valid = command_invalid ? constant.var(true) : cache_valid;
-        addr_pixel = command_invalid ? constant.var(192) : addr_pixel;
+        addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel;
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
