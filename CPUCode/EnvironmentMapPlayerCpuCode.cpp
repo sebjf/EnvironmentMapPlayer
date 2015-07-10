@@ -37,7 +37,7 @@ int main(void)
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
-	max_file_t *maxfile = EnvironmentMapPlayer4_init();
+	max_file_t *maxfile = EnvironmentMapPlayer6_init();
     //max_set_max_runnable_timing_score(maxfile, 1000);
 	max_engine_t *engine = max_load(maxfile, "*");
 
@@ -116,7 +116,7 @@ int main(void)
 		MouseDelta d = mouse.readMouse(false);
 		//characterController.update();
 
-		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[3]);
+		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
 
 		if(d.changed()){
 			inclination += -d.y;
@@ -125,7 +125,7 @@ int main(void)
 
 		oculus.Update();
 
-		camera.set_ovr(oculus.m_forward, oculus.m_up);
+	//	camera.set_ovr(oculus.m_forward, oculus.m_up);
 
 	}
 
