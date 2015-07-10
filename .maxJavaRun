@@ -1,4 +1,0 @@
-CLASSPATH=/home/sfriston/maxworkspace/EnvironmentMapPlayer/EngineCode/bin:/home/sfriston/maxworkspace/Ticket6476_Max3DisplayEDAModifications_sfriston/maxeda/bin:/network-raid/opt/maxq/maxq-ctl.jar:/home/sfriston/maxworkspace/MaxVideo/bin
-DFEModel=CORIA
-target=DFE
-maxFileName=EnvironmentMapPlayer
