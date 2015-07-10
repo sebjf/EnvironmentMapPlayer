@@ -1,0 +1,783 @@
+    LUTs     FFs   BRAMs    DSPs : Reductions.java
+       3   14835       0       0 : resources used by this file
+   0.00%   2.15%   0.00%   0.00% : % of available
+   0.00%   6.52%   0.00%   0.00% : % of total used
+   0.00%   9.00%   0.00%   0.00% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.stdlib;
+                                 : 
+                                 : import static com.maxeler.maxcompiler.v2.kernelcompiler.types.base._KernelBaseTypes.fromImp;
+                                 : import static com.maxeler.maxcompiler.v2.kernelcompiler.types.base._KernelBaseTypes.toImp;
+                                 : 
+                                 : import java.util.ArrayList;
+                                 : import java.util.List;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerInternalError;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObjectVectorizable;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorBase;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorTypeBase;
+                                 : import com.maxeler.maxcompiler.v2.utils.Bits;
+                                 : import com.maxeler.maxcompiler.v2.utils._Utils;
+                                 : import com.maxeler.photon.core.Var;
+                                 : import com.maxeler.photon.libs.StatefulFactory.StreamMinMaxInfo;
+                                 : 
+                                 : /**
+                                 :  * Reductions are a class of operation that perform a function on a stream
+                                 :  * and build up an accumulated output value.
+                                 :  */
+                                 : public class Reductions {
+                                 : 	private enum Reduction {
+                                 : 		MINIMUM,
+                                 : 		MAXIMUM
+                                 : 	}
+                                 : 
+                                 : 	private final com.maxeler.photon.libs.StatefulFactory m_imp;
+                                 : 	private final Kernel m_design;
+                                 : 
+                                 : 	public static final Accumulator accumulator = new Accumulator();
+                                 : 
+                                 : 	public abstract static class ReducedStreamInfo {
+                                 : 		private final DFEVar m_reducedValue, m_metaData;
+                                 : 		private ReducedStreamInfo(Kernel kernel, StreamMinMaxInfo info) {
+                                 : 			m_reducedValue = fromImp(kernel, info.getMinMax());
+                                 : 			m_metaData = fromImp(kernel, info.getMetaData());
+                                 : 		}
+                                 : 		DFEVar getReducedValue() {
+                                 : 			return m_reducedValue;
+                                 : 		}
+                                 : 		public DFEVar getMetaData() {
+                                 : 			return m_metaData;
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public static class StreamMaxInfo extends ReducedStreamInfo {
+                                 : 		private StreamMaxInfo(Kernel kernel, StreamMinMaxInfo info) {
+                                 : 			super(kernel, info);
+                                 : 		}
+                                 : 		public DFEVar getMax() {
+                                 : 			return getReducedValue();
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public static class StreamMinInfo extends ReducedStreamInfo {
+                                 : 		private StreamMinInfo(Kernel kernel, StreamMinMaxInfo info) {
+                                 : 			super(kernel, info);
+                                 : 		}
+                                 : 		public DFEVar getMin() {
+                                 : 			return getReducedValue();
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	Reductions(Kernel design) {
+                                 : 		m_imp = new com.maxeler.photon.libs.StatefulFactory(_Kernel.getPhotonDesignData(design));
+                                 : 		m_design = design;
+                                 : 	}
+                                 : 
+                                 : 	private <T extends KernelObject<T>> T _streamHold(T input, DFEVar load, DFEVar user_reset) {
+                                 : 		List<DFEVar> held = new ArrayList<DFEVar>();
+                                 : 		for(DFEVar input_var : input.packToList())
+                                 : 			held.add(
+                                 : 				fromImp(
+                                 : 					m_design,
+                                 : 					m_imp.streamHold(toImp(input_var), toImp(load), toImp(user_reset))) );
+                                 : 
+                                 : 		return input.getType().unpackFromList(held);
+                                 : 	}
+                                 : 
+                                 : 	private <
+                                 : 		C extends KernelObjectVectorizable<C, ?>,
+                                 : 		M extends DFEVectorBase<C, M, ?, ?>,
+                                 : 		N extends DFEVectorBase<DFEVar, N, ?, ?>
+                                 : 	>
+                                 : 	M _streamHold(M input, N load) {
+                                 : 		List<C> new_pipes = new ArrayList<C>(input.getSize());
+                                 : 		for(int i = 0; i < input.getSize(); i++)
+                                 : 			new_pipes.add(streamHold(input.get(i), load.get(i)));
+                                 : 
+                                 : 		return input.getType().newInstance(input.getKernel(), new_pipes);
+                                 : 	}
+                                 : 
+                                 : 	private <T extends KernelObject<T>> T _streamHold(T input, DFEVar load, DFEVar user_reset, Bits reset_val) {
+                                 : 		List<DFEVar> held = new ArrayList<DFEVar>();
+                                 : 		for(DFEVar input_var : input.packToList()) {
+                                 : 			Var held_var =
+                                 : 				m_imp.streamHold(
+                                 : 					toImp(input_var),
+                                 : 					toImp(load),
+                                 : 					toImp(user_reset),
+                                 : 					_Utils.toImp(reset_val));
+                                 : 			held.add( fromImp(m_design, held_var) );
+                                 : 		}
+                                 : 
+                                 : 		return input.getType().unpackFromList(held);
+                                 : 	}
+                                 : 
+                                 : 	private <
+                                 : 		C extends KernelObjectVectorizable<C, ?>,
+                                 : 		M extends DFEVectorBase<C, M, ?, ?>,
+                                 : 		N extends DFEVectorBase<DFEVar, N, ?, ?>
+                                 : 	> M _streamHold(M input, N load, Bits reset_val) {
+                                 : 		List<C> new_pipes = new ArrayList<C>(input.getSize());
+                                 : 		for(int i = 0; i < input.getSize(); i++)
+                                 : 			new_pipes.add(streamHold(input.get(i), load.get(i), reset_val) );
+                                 : 		return input.getType().newInstance(input.getKernel(), new_pipes);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current minimum value from a stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the minimum of.
+                                 : 	 * @return A stream containing the current minimum value.
+                                 : 	 * @see #streamMin(DFEVar, DFEVar)
+                                 : 	 * @see #streamMin(DFEVar, DFEVar, DFEVar)
+                                 : 	 * @see #streamMinWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMin(DFEVar input) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 
+                                 : 		return streamMinMax(input, null, null, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current minimum value from a stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMin} has an additional {@code reset} stream
+                                 : 	 * of Boolean values. When the {@code reset} stream is {@code 1}, the minimum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the minimum of.
+                                 : 	 * @param reset If {@code 1}, resets the minimum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @return A stream containing the current minimum value of the {@code input}
+                                 : 	 * stream.
+                                 : 	 * @see #streamMin(DFEVar)
+                                 : 	 * @see #streamMin(DFEVar, DFEVar, DFEVar)
+                                 : 	 * @see #streamMinWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMin(DFEVar input, DFEVar reset) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 
+                                 : 		return streamMinMax(input, reset, null, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current minimum value from a stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMin} takes two additional Boolean streams:
+                                 : 	 * {@code reset} and {@code enable}.
+                                 : 	 * <p>
+                                 : 	 * When the {@code reset} stream is {@code 1}, the minimum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When {@code enable} stream is {@code 0}, the current {@code input} and
+                                 : 	 * {@code reset} values are ignored.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the minimum of.
+                                 : 	 * @param reset If {@code 1}, resets the minimum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @param enable If {@code 1}, enables both the {@code input} and {@code reset}
+                                 : 	 * streams, otherwise these are ignored.
+                                 : 	 * @return A stream containing the current minimum value.
+                                 : 	 * @see #streamMin(DFEVar)
+                                 : 	 * @see #streamMin(DFEVar, DFEVar)
+                                 : 	 * @see #streamMinWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMin(DFEVar input, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return streamMinMax(input, reset, enable, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current maximum value from a stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current maximum is the smallest
+                                 : 	 * value that can be represented by the {@code input} stream. For
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#TWOSCOMPLEMENT} streams it is the most negative
+                                 : 	 * number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the maximum of.
+                                 : 	 * @return A stream containing the current maximum value.
+                                 : 	 * @see #streamMax(DFEVar, DFEVar)
+                                 : 	 * @see #streamMax(DFEVar, DFEVar, DFEVar)
+                                 : 	 * @see #streamMaxWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMax(DFEVar input) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 
+                                 : 		return streamMinMax(input, null, null, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current maximum value from a stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMax} has an additional {@code reset} stream
+                                 : 	 * of Boolean values. When the {@code reset} stream is {@code 1}, the maximum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current maximum is the smallest
+                                 : 	 * value that can be represented by the {@code input} stream. For
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#TWOSCOMPLEMENT} streams it is the most negative
+                                 : 	 * number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the maximum of.
+                                 : 	 * @param reset If {@code 1}, resets the maximum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @return A stream containing the current maximum value.
+                                 : 	 * @see #streamMax(DFEVar)
+                                 : 	 * @see #streamMax(DFEVar, DFEVar, DFEVar)
+                                 : 	 * @see #streamMaxWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMax(DFEVar input, DFEVar reset) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 
+                                 : 		return streamMinMax(input, reset, null, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current maximum value from an input stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMax} takes two additional Boolean streams:
+                                 : 	 * {@code reset} and {@code enable}.
+                                 : 	 * <p>
+                                 : 	 * When the {@code reset} stream is {@code 1}, the maximum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When {@code enable} stream is {@code 0}, the current {@code input} and
+                                 : 	 * {@code reset} values are ignored.
+                                 : 	 * <p>
+                                 : 	 * The output is {@code minvalue} when the {@link Kernel} is reset.
+                                 : 	 * For {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for signed
+                                 : 	 * numbers it is the most negative number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The stream to calculate the maximum of.
+                                 : 	 * @param reset If {@code 1}, resets the maximum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @param enable If {@code 1}, enables both the {@code input} and {@code reset}
+                                 : 	 * streams, otherwise these are ignored.
+                                 : 	 * @return A stream containing the current maximum value.
+                                 : 	 * @see #streamMax(DFEVar)
+                                 : 	 * @see #streamMax(DFEVar, DFEVar)
+                                 : 	 * @see #streamMaxWithMetadata(DFEVar, DFEVar, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static DFEVar streamMax(DFEVar input, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return streamMinMax(input, reset, enable, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	private static DFEVar streamMinMax(DFEVar input, DFEVar reset, DFEVar enable, Reduction reduction) {
+                                 : 		final Kernel kernel = input.getKernel();
+                                 : 		final Reductions r = _Kernel.getGlobalReductionsInst(kernel);
+                                 : 
+                                 : 		return fromImp(kernel, r._streamMinMax(input, null, reset, enable, reduction).getMinMax());
+                                 : 	}
+                                 : 
+                                 : 	private static StreamMinMaxInfo streamMinMax(DFEVar input, DFEVar metadata, DFEVar reset, DFEVar enable, Reduction reduction) {
+                                 : 		final Kernel kernel = input.getKernel();
+                                 : 		final Reductions r = _Kernel.getGlobalReductionsInst(kernel);
+                                 : 
+                                 : 		return r._streamMinMax(input, metadata, reset, enable, reduction);
+                                 : 	}
+                                 : 
+                                 : 	private StreamMinMaxInfo _streamMinMax(DFEVar input, DFEVar metadata, DFEVar reset, DFEVar enable, Reduction reduction) {
+                                 : 		if (reset == null)
+                                 : 			reset = m_design.constant.var(false);
+                                 : 
+                                 : 		boolean isMin;
+                                 : 		switch (reduction) {
+                                 : 			case MINIMUM:
+                                 : 				isMin = true;
+                                 : 				break;
+                                 : 			case MAXIMUM:
+                                 : 				isMin = false;
+                                 : 				break;
+                                 : 			default:
+                                 : 				throw new MaxCompilerInternalError(m_design.getManager(), "Unknown reduction type '%s'.", reduction);
+                                 : 		}
+                                 : 
+                                 : 		return m_imp.streamMinMax(
+                                 : 			toImp(input),
+                                 : 			toImp(metadata),
+                                 : 			toImp(reset),
+                                 : 			toImp(enable),
+                                 : 			isMin
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a stream containing the minimum value from all vector elements in a
+                                 : 	 * vector stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the minimum of.
+                                 : 	 * @return A stream containing the current minimum value of all vector elements.
+                                 : 	 * @see #streamMin(DFEVectorBase, DFEVar)
+                                 : 	 * @see #streamMin(DFEVectorBase, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMin(M input) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 
+                                 : 		return streamMinMax(input, null, null, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a stream containing the minimum value from all elements in a
+                                 : 	 * vector stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMin} has an additional {@code reset} stream
+                                 : 	 * of Boolean values. When the {@code reset} stream is {@code 1}, the minimum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the minimum of.
+                                 : 	 * @param reset If {@code 1}, resets the minimum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @return A stream containing the current minimum value of all vector elements.
+                                 : 	 * @see #streamMin(DFEVectorBase)
+                                 : 	 * @see #streamMin(DFEVectorBase, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMin(M input, DFEVar reset) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 
+                                 : 		return streamMinMax(input, reset, null, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a stream containing the minimum value from all elements in a
+                                 : 	 * vector stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMin} takes two additional Boolean streams:
+                                 : 	 * {@code reset} and {@code enable}.
+                                 : 	 * <p>
+                                 : 	 * When the {@code reset} stream is {@code 1}, the minimum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When {@code enable} stream is {@code 0}, the current {@code input} and
+                                 : 	 * {@code reset} values are ignored.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current minimum is the largest
+                                 : 	 * positive value that can be represented by the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the minimum of.
+                                 : 	 * @param reset If {@code 1}, resets the minimum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @param enable If {@code 1}, enables both the {@code input} and {@code reset}
+                                 : 	 * streams, otherwise these are ignored.
+                                 : 	 * @return A stream containing the current minimum value of all vector elements.
+                                 : 	 * @see #streamMin(DFEVectorBase)
+                                 : 	 * @see #streamMin(DFEVectorBase, DFEVar)
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMin(M input, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return streamMinMax(input, reset, enable, Reduction.MINIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a stream containing the maximum value from all elements in a
+                                 : 	 * vector stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current maximum is the smallest
+                                 : 	 * value that can be represented by the {@code input} stream. For
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#TWOSCOMPLEMENT} streams it is the most negative
+                                 : 	 * number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the maximum of.
+                                 : 	 * @return A stream containing the current maximum value of all vector elements.
+                                 : 	 * @see #streamMax(DFEVectorBase, DFEVar)
+                                 : 	 * @see #streamMax(DFEVectorBase, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMax(M input) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 
+                                 : 		return streamMinMax(input, null, null, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a stream containing the maximum value from all elements in a
+                                 : 	 * vector stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMax} has an additional {@code reset} stream
+                                 : 	 * of Boolean values. When the {@code reset} stream is {@code 1}, the maximum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When the {@link Kernel} is reset the current maximum is the smallest
+                                 : 	 * value that can be represented by the {@code input} stream. For
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for
+                                 : 	 * {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#TWOSCOMPLEMENT} streams it is the most negative
+                                 : 	 * number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the maximum of.
+                                 : 	 * @param reset If {@code 1}, resets the maximum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @return A stream containing the current maximum value of all vector elements.
+                                 : 	 * @see #streamMax(DFEVectorBase)
+                                 : 	 * @see #streamMax(DFEVectorBase, DFEVar, DFEVar)
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMax(M input, DFEVar reset) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 
+                                 : 		return streamMinMax(input, reset, null, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current maximum value in each element from a vector input stream.
+                                 : 	 * <p>
+                                 : 	 * This version of {@code streamMax} takes two additional Boolean streams:
+                                 : 	 * {@code reset} and {@code enable}.
+                                 : 	 * <p>
+                                 : 	 * When the {@code reset} stream is {@code 1}, the maximum
+                                 : 	 * value is set to the current value of the {@code input} stream.
+                                 : 	 * <p>
+                                 : 	 * When {@code enable} stream is {@code 0}, the current {@code input} and
+                                 : 	 * {@code reset} values are ignored.
+                                 : 	 * <p>
+                                 : 	 * The output is {@code minvalue} when the {@link Kernel} is reset.
+                                 : 	 * For {@link com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode#UNSIGNED} streams, this is 0, for signed
+                                 : 	 * numbers it is the most negative number.
+                                 : 	 * <p>
+                                 : 	 * Note that floating-point streams are not currently supported.
+                                 : 	 * @param input The streams to calculate the maximum of.
+                                 : 	 * @param reset If {@code 1}, resets the maximum value to the current value
+                                 : 	 * of the {@code input} stream.
+                                 : 	 * @param enable If {@code 1}, enables both the {@code input} and {@code reset}
+                                 : 	 * streams, otherwise these are ignored.
+                                 : 	 * @return A stream containing the current maximum value of all vector elements.
+                                 : 	 */
+                                 : 	public static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMax(M input, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return streamMinMax(input, reset, enable, Reduction.MAXIMUM);
+                                 : 	}
+                                 : 
+                                 : 	private static <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 	DFEVar streamMinMax(M input, DFEVar reset, DFEVar enable, Reduction reduction) {
+                                 : 		List<DFEVar> list = input.getElementsAsList();
+                                 : 		while (list.size() > 1) {
+                                 : 			ArrayList<DFEVar> tmp = new ArrayList<DFEVar>(list.size() / 2 + 1);
+                                 : 
+                                 : 			for (int i = 0; i < list.size() / 2; ++i) {
+                                 : 				DFEVar a = list.get(i*2);
+                                 : 				DFEVar b = list.get(i*2 + 1);
+                                 : 				DFEVar select;
+                                 : 
+                                 : 				switch (reduction) {
+                                 : 					case MINIMUM:
+                                 : 						select = a < b;
+                                 : 						break;
+                                 : 					case MAXIMUM:
+                                 : 						select = a > b;
+                                 : 						break;
+                                 : 					default:
+                                 : 						throw new MaxCompilerInternalError(input.getKernel().getManager(), "Unknown reduction '%s'.", reduction);
+                                 : 				}
+                                 : 
+                                 : 				tmp.add(select ? a : b);
+                                 : 			}
+                                 : 
+                                 : 			if (list.size() % 2 != 0)
+                                 : 				tmp.add(list.get(list.size() - 1));
+                                 : 
+                                 : 			list = tmp;
+                                 : 		}
+                                 : 
+                                 : 		return streamMinMax(list.get(0), reset, enable, reduction);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current maximum value from an input stream and
+                                 : 	 * an associated meta-data item. You can use this to, for example,
+                                 : 	 * keep track of not just a maximum value but also the index of that value.
+                                 : 	 * <p>
+                                 : 	 * The maximum value output is {@code minvalue} when the Kernel is reset.
+                                 : 	 * The meta-data output is zero when the Kernel is reset.
+                                 : 	 * For {@code UNSIGNED} streams, this is zero, for signed numbers it is
+                                 : 	 * the most negative number.
+                                 : 	 * @param input The input data stream to scan for the maximum value.
+                                 : 	 * @param metadata The input meta-data stream to store along with the maximum value.
+                                 : 	 * @param reset Resets the current value to the current value of the input.
+                                 : 	 * @param enable Enables the data, meta-data and reset inputs.
+                                 : 	 * @return Object containing both the maximum value and the associated meta-data value.
+                                 : 	 */
+                                 : 	public static StreamMaxInfo streamMaxWithMetadata(DFEVar input, DFEVar metadata, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (metadata == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("metadata");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return new StreamMaxInfo(
+                                 : 			input.getKernel(),
+                                 : 			streamMinMax(input, metadata, reset, enable, Reduction.MAXIMUM)
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the current minimum value from an input stream and
+                                 : 	 * an associated meta-data item. You can use this to, for example,
+                                 : 	 * keep track of not just a maximum value but also the index of that value.
+                                 : 	 * <p>
+                                 : 	 * The maximum value output is {@code minvalue} when the Kernel is reset.
+                                 : 	 * The meta-data output is zero when the Kernel is reset.
+                                 : 	 * For {@code UNSIGNED} streams, this is zero, for signed numbers it is
+                                 : 	 * the most negative number.
+                                 : 	 * @param input The input data stream to scan for the maximum value.
+                                 : 	 * @param metadata The input meta-data stream to store along with the maximum value.
+                                 : 	 * @param reset Resets the current value to the current value of the input.
+                                 : 	 * @param enable Enables the data, meta-data and reset inputs.
+                                 : 	 * @return Object containing both the maximum value and the associated meta-data value.
+                                 : 	 */
+                                 : 	public static StreamMinInfo streamMinWithMetadata(DFEVar input, DFEVar metadata, DFEVar reset, DFEVar enable) {
+                                 : 		if (input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("input");
+                                 : 		if (metadata == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("metadata");
+                                 : 		if (reset == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("reset");
+                                 : 		if (enable == null)
+                                 : 			throw MaxCompilerAPIError.nullParam("enable");
+                                 : 
+                                 : 		return new StreamMinInfo(
+                                 : 			input.getKernel(),
+                                 : 			streamMinMax(input, metadata, reset, enable, Reduction.MINIMUM)
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A single-value storage node.
+                                 : 	 * <p>
+                                 : 	 * When {@code store} is {@code 1}, a {@code streamHold} stores the current value from the input stream.<br>
+                                 : 	 * When {@code store} is {@code 0}, a {@code streamHold} ignores the current value from the input stream.<br>
+                                 : 	 * When {@code store} is {@code 1}, a {@code streamHold} outputs the current value from the input stream.<br>
+                                 : 	 * When {@code store} is {@code 0}, a {@code streamHold} outputs the currently stored value.
+                                 : 	 * <p>
+                                 : 	 * The output of the node is {@code 0} when the Kernel is reset.
+                                 : 	 * <p>
+                                 : 	 * The following table shows example input and output over 11 stream cycles:
+                                 : 	 * <table cellspacing="15">
+                                 : 	 * <tr><td>stream cycle:</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 2}</td><td>{@code 3}</td><td>{@code 4}</td><td>{@code 5}</td><td>{@code 6}</td><td>{@code 7}</td><td>{@code 8}</td><td>{@code 9}</td><td>{@code 10}</td></code></tr>
+                                 : 	 * <tr><td><code>input</code> stream:</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 2}</td><td>{@code 3}</td><td>{@code 4}</td><td>{@code 5}</td><td>{@code 4}</td><td>{@code 3}</td><td>{@code 2}</td><td>{@code 1}</td><td>{@code 4}</td></code></tr>
+                                 : 	 * <tr><td><code>store</code> stream:</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 1}</td><td>{@code 1}</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 0}</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 0}</td><td>{@code 0}</td></code></tr>
+                                 : 	 * <tr><td><code>return</code> stream:</td><td>{@code 0}</td><td>{@code 1}</td><td>{@code 2}</td><td>{@code 3}</td><td>{@code 3}</td><td>{@code 5}</td><td>{@code 5}</td><td>{@code 5}</td><td>{@code 2}</td><td>{@code 2}</td><td>{@code 2}</td></code></tr>
+                                 : 	 * </table>
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input value when {@code 1}, ignores it when {@code 0}.
+                                 : 	 * @return A new stream containing the current or stored value.
+                                 : 	 */
+                                 : 	public static <T extends KernelObject<T>> T streamHold(T input, DFEVar store) {
+                                 : 		return
+       3   14835       0       0 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store,
+                                 : 				null);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A vector single-value storage node.
+                                 : 	 * <p>
+                                 : 	 * The output of all the vector elements is {@code 0} when the Kernel is reset.
+                                 : 	 * <p>
+                                 : 	 * See {@link #streamHold(KernelObject, DFEVar)} for a detailed explanation
+                                 : 	 * of the behavior of {@code streamHold}.
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input values when {@code 1}, ignores them when {@code 0}.
+                                 : 	 * @return A new stream containing the current or stored values.
+                                 : 	 */
+                                 : 	public static <
+                                 : 		P extends KernelObjectVectorizable<P, ?>,
+                                 : 		M extends DFEVectorBase<P, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<P, M, C>
+                                 : 	>
+                                 : 	M streamHold(M input, DFEVar store) {
+                                 : 		return
+                                 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store,
+                                 : 				null);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A vector single-value storage node with vector control.
+                                 : 	 * <p>
+                                 : 	 * The output of all the vector elements is {@code 0} when the Kernel is reset.
+                                 : 	 * <p>
+                                 : 	 * Each vector element of the output is controlled by a separate vector element from the vector
+                                 : 	 * control stream {@code store}.
+                                 : 	 * <p>
+                                 : 	 * See {@link #streamHold(KernelObject, DFEVar)} for a detailed explanation
+                                 : 	 * of the behavior of {@code streamHold}.
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input value for the corresponding vector element when {@code 1}, ignores it when {@code 0}.
+                                 : 	 * @return A new stream containing the current or stored values.
+                                 : 	 */
+                                 : 	public static <
+                                 : 		P extends KernelObjectVectorizable<P, ?>,
+                                 : 		M extends DFEVectorBase<P, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<P, M, C>,
+                                 : 		L extends DFEVectorBase<DFEVar, L, ?, ?>
+                                 : 	>
+                                 : 	M streamHold(M input, L store) {
+                                 : 		return
+                                 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A single-value storage node.
+                                 : 	 * <p>
+                                 : 	 * The output of the node is set to {@code reset_val} when the Kernel is reset.
+                                 : 	 * <p>
+                                 : 	 * See {@link #streamHold(KernelObject, DFEVar)} for a detailed explanation
+                                 : 	 * of the behavior of {@code streamHold}.
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input value when {@code 1}, ignores it when {@code 0}.
+                                 : 	 * @param reset_val The value with which to set the output when the Kernel is reset.
+                                 : 	 * @return A new stream containing the current or stored value.
+                                 : 	 */
+                                 : 	public static <T extends KernelObject<T>>
+                                 : 	T streamHold(T input, DFEVar store, Bits reset_val) {
+                                 : 		return
+                                 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store,
+                                 : 				null,
+                                 : 				reset_val);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A single-value storage node.
+                                 : 	 * <p>
+                                 : 	 * The output of the node is set to {@code reset_val} when the Kernel is reset or
+                                 : 	 * the boolean {@code user_reset} input is asserted.
+                                 : 	 * <p>
+                                 : 	 * See {@link #streamHold(KernelObject, DFEVar)} for a detailed explanation
+                                 : 	 * of the behavior of {@code streamHold}.
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input value when {@code 1}, ignores it when {@code 0}.
+                                 : 	 * @param user_reset Stores the {@code reset_val} value when {@code 1}.
+                                 : 	 * @param reset_val The value with which to set the output when the Kernel is reset.
+                                 : 	 * @return A new stream containing the current or stored value.
+                                 : 	 */
+                                 : 	public static <T extends KernelObject<T>>
+                                 : 	T streamHold(T input, DFEVar store, DFEVar user_reset, Bits reset_val) {
+                                 : 		return
+                                 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store,
+                                 : 				user_reset,
+                                 : 				reset_val);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * A vector single-value storage node with vector control.
+                                 : 	 * <p>
+                                 : 	 * The output of all of the vector elements is set to {@code reset_val} when the Kernel is reset.
+                                 : 	 * <b>Note</b>: {@code reset_val} is not a vector - it is a single value that is set
+                                 : 	 * identically for all elements.
+                                 : 	 * <p>
+                                 : 	 * Each vector element of the output is controlled by a separate element from the vector
+                                 : 	 * control stream {@code store}.
+                                 : 	 * <p>
+                                 : 	 * See {@link #streamHold(KernelObject, DFEVar)} for a detailed explanation
+                                 : 	 * of the behavior of {@code streamHold}.
+                                 : 	 * @param input The input stream.
+                                 : 	 * @param store Stores the current input value for the corresponding vector element when {@code 1}, ignores it when {@code 0}.
+                                 : 	 * @param reset_val The value with which to set the output for all vector elements when the Kernel is reset.
+                                 : 	 * @return A new stream containing the current or stored values.
+                                 : 	 */
+                                 : 	public static <
+                                 : 		P extends KernelObjectVectorizable<P, ?>,
+                                 : 		M extends DFEVectorBase<P, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<P, M, C>,
+                                 : 		L extends DFEVectorBase<DFEVar, L, ?, ?>
+                                 : 	>
+                                 : 	M streamHold(M input, L store, Bits reset_val) {
+                                 : 		return
+                                 : 			_Kernel.getGlobalReductionsInst(input.getKernel())._streamHold(
+                                 : 				input,
+                                 : 				store,
+                                 : 				reset_val);
+                                 : 	}
+                                 : }

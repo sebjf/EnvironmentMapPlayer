@@ -1,0 +1,2576 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+	<title>MaxCompiler Timing Report - Localized Path Information</title>
+	<style type="text/css" title="currentStyle"> 
+		@import "page.css";
+	</style>
+  </head>
+  <body>
+    <h2 id="5">Cost Table 5</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.024</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.568</td>
+          <td style="text-align: center;" nowrap="true">0.762</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.028</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[35]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X124_Y57_N25</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X124_Y57_N25</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110804</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X158_Y33_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.112</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X158_Y33_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.149</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X189_Y23_N17</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.456</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[35]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X189_Y23_N17</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.613</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[35]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <h2 id="12">Cost Table 12</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.15</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.01</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[28]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[28]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[28]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >2</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.15</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.01</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[24]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N29</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[24]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N29</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[24]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >3</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.149</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.01</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[20]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N44</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[20]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N44</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[20]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >4</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.149</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.01</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[12]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N38</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[12]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N38</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[12]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >5</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.148</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[14]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[14]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[14]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >6</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.148</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[16]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N26</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[16]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N26</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[16]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >7</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.147</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.73</td>
+          <td style="text-align: center;" nowrap="true">0.675</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.023</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[36]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N58</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.817</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[36]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X60_Y40_N58</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.455</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[36]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >8</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.007</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[44]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N26</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[44]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N26</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[44]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >9</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.007</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[27]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[27]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[27]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >10</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.006</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[42]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N29</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[42]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N29</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[42]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >11</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.006</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[26]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[26]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[26]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >12</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.007</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[10]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N14</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[10]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N14</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[10]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >13</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.089</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.006</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[9]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N17</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[9]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N17</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[9]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >14</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.088</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.675</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.021</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[17]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N10</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[17]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N10</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.455</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[17]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >15</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.087</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.673</td>
+          <td style="text-align: center;" nowrap="true">0.675</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.02</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[21]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N7</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.760</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[21]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X59_Y40_N7</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.455</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[21]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >16</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[31]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N14</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[31]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N14</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[31]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >17</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[46]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N38</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[46]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N38</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[46]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >18</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.008</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[6]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N53</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[6]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N53</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[6]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >19</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.008</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[11]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N5</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[11]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N5</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[11]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >20</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.008</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[34]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[34]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N41</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[34]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >21</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[41]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[41]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N56</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[41]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >22</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.008</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[33]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N11</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[33]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N11</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[33]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >23</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.691</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.008</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[25]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N59</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[25]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N59</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.471</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[25]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >24</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[1]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N8</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[1]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N8</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[1]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >25</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[8]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N20</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[8]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N20</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[8]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >26</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.083</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.69</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.009</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[0]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N2</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[0]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N2</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.470</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[0]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >27</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.081</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.665</td>
+          <td style="text-align: center;" nowrap="true">0.675</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.022</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[23]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0|dff|dffs[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X76_Y57_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>110639</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|control_sm_nt|\next_ce_replication_phase0:0:stream_ce_pipelining:1:stream_ce_master|dff|dffs[0]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.913</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X27_Y50_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>48</small></td>
+                           <td style="text-align: right;"><small>0.220</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[19]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N49</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.752</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[23]|ena</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X61_Y40_N49</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.455</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id565current_run_cycle_count_reg|mappedreg_reg[23]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </body>
+</html>

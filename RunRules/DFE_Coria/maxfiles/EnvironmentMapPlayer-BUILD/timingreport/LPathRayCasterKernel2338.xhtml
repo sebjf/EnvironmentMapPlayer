@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+	<title>MaxCompiler Timing Report - Localized Path Information</title>
+	<style type="text/css" title="currentStyle"> 
+		@import "page.css";
+	</style>
+  </head>
+  <body>
+    <h2 id="5">Cost Table 5</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.064</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.143</td>
+          <td style="text-align: center;" nowrap="true">0.956</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.071</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id56_nodemul|fpu|MWFloatingPointUnit_quartusv13_1_0_MULT_8x24to8x24_lat10_ce_altfp_mult_9bo_component|man_result_ff[6]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|aligned_dataa_exp_dffe12_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg18</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X141_Y63_N23</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id56_nodemul|fpu|MWFloatingPointUnit_quartusv13_1_0_MULT_8x24to8x24_lat10_ce_altfp_mult_9bo_component|man_result_ff[6]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X141_Y63_N23</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id56_nodemul|fpu|MWFloatingPointUnit_quartusv13_1_0_MULT_8x24to8x24_lat10_ce_altfp_mult_9bo_component|man_result_ff[6]|q</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X133_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.828</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w_man_a_not_zero_w_range215w[0]~4|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X133_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.254</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w_man_a_not_zero_w_range215w[0]~4|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X132_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.168</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w_man_a_not_zero_w_range215w[0]~5|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X132_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>25</small></td>
+                           <td style="text-align: right;"><small>0.252</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w_man_a_not_zero_w_range215w[0]~5|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X128_Y68_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.548</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w248w[0]~0|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X128_Y68_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w248w[0]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X116_Y80_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.371</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w248w[0]~0_wirecell|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X116_Y80_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.187</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|wire_w248w[0]~0_wirecell|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X115_Y80_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.228</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|aligned_dataa_exp_dffe12_rtl_0|auto_generated|altsyncram4|ram_block5a0|portadatain[18]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X115_Y80_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.132</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RayCasterKernel|inst_ln31_streamingblock|RayCasterKernel_core|node_id58_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat12_SUB_ce_altfp_add_sub_ilj_component|aligned_dataa_exp_dffe12_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg18</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </body>
+</html>

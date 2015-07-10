@@ -1,0 +1,1842 @@
+    LUTs     FFs   BRAMs    DSPs : DFEVectorBase.java
+   12845   12329      40       2 : resources used by this file
+   3.72%   1.79%   1.99%   0.13% : % of available
+   7.46%   5.11%   3.06%   2.22% : % of total used
+  11.04%   8.18%   6.97%   2.22% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.types.composite;
+                                 : 
+                                 : import java.util.ArrayList;
+                                 : import java.util.Collections;
+                                 : import java.util.Iterator;
+                                 : import java.util.List;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.errors._AlreadyConnectedException;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.DoubtType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObjectVectorizable;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObjectVectorizableNull;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types._InternalUtils;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base._KernelBaseTypes;
+                                 : import com.maxeler.photon.core.PhotonDesignData;
+                                 : import com.maxeler.photon.core.Var;
+                                 : import com.maxeler.photon.hw.Shifter.ShiftDirection;
+                                 : import com.maxeler.photon.nodes.NodeWordLevelShift;
+                                 : import com.maxeler.utils.MaxCompilerHide;
+                                 : 
+                                 : /**
+                                 :  * This is the base class for all vector streams.
+                                 :  * <p>
+                                 :  * See {@link DFEVector} for a concrete vector stream for use in Kernels.
+                                 :  *  * <h3>Operators</h3>
+                                 :  * {@code DFEVectorBase} streams offer overloaded operators:
+                                 :  * <ul>
+                                 :  * <li>Arithmetic operators ({@code +, -, *, /}).</li>
+                                 :  * <li>Negation operator ({@code -}).</li>
+                                 :  * <li>Relational operators ({@code <, <=, >, >=}).</li>
+                                 :  * <li>Shift operators ({@code <<, >>}).</li>
+                                 :  * <li>Bitwise complement operator ({@code ~}).</li>
+                                 :  * <li>Bitwise operators ({@code &, ^, |}).</li>
+                                 :  * <li>Ternary if operator ({@code ?:}).</li>
+                                 :  * </ul>
+                                 :  * <p>
+                                 :  * All binary operators can operate on other vector streams, non-vector streams or Java construction-time constants.
+                                 :  * <p>
+                                 :  * A binary operation between two vector streams applies the operation between corresponding vector elements of the two streams.
+                                 :  * <p>
+                                 :  * A binary operation between a vector stream and a non-vector stream (or Java construction-time constant) applies the operation between each vector element and the non-vector stream (or Java construction-time constant).
+                                 :  * <p>
+                                 :  * The result of a relational operation on a {@code DFEVectorBase} stream is a vector stream with the same number of vector elements of {@code DFEVar} Boolean data ({@code CompareT}).
+                                 :  * <p>
+                                 :  * The ternary if operator can only be used on a vector stream of {@link DFEVar} Boolean data i.e. boolean_vect_type ? vect_type : vect_type.
+                                 :  * <p>
+                                 :  * See <a href="{@docRoot}/com/maxeler/maxcompiler/v2/kernelcompiler/types/package-summary.html">com.maxeler.maxcompiler.v2.kernelcompiler.types</a> for more information on
+                                 :  * the Kernel type and stream reference hierarchy.
+                                 :  * @param <ContainedT> Kernel object for an individual vector element.
+                                 :  * @param <VectRealT> The actual vector type (should be the type of the subclass).
+                                 :  * @param <CompareT> Vector type returned for comparison operations. This is a vector of the same number of streams as {@code VectRealT} of {@link DFEVar} Boolean data.
+                                 :  * @param <VectRealTType> Class that can create instances of this type.
+                                 :  */
+                                 : public abstract class DFEVectorBase<
+                                 : 		ContainedT extends KernelObjectVectorizable<ContainedT, ?>,
+                                 : 		VectRealT extends DFEVectorBase<ContainedT, VectRealT, CompareT, VectRealTType>,
+                                 : 		CompareT extends DFEVectorBase<DFEVar, CompareT, ?, ?>,
+                                 : 		VectRealTType extends DFEVectorTypeBase<ContainedT, VectRealT, CompareT>
+                                 : 	>
+                                 : 	extends KernelObjectVectorizableNull<VectRealT, CompareT>
+                                 : 	implements Iterable<ContainedT>
+                                 : {
+                                 : 	private final List<ContainedT> m_elements;
+                                 : 	private final VectRealTType m_type;
+                                 : 	private final DFEVectorDoubtType m_doubt_type;
+                                 : 
+                                 : 	/**
+                                 : 	 * @param type An object that can create instances of the real type.
+                                 : 	 */
+                                 : 	protected DFEVectorBase(List<ContainedT> elements, VectRealTType type, DFEVectorDoubtType doubt_type) {
+                                 : 		if (elements == null)
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(), "elements parameter must not be null");
+                                 : 		if (type == null)
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(), "type parameter must not be null");
+                                 : 		m_elements = elements;
+                                 : 		m_type = type;
+                                 : 		m_doubt_type = doubt_type;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Please use {@link #getSize()} instead.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public int getNElements() { return m_elements.size(); }
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the number of vector elements in the stream.
+                                 : 	 */
+                                 : 	public int getSize() {
+                                 : 		return m_elements.size();
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Please use {@link #get(int)} instead, or the MaxJ overloaded
+                                 : 	 * <code>[]</code> operator.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public ContainedT getElement(int i) { return get(i); }
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the vector element at index {@code i} in the vector stream.
+                                 : 	 * @param i The index of the vector element to retrieve.
+                                 : 	 * @return The vector element at index {@code i} in the stream.
+                                 : 	 */
+                                 : 	public ContainedT get(int i) {
+                                 : 		try {
+                                 : 			return m_elements.get(i);
+                                 : 		} catch (IndexOutOfBoundsException e) {
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Index "+i+" is out of bounds for type " + getType() + ".");
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Connects the input of each vector element to the output of the corresponding element in {@code src}.
+                                 : 	 * @param src The vector stream source to which to connect.
+                                 : 	 * @return This stream.
+                                 : 	 */
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	@Override
+                                 : 	public VectRealT connect(VectRealT src) {
+                                 : 		_InternalUtils.assertConnectTypes(this, src);
+                                 : 
+                                 : 		int i = 0;
+                                 : 		try {
+                                 : 			for(; i < m_elements.size(); i++)
+                                 : 				m_elements.get(i).connect(src.get(i));
+                                 : 		} catch (_AlreadyConnectedException e) {
+                                 : 			throw new _AlreadyConnectedException(this, i, e);
+                                 : 		}
+                                 : 
+                                 : 		return (VectRealT) this;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Connects the input of vector element {@code element_index} to the output of stream {@code src}.
+                                 : 	 * @param element_index The index of the vector element to connect.
+                                 : 	 * @param src The input stream to connect to.
+                                 : 	 */
+                                 : 	public void connect(int element_index, ContainedT src) {
+                                 : 		try {
+                                 : 			get(element_index).connect(src);
+                                 : 		} catch (_AlreadyConnectedException e) {
+                                 : 			throw new _AlreadyConnectedException(this, element_index, e);
+                                 : 		} catch (IndexOutOfBoundsException e) {
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Index "+element_index+" is out of bounds for type " + getType() + ".");
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Connects the inputs of all vector elements to the output of stream {@code src}.
+                                 : 	 * @param src The input stream to connect to.
+                                 : 	 * @return This stream.
+                                 : 	 */
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	public VectRealT connect(ContainedT src) {
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			connect(i, src);
+                                 : 
+                                 : 		return (VectRealT) this;
+                                 : 	}
+                                 : 
+                                 : 	private CompareT newCompare() {
+                                 : 		return getType().newCompareInstance(getKernel());
+                                 : 	}
+                                 : 
+                                 : 	private VectRealT toPiped(ContainedT c) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for (int i = 0; i < getSize(); ++i)
+                                 : 			new_elements.add(c);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	private List<ContainedT> newPipes() {
+                                 : 		return new ArrayList<ContainedT>(getSize());
+                                 : 	}
+                                 : 
+                                 : 	private VectRealT newElements(List<ContainedT> pipes) {
+                                 : 		return getType().newInstance(getKernel(), pipes, m_doubt_type);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+    2763    3327      10       0 : 			new_elements.add(get(i) + rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(ContainedT rhs) { return add(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT addAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs + get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar pack() {
+                                 : 		if(getDoubtType().hasDoubtInfo())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Cannot use pack() on this stream as it contains doubt information. " +
+                                 : 				"If you want to explicitly discard this information use " +
+                                 : 				"packWithoutDoubt(), otherwise use packWithDoubt().");
+                                 : 
+                                 : 		return packWithoutDoubt();
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public List<DFEVar> packToList() {
+                                 : 		List<DFEVar> var_list = new ArrayList<DFEVar>();
+                                 : 		for(int i = 0; i < m_elements.size(); i++)
+                                 : 			var_list.addAll(m_elements.get(i).packToList());
+                                 : 
+                                 : 		return var_list;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Return an unmodifiable view of the vector elements as a list.
+                                 : 	 */
+                                 : 	public List<ContainedT> getElementsAsList() {
+                                 : 		return Collections.unmodifiableList(m_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Return an unmodifiable iterator operating over the elements of the vector.
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public Iterator<ContainedT> iterator() {
+                                 : 		return getElementsAsList().iterator();
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT castDoubtType(DoubtType doubt_type) {
+                                 : 		if(!(doubt_type instanceof DFEVectorDoubtType))
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Can only doubt-type cast vector types using a DFEVectorDoubtType object.");
+                                 : 
+                                 : 		DoubtType entry_doubt_type =
+                                 : 			((DFEVectorDoubtType)doubt_type).getContainedDoubtType();
+                                 : 
+                                 : 		List<ContainedT> new_elements = new ArrayList<ContainedT>();
+                                 : 		for(int i = 0; i < m_elements.size(); i++)
+                                 : 			new_elements.add(m_elements.get(i).castDoubtType(entry_doubt_type));
+                                 : 
+                                 : 		return m_type.newInstance(getKernel(), new_elements, (DFEVectorDoubtType)doubt_type);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVectorDoubtType getDoubtType() {
+                                 : 		return m_doubt_type;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar packWithDoubt() {
+                                 : 		if(!getType().isConcreteType())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Cannot pack vector as type " + getType() + " is not concrete.");
+                                 : 
+                                 : 		DFEVar packed_var = m_elements.get(0).packWithDoubt();
+                                 : 		for(int i = 1; i < m_elements.size(); i++)
+                                 : 			packed_var = m_elements.get(i).packWithDoubt().cat(packed_var);
+                                 : 
+                                 : 		return packed_var;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar packWithoutDoubt() {
+                                 : 		if(!getType().isConcreteType())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Cannot pack vector as type " + getType() + " is not concrete.");
+                                 : 
+                                 : 		DFEVar packed_var = m_elements.get(0).packWithoutDoubt();
+                                 : 		for(int i = 1; i < m_elements.size(); i++)
+                                 : 			packed_var = m_elements.get(i).packWithoutDoubt().cat(packed_var);
+                                 : 
+                                 : 		return packed_var;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealTType getType() {
+                                 : 		return m_type;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a watch to this stream.
+                                 : 	 * <p>
+                                 : 	 * During simulation, all data passing through this stream will be logged for debugging purposes.
+                                 : 	 * <p>
+                                 : 	 * The vector elements will be output named {@code name_0}, {@code name_1} etc.
+                                 : 	 * @param name The name for the watch node as it will appear in the output.
+                                 : 	 * @return This stream.
+                                 : 	 */
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	@Override
+                                 : 	public VectRealT simWatch(String name) {
+                                 : 		int n = 0;
+                                 : 		for(ContainedT element : m_elements)
+                                 : 			element.simWatch(name + "_" + n++);
+                                 : 
+                                 : 		return (VectRealT) this;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@Deprecated /** Replaced by simWatch() */
+                                 : 	public VectRealT watch(String name) {
+                                 : 		return simWatch(name);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(ContainedT rhs) { return and(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Concatenates the bits from each vector element with the corresponding element in {@code rhs}.
+                                 : 	 * @param rhs The data that will form the least significant
+                                 : 	 * bits of the concatenation in each output vector element.
+                                 : 	 * @return A new vector where each element is the concatenation of a vector element
+                                 : 	 * from this stream (the most significant bits) and the corresponding element from {@code rhs} (the least significant bits).
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public VectRealT cat(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i).cat(rhs.get(i)) );
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Concatenates the bits from each vector element with the the single stream {@code rhs}.
+                                 : 	 * @param rhs The data that will form the least significant
+                                 : 	 * bits of the concatenation in each output vector element.
+                                 : 	 * @return A new vector where each vector element is the concatenation of an element
+                                 : 	 * from this stream (the most significant bits) and {@code rhs} (the least significant bits).
+                                 : 	 */
+                                 : 	public VectRealT cat(ContainedT rhs) { return cat(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT catAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs.cat(get(i)));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT div(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) / rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+    9831    8231      28       0 : 	public VectRealT div(ContainedT rhs) { return div(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT divAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs / get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT eq(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eq(rhs.get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	public CompareT eq(ContainedT rhs) { return eq(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT eqAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) lhs.eq(get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT eq(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT eq(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT eq(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT eq(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT eqAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT eqAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT eqAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT eqAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).eqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) > rhs.get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(ContainedT rhs) { return gt(toPiped(rhs)); }
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) > rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) > rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) > rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gt(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) > rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gtAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs > get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gtAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs > get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gtAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs > get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gtAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs > get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gtAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs > get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) >= rhs.get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(ContainedT rhs) { return gte(toPiped(rhs)); }
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) >= rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) >= rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) >= rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gte(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) >= rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gteAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs >= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gteAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs >= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gteAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs >= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gteAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs >= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT gteAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs >= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs.get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(ContainedT rhs) { return lt(toPiped(rhs)); }
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lt(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT ltAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs < get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT ltAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs < get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT ltAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs < get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT ltAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs < get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT ltAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs < get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) <= rhs.get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(ContainedT rhs) { return lte(toPiped(rhs)); }
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lte(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i) < rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lteAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs <= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lteAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs <= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lteAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs <= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lteAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs <= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT lteAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (lhs <= get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) * rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(ContainedT rhs) { return mul(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mulAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+     251     771       2       2 : 			new_elements.add(lhs * get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT neg() {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(-get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT neq(VectRealT rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) (get(i).neq(rhs.get(i))));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	public CompareT neq(ContainedT rhs) { return neq(toPiped(rhs)); }
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT neq(double rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT neq(float rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT neq(int rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public CompareT neq(long rhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neq(rhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT neqAsRHS(ContainedT lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) lhs.neq(get(i)));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT neqAsRHS(double lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT neqAsRHS(float lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT neqAsRHS(int lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public CompareT neqAsRHS(long lhs) {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, (DFEVar) get(i).neqAsRHS(lhs));
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT complement() {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(~get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(ContainedT rhs) { return or(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Selects a range of bits from each pipe in this stream.
+                                 : 	 * <p>
+                                 : 	 * Each pipe in the returned stream contains {@code width} bits from position {@code base} in the corresponding pipe of this stream.
+                                 : 	 * @param base The start bit position in the word.
+                                 : 	 * @param width The number of bits to select.
+                                 : 	 * @return A new vector stream containing the selected bits.
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public VectRealT slice(int base, int width) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i).slice(base, width));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) - rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(ContainedT rhs) { return sub(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT subAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs - get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT ternaryIf(VectRealT true_cond, VectRealT false_cond) {
+                                 : 		// TODO: are these conditions correct / needed?
+                                 : 		if(!(getType().getContainedType() instanceof DFEType) ||
+                                 : 		   (((DFEType)getType().getContainedType()).isConcreteType() &&
+                                 : 			!((DFEType)getType().getContainedType()).isBool()))
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Can only perform ternary if (?:) on vector boolean types. This type is " + getType());
+                                 : 
+                                 : 
+                                 : 		if(true_cond.getSize() != getSize() || false_cond.getSize() != getSize())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Number of pipes not compatible in expression: " +
+                                 : 				getType() + " ? " + true_cond.getType() + " : " + false_cond.getType());
+                                 : 
+                                 : 		// TODO: should assert both types have the same pipe types?
+                                 : 
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ? true_cond.get(i) : false_cond.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT ternaryIf(ContainedT true_cond, VectRealT false_cond) {
+                                 : 		VectRealT t = false_cond.getType().newInstance(false_cond.getKernel(), true_cond);
+                                 : 		return ternaryIf(t, false_cond);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT ternaryIf(VectRealT true_cond, ContainedT false_cond) {
+                                 : 		VectRealT f = true_cond.getType().newInstance(true_cond.getKernel(), false_cond);
+                                 : 		return ternaryIf(true_cond, f);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT ternaryIf(ContainedT true_cond, ContainedT false_cond) {
+                                 : 		return ternaryIf(toPiped(true_cond), toPiped(false_cond));
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(VectRealT rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(ContainedT rhs) { return xor(toPiped(rhs)); }
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(ContainedT lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftLeft(DFEVectorBase)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT leftShift(DFEVectorBase<DFEVar, ?, ?, ?> rhs) { return shiftLeft(rhs); }
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftLeft(DFEVar)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT leftShift(DFEVar rhs) { return shiftLeft(rhs); }
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftLeft(int)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT leftShift(int shift_amt) { return shiftLeft(shift_amt); }
+                                 : 
+                                 : 	public VectRealT shiftLeft(DFEVectorBase<DFEVar, ?, ?, ?> rhs) {
+                                 : 		if (getSize() != rhs.getSize())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(), "vector types must have the same number of pipes for left shift (" + getSize() + " vs. " + rhs.getSize() + ")");
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) << rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT shiftLeft(DFEVar rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) << rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT shiftLeft(int shift_amt) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) << shift_amt);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftRight(DFEVectorBase)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT rightShift(DFEVectorBase<DFEVar, ?, ?, ?> rhs) { return shiftRight(rhs); }
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftRight(DFEVar)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT rightShift(DFEVar rhs) { return shiftRight(rhs); }
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Use {@link #shiftRight(int)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	public VectRealT rightShift(int shift_amt) { return shiftRight(shift_amt); }
+                                 : 
+                                 : 	public VectRealT shiftRight(DFEVectorBase<DFEVar, ?, ?, ?> rhs) {
+                                 : 		if (getSize() != rhs.getSize())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(), "vector types must have the same number of pipes for right shift (" + getSize() + " vs. " + rhs.getSize() + ")");
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) >> rhs.get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT shiftRight(DFEVar rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) >> rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT shiftRight(int shift_amt) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) >> shift_amt);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public Kernel getKernel() {
+                                 : 		return m_elements.get(0).getKernel();
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) + rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) + rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) + rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT add(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) + rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT addAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs + get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT addAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs + get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT addAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs + get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT addAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs + get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(boolean rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT and(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) & rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(boolean lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT andAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs & get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT div(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) / rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT div(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) / rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT div(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) / rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT div(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) / rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT divAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs / get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT divAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs / get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT divAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs / get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT divAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs / get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) * rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) * rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) * rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mul(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) * rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mulAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs * get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mulAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs * get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mulAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs * get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT mulAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs * get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(boolean rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT or(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) | rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(boolean lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT orAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs | get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) - rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) - rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) - rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT sub(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) - rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT subAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs - get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT subAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs - get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT subAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs - get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT subAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs - get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(double rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(float rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(int rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(boolean rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xor(long rhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i) ^ rhs);
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(double lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(float lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(int lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(boolean lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public VectRealT xorAsRHS(long lhs) {
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(lhs ^ get(i));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public void setReportOnUnused(boolean should_report) {
+                                 : 		for(ContainedT elements : m_elements)
+                                 : 			elements.setReportOnUnused(should_report);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar hasDoubt() {
+                                 : 		DFEVar doubt = m_elements.get(0).hasDoubt();
+                                 : 		for(int i = 1; i < m_elements.size(); i++)
+                                 : 			doubt = doubt | m_elements.get(i).hasDoubt();
+                                 : 
+                                 : 		return doubt;
+                                 : 	}
+                                 : 
+                                 : 	public CompareT hasAnyDoubtVect() {
+                                 : 		CompareT c = newCompare();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			c.connect(i, get(i).hasDoubt());
+                                 : 
+                                 : 		return c;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT addDoubtInfo() {
+                                 : 		return castDoubtType( getType().getFullTypeWithDoubtInfo().getDoubtType() );
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT removeDoubtInfo() {
+                                 : 		return castDoubtType( getType().getFullTypeWithoutDoubtInfo().getDoubtType() );
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT setDoubt(DFEVar doubt) {
+                                 : 		return setDoubt(doubt, SetDoubtOperation.OVERRIDE);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT setDoubt(boolean doubt) {
+                                 : 		return setDoubt(doubt, SetDoubtOperation.OVERRIDE);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT setDoubt(DFEVar doubt, SetDoubtOperation operation) {
+                                 : 		if (!getDoubtType().hasDoubtInfo())
+                                 : 			throw new MaxCompilerAPIError(getKernel().getManager(),
+                                 : 				"Cannot use setDoubt on this stream as it doesn't contain doubt information.");
+                                 : 
+                                 : 		List<ContainedT> new_elements = newPipes();
+                                 : 		for(int i = 0; i < getSize(); i++)
+                                 : 			new_elements.add(get(i).setDoubt(doubt, operation));
+                                 : 		return newElements(new_elements);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public VectRealT setDoubt(boolean doubt, SetDoubtOperation operation) {
+                                 : 		return setDoubt(getKernel().constant.var(doubt), operation);
+                                 : 	}
+                                 : 
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	private VectRealT shiftElements(DFEVar shift, ShiftDirection dir, boolean circular) {
+                                 : 		VectRealTType type = getType();
+                                 : 		Kernel kernel = getKernel();
+                                 : 		PhotonDesignData container = _Kernel.getPhotonDesignData(kernel);
+                                 : 
+                                 : 		// This won't work for *really* large shift types, but that's never
+                                 : 		// going to happen in practice
+                                 : 		final int maxDesiredShift = (int)((DFEFix)shift.getType()).getMax();
+                                 : 
+                                 : 		NodeWordLevelShift n = new NodeWordLevelShift(container, type.getSize(), dir, circular, maxDesiredShift);
+                                 : 
+                                 : 		n.connectInput("datain", _KernelBaseTypes.toImp(pack()));
+                                 : 		n.connectInput("shift", _KernelBaseTypes.toImp(shift));
+                                 : 
+                                 : 		Var shifted = n.connectOutput("dataout");
+                                 : 
+                                 : 		if (!m_doubt_type.hasDoubtInfo())
+                                 : 			return type.unpack(_KernelBaseTypes.fromImp(kernel, shifted));
+                                 : 		else {
+                                 : 			DFEVectorFullTypeBase<ContainedT, VectRealT, CompareT> full_type = type.getFullTypeWithDoubtInfo();
+                                 : 
+                                 : 			return full_type.unpack(_KernelBaseTypes.fromImp(kernel, shifted));
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public VectRealT shiftElementsLeft(DFEVar shift) {
+                                 : 		return shiftElements(shift, ShiftDirection.Left, false);
+                                 : 	}
+                                 : 
+                                 : 	public VectRealT shiftElementsRight(DFEVar shift) {
+                                 : 		return shiftElements(shift, ShiftDirection.Right, false);
+                                 : 	}
+                                 : 
+                                 : 	public VectRealT rotateElementsLeft(DFEVar shift) {
+                                 : 		return shiftElements(shift, ShiftDirection.Left, true);
+                                 : 	}
+                                 : 
+                                 : 	public VectRealT rotateElementsRight(DFEVar shift) {
+                                 : 		return shiftElements(shift, ShiftDirection.Right, true);
+                                 : 	}
+                                 : }

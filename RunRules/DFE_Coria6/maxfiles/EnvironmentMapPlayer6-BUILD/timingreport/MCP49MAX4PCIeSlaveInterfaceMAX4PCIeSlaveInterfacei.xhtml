@@ -1,0 +1,1850 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+    <title>MaxCompiler Timing Report - Manager Component Information</title>
+    <style type="text/css" title="currentStyle"> 
+         @import "page.css";
+    </style> 
+  </head>
+  <body>
+    <h1>Detailed Path Report: MAX4PCIeSlaveInterface (MAX4PCIeSlaveInterface_i)</h1>
+    <h2 id="12">Cost Table 12</h2>
+
+    <div style="margin-left: 40px;">
+    <table class="pathtable display">
+	<thead>
+        <tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.327</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.799</td>
+          <td style="text-align: center;">0.518</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.085</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[1]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.664</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>28</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.514</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.237</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y29_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.621</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~48|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y29_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.041</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~48|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X177_Y29_N8</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X177_Y29_N8</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >2</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.243</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.588</td>
+          <td style="text-align: center;">0.597</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.133</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[5]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[1]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.664</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>28</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.514</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.237</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N33</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.410</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~7|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N33</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.135</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~7|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N34</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[5]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N34</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.115</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[5]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >3</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.235</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.588</td>
+          <td style="text-align: center;">0.59</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.132</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[7]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[1]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.664</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>28</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.514</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.237</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.410</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~41|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.128</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~41|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N31</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[7]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N31</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.115</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[7]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >4</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.13</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.479</td>
+          <td style="text-align: center;">0.593</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.133</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[6]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[1]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.664</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>28</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[1]~5|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.514</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.237</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[20]~6|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.301</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~43|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~43|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N22</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[6]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N22</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.115</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[6]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >5</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.128</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.546</td>
+          <td style="text-align: center;">0.547</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.11</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[83]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y33_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.467</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~16|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y33_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.081</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~16|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y33_N19</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[83]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y33_N19</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.118</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[83]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >6</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.11</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.521</td>
+          <td style="text-align: center;">0.553</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.111</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[81]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y33_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.442</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~10|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y33_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.087</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~10|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y33_N46</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[81]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y33_N46</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.118</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[81]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >7</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.048</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.38</td>
+          <td style="text-align: center;">0.61</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.133</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[82]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.301</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~9|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.144</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~9|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N16</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[82]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N16</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.118</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[82]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >8</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.046</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.543</td>
+          <td style="text-align: center;">0.458</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.12</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[49]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[3]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y27_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.462</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[3]~2|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y27_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[3]~2|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.081</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~30|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.228</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~30|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N8</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[49]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N8</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[49]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >9</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.045</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.543</td>
+          <td style="text-align: center;">0.444</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.133</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[48]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[3]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y27_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.462</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[3]~2|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y27_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[3]~2|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.081</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~31|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X181_Y35_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.229</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~31|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N10</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[48]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X181_Y35_N10</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.115</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[48]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >10</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.035</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.481</td>
+          <td style="text-align: center;">0.676</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.006</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[65]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y34_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.402</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~52|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y34_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.198</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~52|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y34_N16</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[65]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y34_N16</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[65]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >11</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.034</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.52</td>
+          <td style="text-align: center;">0.639</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.003</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[67]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.441</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~50|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.161</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~50|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N55</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[67]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N55</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[67]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >12</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.031</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.556</td>
+          <td style="text-align: center;">0.599</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.004</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[80]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.477</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~12|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.121</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~12|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N22</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[80]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N22</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[80]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >13</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.024</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.557</td>
+          <td style="text-align: center;">0.592</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.003</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[68]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.064</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[7]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.690</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y35_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>6</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[96]~55|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.389</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>14</small></td>
+                           <td style="text-align: right;"><small>0.239</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[86]~8|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.478</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~40|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X179_Y32_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.114</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~40|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N19</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[68]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X179_Y32_N19</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.130</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[68]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >14</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.019</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.53</td>
+          <td style="text-align: center;">0.432</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.132</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>66</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.517</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>34</small></td>
+                           <td style="text-align: right;"><small>0.038</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.443</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>10</small></td>
+                           <td style="text-align: right;"><small>0.083</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.570</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~34|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.132</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~34|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N55</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N55</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.114</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >15</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.005</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.515</td>
+          <td style="text-align: center;">0.431</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.134</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[10]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>66</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.517</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>34</small></td>
+                           <td style="text-align: right;"><small>0.038</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.443</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>10</small></td>
+                           <td style="text-align: right;"><small>0.083</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.555</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~45|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~45|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N1</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[10]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N1</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.114</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[10]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >16</td>
+          <td style="text-align: center;">setup</td>
+          <td style="text-align: right;">-0.003</td>
+          <td style="text-align: center;">4.0</td>
+          <td style="text-align: center;">2.513</td>
+          <td style="text-align: center;">0.433</td>
+          <td style="text-align: center;" nowrap="true">-0.1</td>
+          <td style="text-align: center;" nowrap="true">-1.132</td>
+          <td style="text-align: center;">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[78]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+			<thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+		     </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>40</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1~PORT_B_WRITE_ENABLE_REG</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X155_Y21_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>66</small></td>
+                           <td style="text-align: right;"><small>0.065</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|cfifo|wrapped_scfifo|auto_generated|dpfifo|FIFOram|altsyncram1|ram_block2a1|portbdataout[0]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.517</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X177_Y31_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>34</small></td>
+                           <td style="text-align: right;"><small>0.038</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|reg_data_addr_qword[0]~1|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.443</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y31_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>10</small></td>
+                           <td style="text-align: right;"><small>0.083</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[79]~32|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.553</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~35|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X180_Y35_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.133</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r~35|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N25</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[78]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X180_Y35_N25</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.114</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|MAX4PCIeSlaveInterface_i|PCIeSlaveInterface_imp|write_reg_r[78]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+  </body>
+</html>

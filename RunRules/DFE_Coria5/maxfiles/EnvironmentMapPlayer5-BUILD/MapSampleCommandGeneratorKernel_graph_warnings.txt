@@ -1,0 +1,88 @@
+*** After kernel graph-pass 'Init Graph' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'Init Graph' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'FoldConstantsPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'OptimiseNodesPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'AlteraDSPExtractionGraphPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'TriAddExtractionPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'ConditionalAddExtractionPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'PO2FPMultOptimiser' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'ScheduleApplier' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'TapFIFOsPass' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	
+*** After kernel graph-pass 'RemoveUntypedConstants' ***
+node "Input(v)" (ID 12) has unconnected outputs: [data]
+stack trace of node origin follows:
+	com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.input(IO.java:606)
+	environmentmapplayer.MapSampleCommandGeneratorKernel.<init>(MapSampleCommandGeneratorKernel.maxj:36)
+	environmentmapplayer.EnvironmentMapPlayerManager.<init>(EnvironmentMapPlayerManager.maxj:62)
+	environmentmapplayer.EnvironmentMapPlayerManager.main(EnvironmentMapPlayerManager.maxj:172)
+	

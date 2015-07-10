@@ -1,0 +1,1615 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+	<title>MaxCompiler Timing Report - Localized Path Information</title>
+	<style type="text/css" title="currentStyle"> 
+		@import "page.css";
+	</style>
+  </head>
+  <body>
+    <h2 id="8">Cost Table 8</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.129</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">2.675</td>
+          <td style="text-align: center;" nowrap="true">1.256</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.304</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[20]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[20]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.191</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|Mult0~10|resulta[20]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.564</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|dataa</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.234</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.142</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.255</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.022</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.077</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.029</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.144</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.686</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.283</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0|portadatain[2]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >2</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.07</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">2.614</td>
+          <td style="text-align: center;" nowrap="true">1.258</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.304</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[18]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[18]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.191</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|Mult0~10|resulta[18]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.503</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|datab</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.236</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.142</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.255</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.022</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.077</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.029</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.144</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.686</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.283</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0|portadatain[2]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >3</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.039</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">2.783</td>
+          <td style="text-align: center;" nowrap="true">1.058</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.304</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[16]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[16]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.191</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|Mult0~10|resulta[16]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.672</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.036</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.142</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.255</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.022</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.077</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.029</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.144</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.686</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.283</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0|portadatain[2]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >4</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.026</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">2.668</td>
+          <td style="text-align: center;" nowrap="true">1.16</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.304</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[19]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|result_output_reg[19]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>DSP_X110_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.191</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|q_partial_1|auto_generated|Mult0~10|resulta[19]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.557</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.138</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process_cin_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.142</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.255</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~77|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N33</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~61|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N36</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~73|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N39</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~89|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N42</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~53|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~81|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~85|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N51</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~49|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.022</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~57|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y68_N57</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~69|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.077</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~65|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~13|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~29|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N9</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~5|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N12</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~45|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~25|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N18</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.023</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~37|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N21</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~1|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.029</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~41|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N27</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~9|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X104_Y67_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.144</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|quotient_process|auto_generated|op_1~33|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>1.686</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X28_Y68_N54</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.035</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|wire_man_result_muxa_dataout[20]~9|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.283</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0|portadatain[2]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X29_Y68_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id14_nodediv|fpu|MWFloatingPointUnit_quartusv13_1_0_DIV_8x24to8x24_lat6_ce_altfp_div_aqh_component|altfp_div_pst1|man_result_dffe_rtl_0|auto_generated|altsyncram4|ram_block5a0~porta_datain_reg2</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </body>
+</html>

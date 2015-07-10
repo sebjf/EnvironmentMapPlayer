@@ -1,0 +1,513 @@
+    LUTs     FFs   BRAMs    DSPs : DFEManager.java
+      27      27       3       0 : resources used by this file
+   0.01%   0.00%   0.15%   0.00% : % of available
+   0.02%   0.01%   0.23%   0.00% : % of total used
+   0.02%   0.02%   0.52%   0.00% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.managers;
+                                 : 
+                                 : import java.io.File;
+                                 : import java.util.HashSet;
+                                 : import java.util.Set;
+                                 : 
+                                 : import com.maxeler.maxcompiler.Version;
+                                 : import com.maxeler.maxcompiler.v2.build.EngineParameters;
+                                 : import com.maxeler.maxcompiler.v2.build._EngineParameters;
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerInternalError;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelConfiguration;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._KernelConfiguration;
+                                 : import com.maxeler.maxcompiler.v2.managers.platform.AlteraToolchain;
+                                 : import com.maxeler.maxcompiler.v2.managers.platform.EngineToolchain;
+                                 : import com.maxeler.maxcompiler.v2.managers.platform.XilinxToolchain;
+                                 : import com.maxeler.maxdc.BuildManager;
+                                 : import com.maxeler.maxdc.Entity;
+                                 : import com.maxeler.maxdc.MaxFileManager;
+                                 : import com.maxeler.maxdc.Platform;
+                                 : import com.maxeler.maxdc.proc_management.ProcessFailedException;
+                                 : import com.maxeler.maxeleros.managercompiler.configuration.ManagerConfiguration;
+                                 : import com.maxeler.maxeleros.managercompiler.configuration.ManagerPersonaConfiguration;
+                                 : import com.maxeler.maxeleros.managercompiler.configuration.ManagerPersonaConfiguration.PersonaMode;
+                                 : import com.maxeler.maxeleros.managercompiler.configuration.MaxelerBoardModel;
+                                 : import com.maxeler.maxeleros.managercompiler.persona.Persona;
+                                 : import com.maxeler.maxeleros.platforms.MAX2Board;
+                                 : import com.maxeler.maxeleros.platforms.MAX3ComputeFPGA;
+                                 : import com.maxeler.maxeleros.platforms.MAX3InterfaceFPGA;
+                                 : import com.maxeler.maxeleros.platforms.MAX4Board;
+                                 : import com.maxeler.maxeleros.platforms.MAX4GALAVABoard;
+                                 : import com.maxeler.maxeleros.platforms.MAX4MAIABoard;
+                                 : import com.maxeler.maxeleros.platforms.MAX4NBoard;
+                                 : import com.maxeler.utils.MaxCompilerHide;
+                                 : 
+                                 : public abstract class DFEManager {
+                                 : 	private final BuildManager m_build_manager;
+                                 : 	private final _CustomParameters m_customParameters;
+                                 : 	private final ManagerConfiguration m_configuration;
+                                 : 	private BuildConfig m_buildConfig;
+                                 : 	private final EngineParameters m_engine_parameters;
+                                 : 	private EngineToolchain m_toolchain = null;
+                                 : 
+                                 : 	private final Set<String> m_used_kernel_names =
+                                 : 		new HashSet<String>();
+                                 : 
+                                 : 	/* MaxCompiler PhotonKernelConfiguration Infrastructure */
+                                 : 	protected KernelConfiguration m_kernel_configuration = new _KernelConfiguration();
+                                 : 	private boolean m_kernel_configuration_queried = false;
+                                 : 
+                                 : 
+                                 : 	// this class is used to work around Java's limited constructors..
+                                 : 	@MaxCompilerHide
+                                 : 	protected static class _CustomParameters {
+                                 : 		final BuildManager buildManager;
+                                 : 		protected _CustomParameters(BuildManager b) {
+                                 : 			buildManager = b;
+                                 : 		}
+                                 : 		@MaxCompilerHide
+                                 : 		public BuildManager getBuildManager() {
+                                 : 			return buildManager;
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public enum StreamMode {ONLY_THROUGHPUT, LOW_LATENCY_ENABLED, LOW_LATENCY_SLAVE};
+                                 : 
+                                 : 	protected DFEManager(
+                                 : 		String name,
+                                 : 		String build_directory,
+                                 : 		boolean is_simulation,
+                                 : 		BuildConfig.Level build_level,
+                                 : 		MAXBoardModel board_model)
+                                 : 	{
+                                 : 		this(new _EngineParameters(
+                                 : 				name,
+                                 : 				build_directory,
+                                 : 				board_model,
+                                 : 				is_simulation ? EngineParameters.Target.DFE_SIM : EngineParameters.Target.DFE)
+                                 : 			);
+                                 : 	}
+                                 : 
+                                 : 	protected DFEManager(
+                                 : 		String name,
+                                 : 		String build_directory,
+                                 : 		boolean is_simulation,
+                                 : 		MAXBoardModel board_model)
+                                 : 	{
+                                 : 		this(name, build_directory, is_simulation,
+                                 : 			BuildConfig.Level.FULL_BUILD, board_model);
+                                 : 	}
+                                 : 
+                                 : 	protected DFEManager(
+                                 : 		String build_name,
+                                 : 		boolean is_simulation,
+                                 : 		MAXBoardModel board_model)
+                                 : 	{
+                                 : 		this(new File(build_name).getName(), build_name, is_simulation,
+                                 : 			BuildConfig.Level.FULL_BUILD, board_model);
+                                 : 	}
+                                 : 
+                                 : 	protected DFEManager(final EngineParameters configuration) {
+                                 : 		this(configuration, new _CustomParameters(
+                                 : 			new BuildManager(configuration.getMaxFileName(), configuration.getBuildName(),
+                                 : 				configuration.getTarget().getIsSimulation())));
+                                 : 	}
+                                 : 
+                                 : 	private void checkConfiguration(
+                                 : 		BuildManager bm,
+                                 : 		EngineParameters ep,
+                                 : 		ManagerConfiguration mc)
+                                 : 	{
+                                 : 		if (ep.getTarget().equals(EngineParameters.Target.DFE_SIM) &&
+                                 : 			mc.getEnableMPCX()) {
+                                 : 			mc.setEnableMPCX(false);
+                                 : 			bm.logWarning("Disabling MPCX since this setting is not available for simulations.");
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	// Main constructor
+                                 : 	@MaxCompilerHide
+                                 : 	protected DFEManager(EngineParameters engineParameters, _CustomParameters params) {
+                                 : 		m_engine_parameters = engineParameters;
+                                 : 		m_configuration = engineParameters.getManagerConfigurationImp();
+                                 : 		m_customParameters = params;
+                                 : 		m_build_manager = params.buildManager;
+                                 : 		m_buildConfig = engineParameters.getBuildConfig();
+                                 : 
+                                 : 		checkConfiguration(m_build_manager, engineParameters, m_configuration);
+                                 : 
+                                 : 		ManagerConfiguration.setManagerConfiguration(m_build_manager, m_configuration);
+                                 : 		checkSimulationBuildOnly();
+                                 : 
+                                 : 		MaxFileManager mgm = MaxFileManager.getMaxFileManager(getBuildManager());
+                                 : 		if (!mgm.constantIsAlreadyUsed("BOARD_MODEL")) {
+                                 : 			mgm.addMaxFileStringConstant(false, "BOARD_MODEL",
+                                 : 					m_configuration.getBoardModel().toString());
+                                 : 		}
+                                 : 		m_build_manager.setPlatform(m_configuration.getBoardModel().getBoardCapabilities().getPlatform());
+                                 : 		// assign platform to parent(s) bm
+                                 : 		BuildManager bm = m_build_manager;
+                                 : 		while(bm.isSubBuildManager()) {
+                                 : 			bm = bm.getParentBuildManager();
+                                 : 			bm.setPlatform(m_configuration.getBoardModel().getBoardCapabilities().getPlatform());
+                                 : 		}
+                                 : 
+                                 : 		_KernelConfiguration.setBoardModel(m_kernel_configuration,
+                                 : 			MaxelerBoardModel.get(m_configuration.getBoardModel().toString()));
+                                 : 	}
+                                 : 
+                                 : 	private void checkSimulationBuildOnly() {
+                                 : 		if(Version.isSimOnlyRun() && !m_build_manager.isTargetSimulation()) {
+                                 : 			if(Version.simulationOnly) {
+                                 : 				throw new MaxCompilerAPIError(this,
+                                 : 					"This version of MaxCompiler can only be used to target simulation. Please" +
+                                 : 					" use a different type of Manager or instantiate this Manager such that it" +
+                                 : 					" targets simulation. The latter is usually achieved by using an alternate" +
+                                 : 					" constructor with a boolean is_simuation (or similar) parameter set to true."
+                                 : 				);
+                                 : 			}
+                                 : 			else {
+                                 : 				throw new MaxCompilerAPIError(this,
+                                 : 					"Your current MaxCompiler license can only be used to target simulation. Please" +
+                                 : 					" contact Maxeler Technologies for a license upgrade/replacement"
+                                 : 				);
+                                 : 			}
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public EngineParameters getEngineParameters() {
+                                 : 		return m_engine_parameters;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	protected final EngineToolchain makeToolchain() {
+                                 : 		if (m_toolchain == null) {
+                                 : 			DFEModel model = m_engine_parameters.getDFEModel();
+                                 : 
+                                 : 			switch(model.getDFEArchitecture())
+                                 : 			{
+                                 : 				case MAX2:
+                                 : 				case MAX3:
+                                 : 					m_toolchain = new XilinxToolchain(getBuildManager(), model);
+                                 : 					break;
+                                 : 				case MAX4:
+                                 : 				case MAX4_Maia:
+                                 : 				case MAX4_Isca:
+                                 : 				case MAX4_Galava:
+                                 : 					m_toolchain = new AlteraToolchain(getBuildManager(), model);
+                                 : 					break;
+                                 : 				default:
+                                 : 					throw new MaxCompilerInternalError(
+                                 : 						this, "Cannot get tool-chain for DFEArchitecture "
+                                 : 						+ model.getDFEArchitecture());
+                                 : 			}
+                                 : 		}
+                                 : 
+                                 : 		return m_toolchain;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Create a {@link KernelParameters} object using the currently defined
+                                 : 	 * {@link KernelConfiguration} for this {@link DFEManager}.
+                                 : 	 * <p>
+                                 : 	 * The {@code KernelConfiguration} object used is the same as that returned
+                                 : 	 * by {@link #getCurrentKernelConfig()}.
+                                 : 	 * <p>
+                                 : 	 * This method is used to create a {@code KernelParameters} object which must
+                                 : 	 * passed to a {@link Kernel} constructor.
+                                 : 	 * @param kernel_name The name of the {@code Kernel}.
+                                 : 	 * @return A {@code KernelParameters} object which uses the specified name
+                                 : 	 * and the currently defined {@code KernelConfiguration}.
+                                 : 	 * @see #makeKernelParameters(String, KernelConfiguration)
+                                 : 	 * @see #getCurrentKernelConfig()
+                                 : 	 * @see #setCurrentKernelConfig(KernelConfiguration)
+                                 : 	 */
+                                 : 	public KernelParameters makeKernelParameters(String kernel_name) {
+                                 : 		return makeKernelParameters(kernel_name, getCurrentKernelConfig());
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Create a {@link KernelParameters} object with a specific {@link KernelConfiguration}.
+                                 : 	 * <p>
+                                 : 	 * This method is used to create a {@code KernelParameters} object which must be
+                                 : 	 * passed to the constructor of a {@link Kernel}.
+                                 : 	 * @param kernel_name The name of the {@code Kernel}.
+                                 : 	 * @param kernel_configuration The configuration options to apply to the {@code Kernel}.
+                                 : 	 * @return A {@code KernelParameters} object with the specified name and configuration
+                                 : 	 * options.
+                                 : 	 * @see #makeKernelParameters(String)
+                                 : 	 */
+                                 : 	public KernelParameters makeKernelParameters(String kernel_name, KernelConfiguration kernel_configuration) {
+                                 : 		if (kernel_name == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(this, "kernel_name");
+                                 : 		if (kernel_configuration == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(this, "kernel_configuration");
+                                 : 
+                                 : 		if(m_used_kernel_names.contains(kernel_name))
+                                 : 			throw new MaxCompilerAPIError(this, "Kernel name '" + kernel_name + "' is already used.");
+                                 : 		if(m_build_manager.getBuildName().toLowerCase().equals(kernel_name.toLowerCase()))
+                                 : 			throw new MaxCompilerAPIError(this, "Kernel names can not be the same as your build name (" + m_build_manager.getBuildName() + "), consider appending 'Kernel' to the name.");
+                                 : 
+                                 : 		return _Kernel.makeKernelParameters(this, kernel_name, kernel_configuration);
+                                 : 	}
+                                 : 
+                                 : 	void logSetConsoleTag(String console_tag) {
+                                 : 		m_build_manager.logSetConsoleTag(console_tag);
+                                 : 	}
+                                 : 
+                                 : 	void logSetLogTag(String log_tag) {
+                                 : 		m_build_manager.logSetLogTag(log_tag);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Log a message to stdout and the build-log file.
+                                 : 	 */
+                                 : 	public void logMsg(String msg, Object... args) {
+                                 : 		m_build_manager.logUser(msg, args);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Log a message to the build-log file and to stdout when the
+                                 : 	 * <code>build.verbose_output</code> configuration option is set.
+                                 : 	 */
+                                 : 	public void logInfo(String msg, Object... args) {
+                                 : 		m_build_manager.logInfo(msg, args);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Log a message to stderr and the build-log file.
+                                 : 	 */
+                                 : 	public void logWarning(String msg, Object... args) {
+                                 : 		m_build_manager.logWarning(msg, args);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Log a message to stderr and the build-log file.
+                                 : 	 */
+                                 : 	public void logError(String msg, Object... args) {
+                                 : 		m_build_manager.logError(msg, args);
+                                 : 	}
+                                 : 
+                                 : 	public void setParameter(String name, String value) {
+                                 : 		m_build_manager.setParameter(name, value);
+                                 : 	}
+                                 : 
+                                 : 	public void addMaxFileConstantFlag(String name, int value) {
+                                 : 		if (!MaxFileManager.getMaxFileManager(m_build_manager).constantIsAlreadyUsed(name)) {
+                                 : 			MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileConstant(false, name, value);
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public void addMaxFileConstant(String name, int value) {
+                                 : 		MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileConstant(true, name, value);
+                                 : 	}
+                                 : 	public void addMaxFileConstant(String name, float value) {
+                                 : 		MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileDoubleConstant(true, name, value);
+                                 : 	}
+                                 : 
+                                 : 	public void addMaxFileStringConstant(String name, String value) {
+                                 : 		MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileStringConstant(true, name, value);
+                                 : 	}
+                                 : 
+                                 : 	public void addMaxFileDoubleConstant(String name, double value) {
+                                 : 		MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileDoubleConstant(true, name, value);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public void addMaxFileFeature(String feature) {
+                                 : 		MaxFileManager.getMaxFileManager(m_build_manager).addMaxFileFeature(feature);
+                                 : 	}
+                                 : 
+                                 : 	public boolean isTargetSimulation() {
+                                 : 		return m_build_manager.isTargetSimulation();
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public BuildManager getBuildManager() {
+                                 : 		return m_build_manager;
+                                 : 	}
+                                 : 
+                                 : 	public String getName() {
+                                 : 		return m_build_manager.getBuildName();
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	public void setBuildConfig(BuildConfig build_config) {
+                                 : 		if (build_config == null)
+                                 : 			throw new MaxCompilerAPIError(m_build_manager, "Argument 'build_config' cannot be null.");
+                                 : 		m_buildConfig = build_config;
+                                 : 		m_buildConfig.saveToManagerConfig(m_configuration.build);
+                                 : 	}
+                                 : 
+                                 : 	public BuildConfig getBuildConfig() {
+                                 : 		return m_buildConfig;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public ManagerConfiguration getManagerConfiguration() {
+                                 : 		return m_configuration;
+                                 : 	}
+                                 : 
+                                 : 	// Please override realBuild() instead of build() as per #1141
+                                 : 	@edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_EXIT")
+                                 : 	public void build() {
+                                 : 		// let any subclass modify the configuration
+                                 : 		m_buildConfig.saveToManagerConfig(m_configuration.build);
+                                 : 		finaliseConfig();
+                                 : 
+                                 : 		// see if we need to load a persona..
+                                 : 		if (m_configuration.persona.getMode() == PersonaMode.UpdateMode_ConsumePersona)
+                                 : 			Persona.selectAndSetPersona(m_build_manager, m_configuration);
+                                 : 
+                                 : 		if (m_configuration.getPrettyPrintManagerConfiguration()) {
+                                 : 			m_build_manager.logInfo("Manager Configuration:\n");
+                                 : 			m_build_manager.logInfo("\t" + m_configuration.prettyPrint().trim().replace("\n", "\n\t") + "\n");
+                                 : 			m_build_manager.logInfo("\n -- \n");
+                                 : 		}
+                                 : 		m_configuration.setImmutable(); // no more modifications allowed after this point..
+                                 : 
+                                 : 		try {
+      27      27       3       0 : 			realBuild();
+                                 : 		} catch ( ProcessFailedException e ) {
+                                 : 			if ( m_build_manager.getParameterBool("build.intercept_build_failed_exceptions", true) ) {
+                                 : 				m_build_manager.logError( e.getMessage() );
+                                 : 				System.exit(1);
+                                 : 			} else {
+                                 : 				m_build_manager.logError( e.getMessage() );
+                                 : 				StringBuilder sb = new StringBuilder();
+                                 : 				for ( StackTraceElement ste : e.getStackTrace() )
+                                 : 					sb.append("\t\t" + ste + "\n");
+                                 : 				m_build_manager.logError( sb.toString() );
+                                 : 			}
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	abstract protected void realBuild();
+                                 : 	@MaxCompilerHide
+                                 : 	abstract protected void finaliseConfig();
+                                 : 
+                                 : 	void runBuild(Entity root) {
+                                 : 		makeToolchain().addBuildPassesToManager(getBuildManager(), getBuildConfig(), m_configuration);
+                                 : 		getBuildManager().build(root);
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Replaced by {@link #getCurrentKernelConfig()}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	@MaxCompilerHide
+                                 : 	public KernelConfiguration getDefaultKernelConfig() {
+                                 : 		return getCurrentKernelConfig();
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Get the current {@link KernelConfiguration} for this {@link DFEManager}.
+                                 : 	 * <p>
+                                 : 	 * Note that this {@code KernelConfiguration} is mutable and will apply to
+                                 : 	 * all {@link Kernel}s created with {@link KernelParameters} created via
+                                 : 	 * the {@link #makeKernelParameters(String)} method.
+                                 : 	 * <p>
+                                 : 	 * To apply separate {@code KernelConfiguration}s to individual kernels,
+                                 : 	 * use the {@link #makeKernelParameters(String, KernelConfiguration)}
+                                 : 	 * method.
+                                 : 	 * @return A mutable {@code KernelConfiguration} that will be applied to {@code
+                                 : 	 * Kernel}s that use the default
+                                 : 	 * @see #setCurrentKernelConfig(KernelConfiguration)
+                                 : 	 * @see #makeKernelParameters(String)
+                                 : 	 * @see #makeKernelParameters(String, KernelConfiguration)
+                                 : 	 */
+                                 : 	public KernelConfiguration getCurrentKernelConfig() {
+                                 : 		m_kernel_configuration_queried = true;
+                                 : 		return m_kernel_configuration;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * @deprecated Replaced by {@link #setCurrentKernelConfig(KernelConfiguration)}.
+                                 : 	 */
+                                 : 	@Deprecated
+                                 : 	@MaxCompilerHide
+                                 : 	public void setDefaultKernelConfig(KernelConfiguration newConfiguration) {
+                                 : 		setCurrentKernelConfig(newConfiguration);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Specify the {@link KernelConfiguration} that will apply to {@link Kernel}s
+                                 : 	 * created by the {@link #makeKernelParameters(String)} method.
+                                 : 	 * <p>
+                                 : 	 * To apply separate {@code KernelConfiguration}s to individual kernels,
+                                 : 	 * use the {@link #makeKernelParameters(String, KernelConfiguration)}
+                                 : 	 * method.
+                                 : 	 * @param newConfiguration The new {@code KernelConfiguration} object to use.
+                                 : 	 * @see #getCurrentKernelConfig()
+                                 : 	 * @see #makeKernelParameters(String)
+                                 : 	 * @see #makeKernelParameters(String, KernelConfiguration)
+                                 : 	 */
+                                 : 	public void setCurrentKernelConfig(KernelConfiguration newConfiguration) {
+                                 : 		if (newConfiguration == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(this, "newConfiguration");
+                                 : 		if (m_kernel_configuration_queried)
+                                 : 			throw new MaxCompilerAPIError(this,"Cannot set default kernel " +
+                                 : 				"configuration after a call to 'getCurrentKernelConfig'.");
+                                 : 
+                                 : 		MaxelerBoardModel current_board =
+                                 : 			_KernelConfiguration.getPhotonKernelConfig(m_kernel_configuration).getMaxBoard();
+                                 : 		MaxelerBoardModel new_board =
+                                 : 			_KernelConfiguration.getPhotonKernelConfig(newConfiguration).getMaxBoard();
+                                 : 		if (! current_board.equals(new_board) )
+                                 : 			throw new MaxCompilerAPIError(this,"Cannot set default kernel " +
+                                 : 			"configuration: New configuration is for a different board. (Expected: " +
+                                 : 			current_board.toString() + " Got: " + new_board);
+                                 : 
+                                 : 		m_kernel_configuration = newConfiguration;
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	protected int getNumDIMMs(Platform<?, ?> platform) {
+                                 : 
+                                 : 		if(platform instanceof MAX2Board) {
+                                 : 			return 3;
+                                 : 		} else if(platform instanceof MAX3ComputeFPGA) {
+                                 : 			return 6;
+                                 : 		} else if(platform instanceof MAX4Board) {
+                                 : 			return 6;
+                                 : 		} else if(platform instanceof MAX4MAIABoard) {
+                                 : 			return 6;
+                                 : 		} else if(platform instanceof MAX4NBoard) {
+                                 : 			return 3;
+                                 : 		} else if(platform instanceof MAX4GALAVABoard) {
+                                 : 			return 3;
+                                 : 		} else if (platform instanceof MAX3InterfaceFPGA) {
+                                 : 			return 0;
+                                 : 		} else {
+                                 : 			throw new MaxCompilerInternalError(this, "Unknown platform: " + platform);
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	protected int getMemoryWordSize(Platform<?, ?> platform) {
+                                 : 
+                                 : 
+                                 : 		if((platform instanceof MAX4MAIABoard || platform instanceof MAX4NBoard || platform instanceof MAX4GALAVABoard) && (!isTargetSimulation())) {
+                                 : 			return 9 * getNumDIMMs(platform);
+                                 : 		} else {
+                                 : 			return 8 * getNumDIMMs(platform);
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	protected final <T extends _CustomParameters> T getCustomParameters(){
+                                 : 		return (T) m_customParameters;
+                                 : 	}
+                                 : 
+                                 : 	/** Setup a particular persona to be used. */
+                                 : 	@MaxCompilerHide
+                                 : 	public void setPersona(String fileName) {
+                                 : 		ManagerPersonaConfiguration pconfig = m_configuration.persona;
+                                 : 		pconfig.setPersona(new Persona(getBuildManager(), fileName));
+                                 : 		pconfig.setMode(PersonaMode.UpdateMode_ConsumePersona);
+                                 : 	}
+                                 : }

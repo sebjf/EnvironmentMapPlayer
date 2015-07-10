@@ -1,0 +1,213 @@
+
+Total resource usage
+-----------------------------------------------------------------
+    LUTs     FFs   BRAMs    DSPs                            
+  345200  690400    2014    1590  total available resources for FPGA
+  166259  240768    1306      90  total resources used      
+  48.16%  34.87%  64.85%   5.66%  % of available
+  116024  150411     574      90  used by kernels           
+  33.61%  21.79%  28.50%   5.66%  % of available
+   46552   86096     713       0  used by manager           
+  13.49%  12.47%  35.40%   0.00%  % of available
+  133893  202120    1148      90  stray resources           
+  38.79%  29.28%  57.00%   5.66%  % of available
+
+High level manager breakdown aggregated by type
+-----------------------------------------------------------------
+    LUTs     FFs   BRAMs    DSPs  Type                      Occurrences
+     220     411       0       0  AddrGen                   1
+      39      37       1       0  ChecksumMappedDRP         1
+      25   14966       0       0  DualAspectReg             4
+     737     834     406       0  Fifo                      14
+  116024  150411     574      90  Kernel                    6
+     165     216       0       0  MAX4CPLD                  1
+     780     984       2       0  MAX4PCIeSlaveInterface    1
+      34      54       0       0  MAXEvents                 1
+       6       5       0       0  ManagerStateMachine_RayC  1
+     470      69       0       0  MappedElementSwitch       1
+     433    1010       5       0  MappedMemoriesController  1
+     145     134       0       0  MappedRegistersControlle  1
+    4271   19014     156       0  MemoryControllerPro       1
+    1675     924       6       0  PCIeBase                  1
+    4609    7444      52       0  PCIeStreaming             1
+     234     334       0       0  PerfMonitor               1
+      18      22       0       0  ResetControl              2
+     160     204       0       0  SanityBlock               1
+      97      91       1       0  SignalForwardingAdapter   1
+   23628   26801      84       0  StratixVDDR3              4
+       1       0       0       0  StreamPullPushAdapter     1
+    8805   12542       0       0  StreamStatus              36
+       0       0       0       0  Memory Controller         --
+       0       0       0       0  Other InterFPGA           --
+    1041    1299       8       0  Other MappedElements      --
+    6022    9624      60       0  Other PCIe                --
+
+Kernel breakdown
+-----------------------------------------------------------------
+    LUTs     FFs   BRAMs    DSPs  category
+  116024  150411     574      90  total for all kernels
+  33.61%  21.79%  28.50%   5.66%  % of total available
+
+Totals for each kernel
+    LUTs     FFs   BRAMs    DSPs  Kernel name
+   13186   18180     108      15  MapSampleCommandGeneratorKernel (total)
+   3.82%   2.63%   5.36%   0.94%  % of total available
+   12663   15757      81      15  MapSampleCommandGeneratorKernel (user)
+   3.67%   2.28%   4.02%   0.94%  % of total available
+     287    1432      23       0  MapSampleCommandGeneratorKernel (scheduling)
+   0.08%   0.21%   1.14%   0.00%  % of total available
+     236     991       4       0  MapSampleCommandGeneratorKernel (other Kernel resources)
+   0.07%   0.14%   0.20%   0.00%  % of total available
+    1084    3401       4       0  MapSampleReaderKernel (total)
+   0.31%   0.49%   0.20%   0.00%  % of total available
+     891    2549       0       0  MapSampleReaderKernel (user)
+   0.26%   0.37%   0.00%   0.00%  % of total available
+       9      15       1       0  MapSampleReaderKernel (scheduling)
+   0.00%   0.00%   0.05%   0.00%  % of total available
+     184     837       3       0  MapSampleReaderKernel (other Kernel resources)
+   0.05%   0.12%   0.15%   0.00%  % of total available
+     382     786       4       0  MaxVideoSignalKernel (total)
+   0.11%   0.11%   0.20%   0.00%  % of total available
+     179     309       0       0  MaxVideoSignalKernel (user)
+   0.05%   0.04%   0.00%   0.00%  % of total available
+      28      26       3       0  MaxVideoSignalKernel (scheduling)
+   0.01%   0.00%   0.15%   0.00%  % of total available
+     175     451       1       0  MaxVideoSignalKernel (other Kernel resources)
+   0.05%   0.07%   0.05%   0.00%  % of total available
+   93458  111299     443      61  RayCasterKernel (total)
+  27.07%  16.12%  22.00%   3.84%  % of total available
+   92506  107438     359      61  RayCasterKernel (user)
+  26.80%  15.56%  17.83%   3.84%  % of total available
+     802    3046      82       0  RayCasterKernel (scheduling)
+   0.23%   0.44%   4.07%   0.00%  % of total available
+     150     815       2       0  RayCasterKernel (other Kernel resources)
+   0.04%   0.12%   0.10%   0.00%  % of total available
+    1730    1990       6       7  RaySampleCommandGeneratorKernel (total)
+   0.50%   0.29%   0.30%   0.44%  % of total available
+    1627    1594       4       7  RaySampleCommandGeneratorKernel (user)
+   0.47%   0.23%   0.20%   0.44%  % of total available
+      23      98       2       0  RaySampleCommandGeneratorKernel (scheduling)
+   0.01%   0.01%   0.10%   0.00%  % of total available
+      80     298       0       0  RaySampleCommandGeneratorKernel (other Kernel resources)
+   0.02%   0.04%   0.00%   0.00%  % of total available
+    6184   14755       9       7  RaySampleReaderKernel (total)
+   1.79%   2.14%   0.45%   0.44%  % of total available
+    6063   14129       4       7  RaySampleReaderKernel (user)
+   1.76%   2.05%   0.20%   0.44%  % of total available
+      41     112       4       0  RaySampleReaderKernel (scheduling)
+   0.01%   0.02%   0.20%   0.00%  % of total available
+      80     514       1       0  RaySampleReaderKernel (other Kernel resources)
+   0.02%   0.07%   0.05%   0.00%  % of total available
+
+
+Manager breakdown
+-----------------------------------------------------------------
+    LUTs     FFs   BRAMs    DSPs  Type                      Instance
+   13186   18180     108      15  Kernel                    MapSampleCommandGeneratorKernel
+    1084    3401       4       0  Kernel                    MapSampleReaderKernel
+     382     786       4       0  Kernel                    MaxVideoSignalKernel
+       6       5       0       0  ManagerStateMachine_RayC  RayCasterKernel_flushing_cameraUpdates
+   93458  111299     443      61  Kernel                    RayCasterKernel
+    1730    1990       6       7  Kernel                    RaySampleCommandGeneratorKernel
+    6184   14755       9       7  Kernel                    RaySampleReaderKernel
+     299     408       0       0  StreamStatus              STREAMSTATUS_MapSampleCommandGeneratorKernel_cache_valid
+     251     353       0       0  StreamStatus              STREAMSTATUS_MapSampleCommandGeneratorKernel_sample_command
+     251     353       0       0  StreamStatus              STREAMSTATUS_MapSampleCommandGeneratorKernel_sample_offset_in_pixels
+     251     354       0       0  StreamStatus              STREAMSTATUS_MapSampleReaderKernel_sample
+     197     303       0       0  StreamStatus              STREAMSTATUS_MaxVideoSignalKernel_displayDataOut
+     145     250       0       0  StreamStatus              STREAMSTATUS_RayCasterKernel_flushing_cameraUpdates_output
+     251     353       0       0  StreamStatus              STREAMSTATUS_RayCasterKernel_miplevel
+     251     355       0       0  StreamStatus              STREAMSTATUS_RayCasterKernel_plane
+     251     351       0       0  StreamStatus              STREAMSTATUS_RayCasterKernel_u
+     251     352       0       0  StreamStatus              STREAMSTATUS_RayCasterKernel_v
+     254     352       0       0  StreamStatus              STREAMSTATUS_RaySampleCommandGeneratorKernel_sample_parameter_read_command
+     251     353       0       0  StreamStatus              STREAMSTATUS_RaySampleReaderKernel_sampleParameters
+     244     351       0       0  StreamStatus              STREAMSTATUS_Stream_16_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_19_output
+     248     352       0       0  StreamStatus              STREAMSTATUS_Stream_21_output
+     244     351       0       0  StreamStatus              STREAMSTATUS_Stream_27_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_29_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_31_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_33_output
+     248     353       0       0  StreamStatus              STREAMSTATUS_Stream_40_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_42_output
+     244     351       0       0  StreamStatus              STREAMSTATUS_Stream_44_output
+     244     353       0       0  StreamStatus              STREAMSTATUS_Stream_47_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_52_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_54_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_56_output
+     197     300       0       0  StreamStatus              STREAMSTATUS_Stream_58_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_5_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_62_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_66_output
+     244     349       0       0  StreamStatus              STREAMSTATUS_Stream_8_output
+     245     348       0       0  StreamStatus              STREAMSTATUS_addrgen_cmd_environment_map_addrgen_cmd_environment_map_0
+     302     401       0       0  StreamStatus              STREAMSTATUS_cameraUpdates_cameraUpdates
+     254     352       0       0  StreamStatus              STREAMSTATUS_environment_map_in_environment_map_in
+     252     352       0       0  StreamStatus              STREAMSTATUS_sample_memory_stream_sample_memory_stream
+     252     353       0       0  StreamStatus              STREAMSTATUS_sample_parameter_memory_stream_sample_parameter_memory_stream
+       7    1533       0       0  DualAspectReg             Stream_16
+      40      36       2       0  Fifo                      Stream_19
+       7   12009       0       0  DualAspectReg             Stream_21
+      40      36       1       0  Fifo                      Stream_27
+      40      32       1       0  Fifo                      Stream_29
+      40      35       1       0  Fifo                      Stream_31
+      20      17       0       0  Fifo                      Stream_33
+       5    1153       0       0  DualAspectReg             Stream_40
+      50      46       1       0  Fifo                      Stream_42
+      50      45       7       0  Fifo                      Stream_44
+     148     188       5       0  Fifo                      Stream_47
+      76     123       4       0  Fifo                      Stream_52
+      39      36       8       0  Fifo                      Stream_54
+      80     124       4       0  Fifo                      Stream_56
+       1       0       0       0  StreamPullPushAdapter     Stream_58
+      38      37       8       0  Fifo                      Stream_5
+      38      40     306       0  Fifo                      Stream_62
+      38      39      58       0  Fifo                      Stream_66
+       6     271       0       0  DualAspectReg             Stream_8
+     220     411       0       0  AddrGen                   addrgen_cmd_environment_map
+     780     984       2       0  MAX4PCIeSlaveInterface    MAX4PCIeSlaveInterface_i
+       9      11       0       0  ResetControl              control_streams_rst_ctl
+     470      69       0       0  MappedElementSwitch       MappedElementSwitch_i
+     433    1010       5       0  MappedMemoriesController  MappedMemoriesController_i
+     145     134       0       0  MappedRegistersControlle  MappedRegistersController_i
+     234     334       0       0  PerfMonitor               perfm
+     160     204       0       0  SanityBlock               SanityBlock_i
+      97      91       1       0  SignalForwardingAdapter   SignalForwardingAdapter_i
+      39      37       1       0  ChecksumMappedDRP         checksum_mem_drp
+    4609    7444      52       0  PCIeStreaming             dynpcie
+       9      11       0       0  ResetControl              reset_controller
+    4271   19014     156       0  MemoryControllerPro       memctrlpro_max4_sodimms
+    1675     924       6       0  PCIeBase                  PCIeBase_i
+     165     216       0       0  MAX4CPLD                  cpld_io_ext_inst
+      34      54       0       0  MAXEvents                 max_events
+    6262    7667      24       0  StratixVDDR3              ddr3_core
+    6271    7670      24       0  StratixVDDR3              ddr3_core
+    5529    5709      18       0  StratixVDDR3              ddr3_core
+    5566    5755      18       0  StratixVDDR3              ddr3_core
+
+Source files annotation report
+-----------------------------------------------------------------
+
+% of total used for each file (note: multiple files may share the same resources)
+    LUTs     FFs   BRAMs    DSPs  filename
+   5.37%   4.28%   1.99%  13.33%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/KernelMath.java
+   0.00%   0.00%   0.00%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/LMemCommandStream.java
+   0.00%   6.18%   0.00%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/Reductions.java
+   2.93%   0.04%   0.00%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/core/Control.java
+   0.12%   0.09%   0.00%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/core/CounterChain.java
+   0.01%   0.02%   0.00%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/core/IO.java
+   0.00%   0.00%   1.07%   0.00%  com/maxeler/maxcompiler/v2/kernelcompiler/stdlib/core/Mem.java
+  51.97%  42.65%  28.18%  84.44%  com/maxeler/maxcompiler/v2/kernelcompiler/types/base/DFEVar.java
+   7.76%   5.12%   3.06%   2.22%  com/maxeler/maxcompiler/v2/kernelcompiler/types/composite/DFEVectorBase.java
+   0.72%   1.96%   8.81%   0.00%  com/maxeler/maxcompiler/v2/managers/DFEManager.java
+   0.37%   0.51%   0.00%   0.00%  com/maxeler/maxcompiler/v2/managers/custom/CustomManager.java
+  69.24%  60.85%  43.11% 100.00%  environmentmapplayer/EnvironmentMapPlayerManager.maxj
+  23.77%  22.92%  13.17%  55.56%  environmentmapplayer/KernelVectorMath.maxj
+   7.56%   6.46%   6.20%  16.67%  environmentmapplayer/MapSampleCommandGeneratorKernel.maxj
+   0.48%   0.97%   0.00%   0.00%  environmentmapplayer/MapSampleReaderKernel.maxj
+  55.58%  44.54%  27.49%  67.78%  environmentmapplayer/RayCasterKernel.maxj
+   0.92%   0.58%   0.31%   7.78%  environmentmapplayer/RaySampleCommandGeneratorKernel.maxj
+   3.59%   5.78%   0.31%   7.78%  environmentmapplayer/RaySampleReaderKernel.maxj
+   0.05%   0.05%   0.00%   0.00%  maxvideo/MaxVideoSignalKernel.maxj
+   0.12%   0.09%   0.00%   0.00%  maxvideo/VideoCounter.maxj

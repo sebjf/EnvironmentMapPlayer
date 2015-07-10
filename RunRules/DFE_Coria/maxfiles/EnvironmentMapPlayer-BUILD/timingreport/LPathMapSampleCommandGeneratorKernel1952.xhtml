@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+	<title>MaxCompiler Timing Report - Localized Path Information</title>
+	<style type="text/css" title="currentStyle"> 
+		@import "page.css";
+	</style>
+  </head>
+  <body>
+    <h2 id="8">Cost Table 8</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.094</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">4.007</td>
+          <td style="text-align: center;" nowrap="true">0.278</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.09</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[14]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>3</small></td>
+                           <td style="text-align: right;"><small>0.019</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a0|portbdataout[26]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.741</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.047</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.350</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X12_Y52_N48</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.916</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_w_lg_force_nan_w630w651w[14]~7|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X12_Y52_N48</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.041</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_w_lg_force_nan_w630w651w[14]~7|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X12_Y52_N50</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[14]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X12_Y52_N50</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.126</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[14]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >2</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.036</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.961</td>
+          <td style="text-align: center;" nowrap="true">0.407</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.002</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[7]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>3</small></td>
+                           <td style="text-align: right;"><small>0.019</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a0|portbdataout[26]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.741</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.047</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.350</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X18_Y52_N24</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.870</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_w_lg_force_nan_w630w651w[7]~14|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X18_Y52_N24</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.148</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_w_lg_force_nan_w630w651w[7]~14|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X18_Y52_N26</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[7]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X18_Y52_N26</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.148</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|man_out_dffe5[7]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >3</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.004</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.927</td>
+          <td style="text-align: center;" nowrap="true">0.392</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.019</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|exp_out_dffe5[7]</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a26</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X143_Y13_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>3</small></td>
+                           <td style="text-align: right;"><small>0.019</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|aligned_datab_man_dffe13_rtl_0|auto_generated|altsyncram4|ram_block5a0|portbdataout[26]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.741</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>MLABCELL_X23_Y41_N6</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.047</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|denormal_flag_w~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.350</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X22_Y44_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>31</small></td>
+                           <td style="text-align: right;"><small>0.045</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|wire_w_lg_force_zero_w634w[0]~0|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X19_Y52_N27</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.836</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|exp_out_dffe5_wi[7]~7|datad</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X19_Y52_N27</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.150</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|exp_out_dffe5_wi[7]~7|combout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X19_Y52_N28</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|exp_out_dffe5[7]|d</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X19_Y52_N28</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|MapSampleCommandGeneratorKernel|inst_ln31_streamingblock|MapSampleCommandGeneratorKernel_core|node_id374_nodesub|fpu|MWFloatingPointUnit_quartusv13_1_0_ADD_SUB_8x24to8x24_lat14_SUB_ce_altfp_add_sub_klj_component|exp_out_dffe5[7]</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </body>
+</html>

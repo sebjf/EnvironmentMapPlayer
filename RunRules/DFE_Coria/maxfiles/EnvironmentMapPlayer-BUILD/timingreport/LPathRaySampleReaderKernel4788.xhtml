@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+	<title>MaxCompiler Timing Report - Localized Path Information</title>
+	<style type="text/css" title="currentStyle"> 
+		@import "page.css";
+	</style>
+  </head>
+  <body>
+    <h2 id="12">Cost Table 12</h2>
+    <div class="main" style="margin-left: 40px;">
+    <table class="pathtable display">
+      <thead>
+	<tr>
+          <th style="text-align: center;">#</th>
+          <th style="text-align: center;">Error Type</th>
+          <th style="text-align: center;">Slack</th>
+          <th style="text-align: center;">Constraint</th>
+          <th style="text-align: center;">Route Delay</th>
+          <th style="text-align: center;">Logic Delay</th>
+          <th style="text-align: center;">Clk Uncert.</th>
+          <th style="text-align: center;">Clk Skew</th>
+          <th style="text-align: center;">Path Type</th>
+          <th style="text-align: center;">Source/Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >1</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.203</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.428</td>
+          <td style="text-align: center;" nowrap="true">0.701</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.18</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[1]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0~porta_datain_reg2</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X41_Y91_N38</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[1]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X41_Y91_N38</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[1]|q</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.500</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~9|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.428</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~9|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N3</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~17|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N3</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.104</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~17|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N45</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.296</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|remainder[2]~4|dataf</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N45</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.038</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|remainder[2]~4|combout</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X57_Y43_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.632</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0|portadatain[2]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X57_Y43_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.131</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0~porta_datain_reg2</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="odd">
+          <td style="text-align: center;" rowspan="2" >2</td>
+          <td style="text-align: center;" nowrap="true">setup</td>
+          <td style="text-align: right;"  nowrap="true">-0.114</td>
+          <td style="text-align: center;" nowrap="true">4.166</td>
+          <td style="text-align: center;" nowrap="true">3.309</td>
+          <td style="text-align: center;" nowrap="true">0.751</td>
+          <td style="text-align: center;" nowrap="true">-0.06</td>
+          <td style="text-align: center;" nowrap="true">-0.16</td>
+          <td style="text-align: center;" nowrap="true">StaPath</td>
+          <td style="text-align: left;">
+            <table border="0" width="100%">
+              <tbody>
+                <tr><TD><small>Source</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[5]</small></td></tr>
+                <tr><TD><small>Destination</small></TD><td><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0~porta_datain_reg6</small></td></tr>
+             </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr class="even">
+          <!--<td style="text-align: center;">Details</td>-->
+          <td colspan="9">
+            <table border="0" width="100%">
+              <tbody>
+                <tr>
+                  <td style="text-align: center;">
+                    <table width="100%">
+                      <thead>
+			<tr>
+                           <th style="text-align: center;"><small>Site</small></th>
+                           <th style="text-align: center;"><small>Type</small></th>
+                           <th style="text-align: center;"><small>FanOut</small></th>
+                           <th style="text-align: center;"><small>Time</small></th>
+                           <th style="text-align: center;"><small>Comp/BEL</small></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X41_Y91_N49</small></td>
+                           <td style="text-align: center;"><small>uTco</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[5]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>FF_X41_Y91_N49</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|inst_ln20_condaddsub31|result_int[5]|q</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N12</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.561</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~5|datac</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N12</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.428</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~5|cout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N15</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>2</small></td>
+                           <td style="text-align: right;"><small>0.000</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~25|cin</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N15</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.104</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|Add0~25|sumout</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N30</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.262</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|remainder[6]~6|datae</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>LABCELL_X46_Y91_N30</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>0.087</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id72_nodedivmod|inst_ln49_maxdcintegerdiv|remainder[6]~6|combout</small></td>
+                        </tr>
+                        <tr>
+                           <td colspan="5"><small>---</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X57_Y43_N0</small></td>
+                           <td style="text-align: center;"><small>IC</small></td>
+                           <td style="text-align: center;"><small>1</small></td>
+                           <td style="text-align: right;"><small>2.486</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0|portadatain[6]</small></td>
+                        </tr>
+			<tr>
+                           <td style="text-align: left;"><small>M20K_X57_Y43_N0</small></td>
+                           <td style="text-align: center;"><small>CELL</small></td>
+                           <td style="text-align: center;"><small>0</small></td>
+                           <td style="text-align: right;"><small>0.132</small></td>
+                           <td style="text-align: left;"><small>MAX4FabricTop_i|wrapper|wrapper_entity|RaySampleReaderKernel|inst_ln31_streamingblock|RaySampleReaderKernel_core|node_id293_nodefifo|BRAMDelay0|mw_bm0|auto_generated|ram_block1a0~porta_datain_reg6</small></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </body>
+</html>

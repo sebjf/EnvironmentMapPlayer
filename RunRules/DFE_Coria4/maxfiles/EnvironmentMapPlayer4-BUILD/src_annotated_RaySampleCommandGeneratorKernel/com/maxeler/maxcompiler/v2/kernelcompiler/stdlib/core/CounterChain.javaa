@@ -1,0 +1,564 @@
+    LUTs     FFs   BRAMs    DSPs : CounterChain.java
+      67      61       0       0 : resources used by this file
+   0.02%   0.01%   0.00%   0.00% : % of available
+   0.04%   0.03%   0.00%   0.00% : % of total used
+   0.06%   0.04%   0.00%   0.00% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core;
+                                 : 
+                                 : import java.util.IdentityHashMap;
+                                 : import java.util.Map;
+                                 : import java.util.Stack;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelFinalizer;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.Params;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorBase;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorTypeBase;
+                                 : import com.maxeler.maxcompiler.v2.utils.MathUtils;
+                                 : 
+                                 : /**
+                                 : * {@code CounterChain} objects connect together a series of dependent counters,
+                                 : * similarly to nested loops in software.
+                                 : * <p>
+                                 : * See the
+                                 : * <a href="{@docRoot}/../maxcompiler-tutorial.pdf#destination.counters">MaxCompiler Tutorial</a> for more
+                                 : * details on using counter chains.
+                                 : */
+                                 : public class CounterChain {
+                                 : 	private abstract class NestedLoopNode {
+                                 : 		private final DFEVar m_control;
+                                 : 
+                                 : 		private NestedLoopNode() {
+                                 : 			m_control = DFETypeFactory.dfeBool().newInstance(m_design);
+                                 : 		}
+                                 : 
+                                 : 		protected abstract DFEVar getWrap();
+                                 : 
+                                 : 		protected DFEVar getControl() {
+                                 : 			return m_control;
+                                 : 		}
+                                 : 
+                                 : 		NestedLoopNode setParent(NestedLoopNode parent) {
+                                 : 			// If we have a parent node, connect our chain, etc.
+                                 : 			if (parent != null) {
+                                 : 				DFEVar wrap = getWrap();
+                                 : 
+                                 : 				// currently the wrap signal from a counter comes directly from
+                                 : 				// comparison logic and not a register
+                                 : 				final int wrapPipelining = _Kernel.getPhotonDesignData(m_design).getKernelConfiguration().optimizations().getCounterChainWrapPipelining();
+                                 : 				for (int i = 0; i < wrapPipelining; ++i)
+                                 : 					wrap = m_design.optimization.pipeline(wrap);
+                                 : 
+                                 : 				parent.getControl().connect(wrap);
+                                 : 			}
+                                 : 
+                                 : 			return this;
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	private int getNumBitsForMax(long max) {
+                                 : 		if(!m_less_bits)
+                                 : 			return MathUtils.bitsToRepresentUnsigned(max);
+                                 : 		else
+                                 : 			return MathUtils.bitsToAddress(max);
+                                 : 	}
+                                 : 
+                                 : 	private static int getNumBitsForMax(DFEVar max) {
+                                 : 		return max.getType().getTotalBits();
+                                 : 	}
+                                 : 
+                                 : 	private class NestedLoopNodeSP extends NestedLoopNode {
+                                 : 		private final Count.Counter m_counter;
+                                 : 
+                                 : 		private NestedLoopNodeSP(long max, int increment) {
+                                 : 			// TODO Fix this, whenever v2 comes along: numbits should use
+                                 : 			// bitsToAddress, otherwise we have an extra unused bit for
+                                 : 			// max = Power-of-2. Can't fix this without breaking the interface.
+                                 : 			int numbits = getNumBitsForMax(max);
+                                 : 
+                                 : 			// Setup this counter
+                                 : 			m_counter = m_design.control.count.makeCounter(
+                                 : 				m_design.control.count.makeParams(numbits)
+                                 : 					.withMax(max)
+                                 : 					.withInc(increment)
+                                 : 					.withEnable(getControl()));
+                                 : 		}
+                                 : 
+                                 : 		private NestedLoopNodeSP(DFEVar max, int increment) {
+                                 : 			int numbits = getNumBitsForMax(max);
+                                 : 
+                                 : 			// Setup this counter
+                                 : 			m_counter = m_design.control.count.makeCounter(
+                                 : 				m_design.control.count.makeParams(numbits)
+                                 : 					.withMax(max)
+                                 : 					.withInc(increment)
+                                 : 					.withEnable(getControl()));
+                                 : 		}
+                                 : 
+                                 : 		@Override
+                                 : 		protected DFEVar getWrap() {
+                                 : 			return m_counter.getWrap();
+                                 : 		}
+                                 : 
+                                 : 		protected DFEVar getCounter() {
+                                 : 			return m_counter.getCount();
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	private class NestedLoopNodeMP<
+                                 : 			M extends DFEVectorBase<DFEVar, M, ?, ?>
+                                 : 		>
+                                 : 		extends NestedLoopNode
+                                 : 	{
+                                 : 		private final Count.CounterVectBase<M> m_counter;
+                                 : 
+                                 : 		private NestedLoopNodeMP(long max, M mp_obj, int increment) {
+                                 : 			// TODO Fix this, whenever v2 comes along: numbits should use
+                                 : 			// bitsToAddress, otherwise we have an extra unused bit for
+                                 : 			// max = Power-of-2. Can't fix this without breaking the interface.
+                                 : 			int numbits = getNumBitsForMax(max);
+                                 : 
+                                 : 			// Setup this counter
+                                 : 			m_counter = m_design.control.count.makeCounterVect(
+                                 : 				mp_obj,
+                                 : 				m_design.control.count.makeParams(numbits)
+                                 : 					.withMax(max)
+                                 : 					.withInc(increment)
+                                 : 					.withEnable(getControl()));
+                                 : 		}
+                                 : 
+                                 : 		private NestedLoopNodeMP(DFEVar max, M mp_obj, int increment, boolean warn) {
+                                 : 			int numbits = getNumBitsForMax(max);
+                                 : 			Params params = m_design.control.count.makeParams(numbits)
+                                 : 				.withMax(max)
+                                 : 				.withInc(increment)
+                                 : 				.withEnable(getControl());
+                                 : 
+                                 : 			// Setup this counter
+                                 : 			if (warn)
+                                 : 				m_counter = m_design.control.count.makeCounterVect(mp_obj, params);
+                                 : 			else
+                                 : 				m_counter = m_design.control.count.makeCounterVectNoWarn(mp_obj.getType(), params);
+                                 : 		}
+                                 : 
+                                 : 		@Override
+                                 : 		protected DFEVar getWrap() {
+                                 : 			return m_counter.getWrap();
+                                 : 		}
+                                 : 
+                                 : 		private M getCounter() {
+                                 : 			return m_counter.getCount();
+                                 : 		}
+                                 : 
+                                 : 	}
+                                 : 
+                                 : 	private final Kernel m_design;
+                                 : 	private final DFEVar m_enable;
+                                 : 	private final boolean m_less_bits;
+                                 : 
+                                 : 	private final Stack<NestedLoopNode> m_nestedloop_stack =
+                                 : 		new Stack<NestedLoopNode>();
+                                 : 
+                                 : 	private final Map<KernelObject<?>, DFEVar> m_counter_wrap_map =
+                                 : 		new IdentityHashMap<KernelObject<?>, DFEVar>();
+                                 : 
+                                 : 	private boolean m_mp_added = false;
+                                 : 
+                                 : 	CounterChain(Kernel design, DFEVar enable, boolean lessBits) {
+                                 : 		m_design = design;
+                                 : 		m_enable = enable;
+                                 : 		m_less_bits = lessBits;
+                                 : 
+                                 : 		m_design.addKernelFinalizer( new KernelFinalizer() {
+                                 : 			@Override
+                                 : 			public void finalizeKernel(Kernel kernelDesign) {
+                                 : 				if(m_nestedloop_stack.isEmpty())
+                                 : 					m_design.getManager().logWarning("Design has unused NestedCounter.");
+                                 : 				else
+                                 : 					m_nestedloop_stack.peek().getControl().connect(m_enable);
+                                 : 			}
+                                 : 		});
+                                 : 	}
+                                 : 
+                                 : 	private void checkNoVectAdded() {
+                                 : 		if(m_mp_added)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"When using a nested-counters, the vector counter must be the last (inner-most) counter.");
+                                 : 	}
+                                 : 
+                                 : 	private <M extends DFEVectorBase<DFEVar, M, ?, ?>>
+                                 : 		M addCounterVect(NestedLoopNodeMP<M> new_node)
+                                 : 	{
+                                 : 		checkNoVectAdded();
+                                 : 		m_mp_added = true;
+                                 : 
+                                 : 		// Set the enable on the outer loop to be the chain on this counter
+                                 : 		NestedLoopNode parent;
+                                 : 		if(m_nestedloop_stack.empty())
+                                 : 			parent = null;
+                                 : 		else
+                                 : 			parent = m_nestedloop_stack.peek();
+                                 : 
+                                 : 		// Push the loop onto the stack
+                                 : 		new_node.setParent(parent);
+                                 : 		m_nestedloop_stack.push(new_node);
+                                 : 
+                                 : 		M counter = new_node.getCounter();
+                                 : 		m_counter_wrap_map.put(counter, new_node.getWrap());
+                                 : 
+                                 : 		return counter;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * Each vector element in the stream
+                                 : 	 * has a value {@code increment} larger than the previous element.
+                                 : 	 * <p>
+                                 : 	 * Each element increments from {@code element_index*increment} by {@code num_elements*increment}
+                                 : 	 * to {@code max-element_index*increment-1} inclusive before repeating from {@code element_index*increment} again.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: {@code max} must be a multiple of {@code num_elements}.
+                                 : 	 *
+                                 : 	 * @param num_elements The number of vector elements in the counter.
+                                 : 	 * @param max The counter will count up to this value <i>minus 1</i>.
+                                 : 	 * @param increment The value added for each vector element.
+                                 : 	 * @return The {@code DFEVector<DFEVar>} counter.
+                                 : 	 */
+                                 : 	public DFEVector<DFEVar> addCounterVect(int num_elements, long max, int increment) {
+                                 : 		DFEType counter_type =
+                                 : 			m_design.control.count.makeParams(getNumBitsForMax(max)).getExpectedType();
+                                 : 		NestedLoopNodeMP<DFEVector<DFEVar>> new_node =
+                                 : 			new NestedLoopNodeMP<DFEVector<DFEVar>>(
+                                 : 				max,
+                                 : 				new DFEVectorType<DFEVar>(counter_type, num_elements).newInstance(m_design),
+                                 : 				increment);
+                                 : 		return addCounterVect(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with the {@code max}
+                                 : 	 * variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * Each vector element in the stream
+                                 : 	 * has a value {@code increment} larger than the previous element.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 *
+                                 : 	 * @see #addCounterVectNoWarn(int, DFEVar, int)
+                                 : 	 * @param num_elements The number of vector elements in the counter.
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 * @param increment The value added for each vector element.
+                                 : 	 * @return The {@code DFEVector<DFEVar>} counter.
+                                 : 	 */
+                                 : 	public DFEVector<DFEVar> addCounterVect(int num_elements, DFEVar max, int increment) {
+                                 : 		return addCounterVect(num_elements, max, increment, true);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with the {@code max}
+                                 : 	 * variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * Each vector element in the stream
+                                 : 	 * has a value {@code increment} larger than the previous element.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 * <p>
+                                 : 	 * This method is identical to {@link #addCounterVect(int, DFEVar, int)} except
+                                 : 	 * that it does not generate a compiler warning.
+                                 : 	 *
+                                 : 	 * @see #addCounterVect(int, DFEVar, int)
+                                 : 	 * @param num_elements The number of vector elements in the counter.
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 * @param increment The value added for each vector element.
+                                 : 	 * @return The {@code DFEVector<DFEVar>} counter.
+                                 : 	 */
+                                 : 	public DFEVector<DFEVar> addCounterVectNoWarn(int num_elements, DFEVar max, int increment) {
+                                 : 		return addCounterVect(num_elements, max, increment, false);
+                                 : 	}
+                                 : 
+                                 : 	private DFEVector<DFEVar> addCounterVect(int num_pipes, DFEVar max, int increment, boolean warn) {
+                                 : 		if(!max.getType().isConcreteType() || !max.getType().isUInt())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Type of DFEVar used for max must be a concrete " +
+                                 : 				"and unsigned integer, not: "  + max.getType());
+                                 : 
+                                 : 		DFEType counter_type =
+                                 : 			m_design.control.count.makeParams(getNumBitsForMax(max)).getExpectedType();
+                                 : 		NestedLoopNodeMP<DFEVector<DFEVar>> new_node =
+                                 : 			new NestedLoopNodeMP<DFEVector<DFEVar>>(
+                                 : 				max,
+                                 : 				new DFEVectorType<DFEVar>(counter_type, num_pipes).newInstance(m_design),
+                                 : 				increment,
+                                 : 				warn);
+                                 : 
+                                 : 		return addCounterVect(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with the number of
+                                 : 	 * vector elements defined according to the vector type template.
+                                 : 	 *
+                                 : 	 * @param template_vect_type The vector type that defines the number of vector elements
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVect(T template_vect_type, long max, int increment) {
+                                 : 		DFEType counter_type =
+                                 : 			m_design.control.count.makeParams(getNumBitsForMax(max)).getExpectedType();
+                                 : 
+                                 : 		NestedLoopNodeMP<M> new_node =
+                                 : 			new NestedLoopNodeMP<M>(
+                                 : 				max,
+                                 : 				template_vect_type.newInstance(m_design, counter_type.newInstance(m_design)).getType().newInstance(m_design),
+                                 : 				increment);
+                                 : 
+                                 : 		return addCounterVect(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with the number of
+                                 : 	 * vector elements defined according to the vector object template.
+                                 : 	 *
+                                 : 	 * @param template_vect_obj A vector object that defines the number of vector elements
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVect(M template_vect_obj, long max, int increment) {
+                                 : 		return addCounterVect(template_vect_obj.getType(), max, increment);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with
+                                 : 	 * the number of vector elements defined according to the vector object template
+                                 : 	 * and the {@code max} variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 * @param template_vect_type The vector type that defines the number of vector elements
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVect(T template_vect_type, DFEVar max, int increment) {
+                                 : 		return addCounterVect(template_vect_type, max, increment, true);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with
+                                 : 	 * the number of vector elements defined according to the vector object template
+                                 : 	 * and the {@code max} variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 * <p>
+                                 : 	 * This method is identical to {@link #addCounterVect(DFEVectorTypeBase, DFEVar, int)}
+                                 : 	 * except that it does not generate a warning.
+                                 : 	 * @see #addCounterVect(DFEVectorTypeBase, DFEVar, int)
+                                 : 	 * @param template_vect_type The vector type that defines the number of vector elements
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVectNoWarn(T template_vect_type, DFEVar max, int increment) {
+                                 : 		return addCounterVect(template_vect_type, max, increment, false);
+                                 : 	}
+                                 : 
+                                 : 	private <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVect(T template_mp_type, DFEVar max, int increment, boolean warn) {
+                                 : 		if(!max.getType().isConcreteType() || !max.getType().isUInt())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Type of DFEVar used for max must be a concrete " +
+                                 : 				"and unsigned integer, not: "  + max.getType());
+                                 : 
+                                 : 		DFEType counter_type =
+                                 : 			m_design.control.count.makeParams(getNumBitsForMax(max)).getExpectedType();
+                                 : 
+                                 : 		NestedLoopNodeMP<M> new_node =
+                                 : 			new NestedLoopNodeMP<M>(
+                                 : 				max,
+                                 : 				template_mp_type.newInstance(m_design, counter_type.newInstance(m_design)).getType().newInstance(m_design),
+                                 : 				increment,
+                                 : 				warn);
+                                 : 
+                                 : 		return addCounterVect(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with
+                                 : 	 * the number of vector elements defined according to the vector object template
+                                 : 	 * and the {@code max} variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 * @param template_vect_obj A vector object of the type that
+                                 : 	 *            defines the number of vector elements.
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVect(M template_vect_obj, DFEVar max, int increment) {
+                                 : 		return addCounterVect(template_vect_obj.getType(), max, increment);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a vector counter to the counter chain.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounterVect(int, long, int)} but with
+                                 : 	 * the number of vector elements defined according to the vector object template
+                                 : 	 * and the {@code max} variable set at run-time by a stream.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: the values in stream {@code max} must be multiples of the number of vector elements, but this
+                                 : 	 *            cannot be checked at compile time.
+                                 : 	 * <p>
+                                 : 	 * This method is identical to {@link #addCounterVect(DFEVectorBase, DFEVar, int)}
+                                 : 	 * except that it does not generate a compiler warning.
+                                 : 	 * @see #addCounterVect(DFEVectorBase, DFEVar, int)
+                                 : 	 * @param template_vect_obj A vector object of the type that
+                                 : 	 *            defines the number of vector elements.
+                                 : 	 * @param max An {@code DFEVar} providing a stream of wrap points.
+                                 : 	 */
+                                 : 	public <
+                                 : 		M extends DFEVectorBase<DFEVar, M, C, T>,
+                                 : 		C extends DFEVectorBase<DFEVar, C, ?, ?>,
+                                 : 		T extends DFEVectorTypeBase<DFEVar, M, C>
+                                 : 	>
+                                 : 	M addCounterVectNoWarn(M template_vect_obj, DFEVar max, int increment) {
+                                 : 		return addCounterVectNoWarn(template_vect_obj.getType(), max, increment);
+                                 : 	}
+                                 : 
+                                 : 	private DFEVar addCounter(NestedLoopNodeSP new_node) {
+                                 : 		checkNoVectAdded();
+                                 : 
+                                 : 		// Set the enable on the outer loop to be the chain on this counter
+                                 : 		NestedLoopNode parent;
+                                 : 		if(m_nestedloop_stack.empty())
+                                 : 			parent = null;
+                                 : 		else
+                                 : 			parent = m_nestedloop_stack.peek();
+                                 : 
+                                 : 		// Push the loop onto the stack
+                                 : 		new_node.setParent(parent);
+                                 : 		m_nestedloop_stack.push(new_node);
+                                 : 
+                                 : 		DFEVar counter = new_node.getCounter();
+                                 : 		m_counter_wrap_map.put(counter, new_node.getWrap());
+                                 : 
+                                 : 		return counter;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a counter into the chain with values sequentially increasing from {code 0},
+                                 : 	 * in steps of {@code increment}, up to {@code (max - 1)} inclusive,
+                                 : 	 * before repeating from {@code 0} again.
+                                 : 	 * <p>
+                                 : 	 * This method may be invoked more than once on a single CounterChain object:
+                                 : 	 * each call creates a new counter loop nested within the previous one,
+                                 : 	 * i.e. the first call creates the outermost, or "slowest", loop.
+                                 : 	 * @param max The counter will count up to this value <i>minus 1</i>.
+                                 : 	 * @param increment The value by which the counter increases on each cycle.
+                                 : 	 * @return An {@code DFEVar} with the count value for current counter in the chain.
+                                 : 	 */
+                                 : 	public DFEVar addCounter(long max, int increment) {
+                                 : 		if (max == increment) {
+                                 : 			return m_design.constant.var(DFETypeFactory.dfeUInt(getNumBitsForMax(max)), 0);
+                                 : 		}
+      67      61       0       0 : 		NestedLoopNodeSP new_node = new NestedLoopNodeSP(max, increment);
+                                 : 		return addCounter(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a counter into the chain with values sequentially increasing from {code 0},
+                                 : 	 * in steps of {@code increment}, up to {@code (max - 1)} inclusive,
+                                 : 	 * before repeating from {@code 0} again.
+                                 : 	 * <p>
+                                 : 	 * As {@link CounterChain#addCounter(long, int)} but with the {@code max}
+                                 : 	 * variable at run-time by a stream.
+                                 : 	 *
+                                 : 	 * @param max An {@code DFEVar} providing a stream of maximum values.
+                                 : 	 * @param increment The value by which the counter increases on each cycle.
+                                 : 	 * @return An {@code DFEVar} with the count value for current counter in the chain.
+                                 : 	 */
+                                 : 	public DFEVar addCounter(DFEVar max, int increment) {
+                                 : 		if(!max.getType().isConcreteType() || !max.getType().isUInt())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Type of DFEVar used for max must be a concrete " +
+                                 : 				"and unsigned integer, not: "  + max.getType());
+                                 : 
+                                 : 		NestedLoopNodeSP new_node = new NestedLoopNodeSP(max, increment);
+                                 : 		return addCounter(new_node);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a Boolean {@code DFEVar} stream which is equal to {@code 1} at the point
+                                 : 	 * when the last counter added to the chain will wrap <i>on the next cycle</i>,
+                                 : 	 * and {@code 0} otherwise.
+                                 : 	 */
+                                 : 	public DFEVar getCurrentCounterWrap() {
+                                 : 		if(m_nestedloop_stack.empty())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "No counters have yet been added to this chain.");
+                                 : 
+                                 : 		return m_nestedloop_stack.peek().getWrap();
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a Boolean {@code DFEVar} stream which is equal to {@code 1} at the point
+                                 : 	 * when the specified counter will wrap <i>on the next cycle</i>,
+                                 : 	 * and {@code 0} otherwise.
+                                 : 	 * @param counter The counter for which the wrap signal is required,
+                                 : 	 *                as returned by {@link CounterChain#addCounter(long, int)}
+                                 : 	 *                or {@link CounterChain#addCounter(DFEVar, int)}
+                                 : 	 */
+                                 : 	public DFEVar getCounterWrap(KernelObject<?> counter) {
+                                 : 		DFEVar wrap = m_counter_wrap_map.get(counter);
+                                 : 		if(wrap == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Supplied counter object is not associated with this counter-chain.");
+                                 : 
+                                 : 		return wrap;
+                                 : 	}
+                                 : }

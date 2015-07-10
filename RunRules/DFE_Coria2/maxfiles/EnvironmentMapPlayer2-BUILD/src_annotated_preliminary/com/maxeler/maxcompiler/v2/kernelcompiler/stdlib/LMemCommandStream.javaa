@@ -1,0 +1,288 @@
+    LUTs     FFs   BRAMs    DSPs : LMemCommandStream.java
+       1       2       0       0 : resources used by this file
+   0.00%   0.00%   0.00%   0.00% : % of available
+   0.00%   0.00%   0.00%   0.00% : % of total used
+   0.00%   0.00%   0.00%   0.00% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.stdlib;
+                                 : 
+                                 : import static com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStructType.sft;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStruct;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStructType;
+                                 : import com.maxeler.maxcompiler.v2.managers.DFEManager;
+                                 : import com.maxeler.maxeleros.managerblocks.StructUtils;
+                                 : 
+                                 : public class LMemCommandStream {
+                                 : 	private static final DFEStructType s_command_type =
+                                 : 		new DFEStructType(
+                                 : 			sft("address", DFETypeFactory.dfeUInt(32)),
+                                 : 			sft("size",    DFETypeFactory.dfeUInt(8)),
+                                 : 			sft("inc",     DFETypeFactory.dfeUInt(8)),
+                                 : 			sft("stream",  DFETypeFactory.dfeRawBits(15)),
+                                 : 			sft("tag",     DFETypeFactory.dfeUInt(1))
+                                 : 		);
+                                 : 
+                                 : 	public static void main(String [] argv) {
+                                 : 		StructUtils.printDFEStructType(s_command_type);
+                                 : 	}
+                                 : 
+                                 : 	private static DFEVar assertAndCastUIntStream(
+                                 : 		DFEManager manager,
+                                 : 		String name,
+                                 : 		int max_bits,
+                                 : 		DFEVar stream)
+                                 : 	{
+                                 : 		if(!stream.getType().isUInt() || stream.getType().getTotalBits() > max_bits) {
+                                 : 			throw new MaxCompilerAPIError(
+                                 : 				manager,
+                                 : 				"LMem command element '" + name +
+                                 : 				"' must be a dfeUInt with a maximum of " + max_bits +
+                                 : 				" bits. Not " + stream.getType() + ".");
+                                 : 		}
+                                 : 
+                                 : 		return
+                                 : 			(stream.getType().getTotalBits() == max_bits) ?
+                                 : 				stream :
+                                 : 				stream.cast(DFETypeFactory.dfeUInt(max_bits));
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Make a named Kernel output suitable for use as LMem read/write command stream.
+                                 : 	 * The exact meaning of the elements of a LMem command are defined in
+                                 : 	 * the MaxCompiler Manager Tutorial document. Note that the dfeUInt
+                                 : 	 * types given for the different elements specify the maximum number of
+                                 : 	 * bits. e.g. an 'address' can be up to 32 bits, but it may be only 3
+                                 : 	 * bits and the appropriate padding would be applied.
+                                 : 	 *
+                                 : 	 * Note that unlike in the manager tutorial and the type returned by
+                                 : 	 * {@link #getLMemCommandDFEStructType()}, the 'stream' element uses
+                                 : 	 * an integer (rather than one-hot) value.
+                                 : 	 *
+                                 : 	 * Be aware that the output created with this function will automatically
+                                 : 	 * turn any instruction that has its size set to 0 into a NOP. It is therefore
+                                 : 	 * not possible to issue any of the advanced memory re-ordering commands through
+                                 : 	 * the output created by this method.
+                                 : 	 *
+                                 : 	 * @param output_name name of the output to be connected up in a Manager design.
+                                 : 	 * @param control control to enable the output of this command (as for any other controlled output).
+                                 : 	 * @param address stream of {@code dfeUInt(32)} values for address.
+                                 : 	 * @param size stream of {@code dfeUInt(8)} values for size.
+                                 : 	 * @param inc stream of {@code dfeUInt(8)} for increment.
+                                 : 	 * @param stream_num stream of {@code dfeUInt(4)} values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of {@code dfeBool()} values for tag.
+                                 : 	 */
+                                 : 	public static void makeKernelOutput(
+                                 : 		String output_name,
+                                 : 		DFEVar control,
+                                 : 		DFEVar address,
+                                 : 		DFEVar size,
+                                 : 		DFEVar inc,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+       1       2       0       0 : 		makeKernelOutput(output_name, control, cmdReadOrWrite(address,size,inc,stream_num,tag));
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStructType from which KStructs can be constructed which
+                                 : 	 * are suitable for passing to {@link #makeKernelOutput(String, DFEVar, DFEStruct)}.
+                                 : 	 * This struct is defined as follows:
+                                 : 	 * <p>
+                                 : 	 * <code> <br/>
+                                 : 	 *     address => dfeUInt(32) <br/>
+                                 : 	 *     size    => dfeUInt(8) <br/>
+                                 : 	 *     inc     => dfeUInt(8) <br/>
+                                 : 	 *     stream  => dfeRawBits(15) <br/>
+                                 : 	 *     tag     => dfeUInt(1) <br/>
+                                 : 	 * </code>
+                                 : 	 * </p>
+                                 : 	 *
+                                 : 	 * <b>Note</b>: unlike in {@link #makeKernelOutput(String, DFEVar, DFEVar, DFEVar, DFEVar, DFEVar, DFEVar)}
+                                 : 	 * the {@code stream} field is a one-hot encoded value.
+                                 : 	 */
+                                 : 	public static DFEStructType getLMemCommandDFEStructType() {
+                                 : 		return s_command_type;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Similar to {@link #makeKernelOutput(String, DFEVar, DFEVar, DFEVar, DFEVar, DFEVar, DFEVar)}
+                                 : 	 * but the parameters are contained in a DFEStruct which should be created using the
+                                 : 	 * type returned from {@link #getLMemCommandDFEStructType()}.
+                                 : 	 */
+                                 : 	public static void makeKernelOutput(
+                                 : 		String output_name,
+                                 : 		DFEVar control,
+                                 : 		DFEStruct command_struct)
+                                 : 	{
+                                 : 		KernelLib lib = control.getKernel();
+                                 : 		if( ! command_struct.getType().equals(s_command_type) ) {
+                                 : 			throw new MaxCompilerAPIError(
+                                 : 				lib.getManager(),
+                                 : 				"Type for command_struct does not match LMem command struct type of: " + s_command_type);
+                                 : 		}
+                                 : 		lib.getKernel().io.output(output_name, s_command_type, control).connect(command_struct);
+                                 : 		_Kernel.getPhotonDesignData(lib).getIOInformation().addLMemCommandStreamOutput(output_name);
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted by the LMem controller as a read/write
+                                 : 	 * instruction for a particular stream. Whether it is a read or write depends on
+                                 : 	 * the stream.
+                                 : 	 * Notice: In case the size is set to 0, this method will also clear the inc field,
+                                 : 	 * essentially turning the instruction into a NOP.
+                                 : 	 *
+                                 : 	 * @param address stream of dfeUInt(32) values for address.
+                                 : 	 * @param size stream of dfeUInt(8) values for size. Size has to be greater than 0!
+                                 : 	 * @param inc stream of dfeUInt(8) for increment.
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdReadOrWrite(
+                                 : 		DFEVar address,
+                                 : 		DFEVar size,
+                                 : 		DFEVar inc,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		final KernelLib lib = stream_num.getKernel();
+                                 : 		final DFEManager manager = lib.getManager();
+                                 : 
+                                 : 		DFEStruct cmd = s_command_type.newInstance(lib);
+                                 : 		cmd.set("address", assertAndCastUIntStream(manager, "address", 32, address));
+                                 : 		cmd.set("size",    assertAndCastUIntStream(manager, "size", 8, size));
+                                 : 		// if size == 0 then turn this into a NOP.
+                                 : 		cmd.set("inc",     size.eq(0) ? lib.constant.zero(KernelLib.dfeUInt(8)) : assertAndCastUIntStream(manager, "inc", 8, inc));
+                                 : 		// one-hot-encode
+                                 : 		DFEVar stream_one_hot =
+                                 : 			address.getKernel().constant.var(
+                                 : 				DFETypeFactory.dfeUInt(15), 1) << assertAndCastUIntStream(manager, "stream_num", 4, stream_num);
+                                 : 		cmd.set("stream",  stream_one_hot.cast(DFETypeFactory.dfeRawBits(15)));
+                                 : 		cmd.set("tag",     assertAndCastUIntStream(manager, "tag", 1, tag));
+                                 : 
+                                 : 		return cmd;
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	private enum LMemCommand {
+                                 : 		NOP                          (0),
+                                 : 		ClearFlags                   (1),
+                                 : 		SetFlags                     (2),
+                                 : 		BlockUntilFlagsSet           (4),
+                                 : 		BlockUntilFlagsCleared       (5);
+                                 : 
+                                 : 		private final int m_cmdCode;
+                                 : 		private LMemCommand(int cmdCode) {m_cmdCode = cmdCode;}
+                                 : 		public int getInstructionCode() {return m_cmdCode;}
+                                 : 	}
+                                 : 
+                                 : 	private static DFEStruct makeLMemCommand(
+                                 : 		LMemCommand memoryCmd,
+                                 : 		DFEVar flags,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		final KernelLib lib = stream_num.getKernel();
+                                 : 		final DFEManager manager = lib.getManager();
+                                 : 
+                                 : 		DFEStruct result = s_command_type.newInstance(lib);
+                                 : 		result.set("address", assertAndCastUIntStream(manager, "flags", 32, flags));
+                                 : 		result.set("size",    lib.constant.zero(KernelLib.dfeUInt(8)));
+                                 : 		result.set("inc",     lib.constant.var(KernelLib.dfeUInt(8), memoryCmd.getInstructionCode()));
+                                 : 		// one-hot-encode
+                                 : 		DFEVar stream_one_hot =
+                                 : 			lib.constant.var(
+                                 : 				DFETypeFactory.dfeUInt(15), 1) << assertAndCastUIntStream(manager, "stream_num", 4, stream_num);
+                                 : 		result.set("stream",  stream_one_hot.cast(DFETypeFactory.dfeRawBits(15)));
+                                 : 		result.set("tag",     assertAndCastUIntStream(manager, "tag", 1, tag));
+                                 : 		return result;
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted by the LMem controller as a No-Operation
+                                 : 	 * instruction for a particular memory stream. This NOP command will be treated by
+                                 : 	 * the LMem controller like any other command and, hence, will take one slot in the
+                                 : 	 * command queue.
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdNOP(DFEVar stream_num, DFEVar tag) {
+                                 : 		final KernelLib lib = stream_num.getKernel();
+                                 : 		return makeLMemCommand(LMemCommand.NOP, lib.constant.zero(KernelLib.dfeUInt(32)), stream_num, tag);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted as a set-flags instruction by the LMem
+                                 : 	 * controller.
+                                 : 	 * @param flags stream of dfeUInt(32) values for the flags
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdSetFlags(
+                                 : 		DFEVar flags,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		return makeLMemCommand(LMemCommand.SetFlags,flags,stream_num,tag);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted as a clear-flags instruction by the LMem
+                                 : 	 * controller.
+                                 : 	 * @param flags stream of dfeUInt(32) values for the flags
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdClearFlags(
+                                 : 		DFEVar flags,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		return makeLMemCommand(LMemCommand.ClearFlags,flags,stream_num,tag);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted as a block-until-flags-set instruction by the LMem
+                                 : 	 * controller.
+                                 : 	 * @param flags stream of dfeUInt(32) values for the flags
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdBlockUntilFlagsSet(
+                                 : 		DFEVar flags,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		return makeLMemCommand(LMemCommand.BlockUntilFlagsSet,flags,stream_num,tag);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a DFEStruct that is interpreted as a block-until-flags-cleared instruction by the LMem
+                                 : 	 * controller.
+                                 : 	 * @param flags stream of dfeUInt(32) values for the flags
+                                 : 	 * @param stream_num stream of dfeUInt(4) values which must be in the range 0-14 (inclusive) for stream number.
+                                 : 	 * @param tag stream of dfeBool() values for tag.
+                                 : 	 * @return a DFEStruct that can be passed to an output created with {@link #makeKernelOutput(String, DFEVar, DFEStruct)}
+                                 : 	 */
+                                 : 	public static DFEStruct cmdBlockUntilFlagsCleared(
+                                 : 		DFEVar flags,
+                                 : 		DFEVar stream_num,
+                                 : 		DFEVar tag)
+                                 : 	{
+                                 : 		return makeLMemCommand(LMemCommand.BlockUntilFlagsCleared,flags,stream_num,tag);
+                                 : 	}
+                                 : 
+                                 : }

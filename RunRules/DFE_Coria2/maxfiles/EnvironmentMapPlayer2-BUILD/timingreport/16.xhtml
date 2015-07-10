@@ -1,0 +1,582 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>MaxCompiler Timing Report - Cost Table 16 Summary</title>
+    <style type="text/css" title="currentStyle"> 
+         @import "page.css";
+    </style> 
+    <script type="text/javascript" language="javascript" src="jquery.js"></script> 
+    <script type="text/javascript" language="javascript" src="jquery.dataTables.js"></script> 
+    <script type="text/javascript" language="javascript" src="toggle.js"></script>
+    <script type="text/javascript" charset="utf-8"> 
+		$(document).ready(function() {
+			$('#overviewtable').dataTable({sPaginationType: "full_numbers", "bStateSave": true});
+			$('#LocalizedPathsRaySampleReaderKernel').dataTable({
+				"sScrollX": "100%", "bSort": false, "bFilter": false,
+				"bScrollCollapse": true, sPaginationType: "full_numbers",
+				"bStateSave": true
+			});
+			$('#LocalizedPathsRayCasterKernel').dataTable({
+				"sScrollX": "100%", "bSort": false, "bFilter": false,
+				"bScrollCollapse": true, sPaginationType: "full_numbers",
+				"bStateSave": true
+			});
+		});
+    </script> 
+  </head>
+  <body>
+    <h1 align="center">
+       MaxCompiler Timing Report -- Cost Table 16
+    </h1>
+    <table style="text-align: left; margin-left: auto; margin-right: auto;">
+      <tbody>
+        <tr>
+          <td style="text-align: left; font-weight: bold;">
+             Date 
+          </td>
+          <td style="text-align: left;">
+             06.07.2015 at 03:57:52 BST 
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: left; font-weight: bold;">
+             Build Directory 
+          </td>
+          <td style="text-align: left;">
+             /scratch/sfriston/maxdc_builds/05-07-15/EnvironmentMapPlayer2_CORIA_DFE 
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: left; font-weight: bold;">
+             # Kernels in Design 
+          </td>
+          <td style="text-align: left;">
+             6 
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <span style="font-style: italic;"><a href="timingreport.xhtml">Main Report</a></span> 
+
+    <!-- Give summary of all components -->
+    <h2 id="Overview">
+       Overview 
+    </h2>
+    <div class="main" style="margin-left: 40px;">
+    <table style="margin-right: auto;" id="overviewtable">
+      <thead>
+        <tr>
+          <th style="text-align: center;">Component</th>
+          <th style="text-align: center;">Score</th>
+          <th style="text-align: center;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left;">AddrGen (addrgen_cmd_environment_map)</td>
+          <td style="text-align: right;">67506</td>
+          <td style="text-align: right;"><a href="MCP37AddrGenaddrgencmdenvironmentmap.xhtml#16" target="stacktrace">Paths</a></td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">RayCasterKernel</td>
+          <td style="text-align: right;">17650</td>
+          <td style="text-align: right;"><a href="#RayCasterKernel">Details</a></td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">RaySampleReaderKernel</td>
+          <td style="text-align: right;">9618</td>
+          <td style="text-align: right;"><a href="#RaySampleReaderKernel">Details</a></td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">MaxelerOS - DRAM</td>
+          <td style="text-align: right;">2834</td>
+          <td style="text-align: right;"><a href="MCP16MaxelerOSDRAM.xhtml#16" target="stacktrace">Paths</a></td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">StreamStatus (STREAMSTATUS_Stream_56_output)</td>
+          <td style="text-align: right;">712</td>
+          <td style="text-align: right;"><a href="MCP44StreamStatusSTREAMSTATUSStream56output.xhtml#16" target="stacktrace">Paths</a></td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">Fifo (Name: Stream_5 Source: RayCasterKernel_flushing_cameraUpdates Sink: RayCasterKernel)</td>
+          <td style="text-align: right;">135</td>
+          <td style="text-align: right;"><a href="MCP90FifoNameStream5SourceRayCasterKernelflushingcameraUpdatesSinkRayCasterKernel.xhtml#16" target="stacktrace">Paths</a></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+
+    <!-- Give summary of all kernels -->
+
+    <h2 id="RaySampleReaderKernel">
+       <a id="RaySampleReaderKernelKernelLink" href="javascript:toggle('RaySampleReaderKernelKernelContent', 'RaySampleReaderKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel RaySampleReaderKernel 
+    </h2>
+<div id="RaySampleReaderKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+            <table class="display" style="text-align: left; width: 100%;" cellpadding="2" cellspacing="2" id="LocalizedPathsRaySampleReaderKernel">
+            <thead>
+                <tr>
+                  <th style="text-align: center;"> # </th>
+                  <th style="text-align: center;">Path</th>
+                  <th style="text-align: center;">Score (Sum)</th>
+                  <th style="text-align: center;">Worst Fanout</th>
+                  <th style="text-align: center;"># Paths</th>
+                </tr>
+             </thead>
+              <tbody>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRaySampleReaderKernel214.xhtml#16" target="stacktrace">1</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raysamplereaderkernel293.xhtml" target="stacktrace">293</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raysamplereaderkernel251.xhtml" target="stacktrace">251</a></small> Mux
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:9%,R:91%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>9224</td>
+		<td>5</td>
+		<td>51</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRaySampleReaderKernel1427.xhtml#16" target="stacktrace">2</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raysamplereaderkernel293.xhtml" target="stacktrace">293</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raysamplereaderkernel251.xhtml" target="stacktrace">251</a></small> Mux
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:17%,R:82%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>394</td>
+		<td>4</td>
+		<td>2</td>
+                </tr>
+              </tbody>
+            </table>
+	</div>
+    </div>
+    <h2 id="RaySampleCommandGeneratorKernel">
+       <a id="RaySampleCommandGeneratorKernelKernelLink" href="javascript:toggle('RaySampleCommandGeneratorKernelKernelContent', 'RaySampleCommandGeneratorKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel RaySampleCommandGeneratorKernel 
+    </h2>
+<div id="RaySampleCommandGeneratorKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+    </div>
+    <h2 id="MapSampleCommandGeneratorKernel">
+       <a id="MapSampleCommandGeneratorKernelKernelLink" href="javascript:toggle('MapSampleCommandGeneratorKernelKernelContent', 'MapSampleCommandGeneratorKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel MapSampleCommandGeneratorKernel 
+    </h2>
+<div id="MapSampleCommandGeneratorKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+    </div>
+    <h2 id="MaxVideoSignalKernel">
+       <a id="MaxVideoSignalKernelKernelLink" href="javascript:toggle('MaxVideoSignalKernelKernelContent', 'MaxVideoSignalKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel MaxVideoSignalKernel 
+    </h2>
+<div id="MaxVideoSignalKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+    </div>
+    <h2 id="MapSampleReaderKernel">
+       <a id="MapSampleReaderKernelKernelLink" href="javascript:toggle('MapSampleReaderKernelKernelContent', 'MapSampleReaderKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel MapSampleReaderKernel 
+    </h2>
+<div id="MapSampleReaderKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+    </div>
+    <h2 id="RayCasterKernel">
+       <a id="RayCasterKernelKernelLink" href="javascript:toggle('RayCasterKernelKernelContent', 'RayCasterKernelKernelLink');"><img src="images/minus.png"></img></a> Kernel RayCasterKernel 
+    </h2>
+<div id="RayCasterKernelKernelContent" style="display: block">
+<h3>Non-Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+All paths passed.
+	</div>
+
+<h3>Localized Paths</h3>
+	<div  class="main" style="margin-left: 40px;">
+            <table class="display" style="text-align: left; width: 100%;" cellpadding="2" cellspacing="2" id="LocalizedPathsRayCasterKernel">
+            <thead>
+                <tr>
+                  <th style="text-align: center;"> # </th>
+                  <th style="text-align: center;">Path</th>
+                  <th style="text-align: center;">Score (Sum)</th>
+                  <th style="text-align: center;">Worst Fanout</th>
+                  <th style="text-align: center;"># Paths</th>
+                </tr>
+             </thead>
+              <tbody>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel2321.xhtml#16" target="stacktrace">1</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel171.xhtml" target="stacktrace">171</a></small> Div
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+ KernelInternal
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel171.xhtml" target="stacktrace">171</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:15%,R:48%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:1%,R:5%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:6%,R:25%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>8958</td>
+		<td>29</td>
+		<td>78</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel1135.xhtml#16" target="stacktrace">2</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel778.xhtml" target="stacktrace">778</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel73.xhtml" target="stacktrace">73</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:11%,R:89%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>3896</td>
+		<td>4</td>
+		<td>29</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel1157.xhtml#16" target="stacktrace">3</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel778.xhtml" target="stacktrace">778</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel73.xhtml" target="stacktrace">73</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:13%,R:87%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>2635</td>
+		<td>5</td>
+		<td>9</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel2532.xhtml#16" target="stacktrace">4</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel788.xhtml" target="stacktrace">788</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel342.xhtml" target="stacktrace">342</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:10%,R:89%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>757</td>
+		<td>5</td>
+		<td>4</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel2191.xhtml#16" target="stacktrace">5</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel802.xhtml" target="stacktrace">802</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel74.xhtml" target="stacktrace">74</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:11%,R:88%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>445</td>
+		<td>4</td>
+		<td>3</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel5638.xhtml#16" target="stacktrace">6</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel778.xhtml" target="stacktrace">778</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel111.xhtml" target="stacktrace">111</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:11%,R:88%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>431</td>
+		<td>4</td>
+		<td>4</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel1136.xhtml#16" target="stacktrace">7</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel778.xhtml" target="stacktrace">778</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel73.xhtml" target="stacktrace">73</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:12%,R:87%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>327</td>
+		<td>3</td>
+		<td>3</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel5733.xhtml#16" target="stacktrace">8</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel778.xhtml" target="stacktrace">778</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel73.xhtml" target="stacktrace">73</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:6%,R:94%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>121</td>
+		<td>2</td>
+		<td>1</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: center; text-align: center;">
+                     <a href="LPathRayCasterKernel5878.xhtml#16" target="stacktrace">9</a>
+                  </td>
+                  <td style="vertical-align: center;">
+                    <table style="text-align: left;" border="0" cellpadding="2" cellspacing="2">
+                      <tbody>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel788.xhtml" target="stacktrace">788</a></small> FIFO
+                          </td>
+                           <td><small>--></small></td>
+                          <td style="vertical-align: top; text-align: left;">
+                            <small><a href="raycasterkernel342.xhtml" target="stacktrace">342</a></small> Div
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:0%,R:0%</small> 
+                          </td>
+                           <td></td>
+                          <td style="vertical-align: top; text-align: left;">
+                             <small>L:10%,R:89%</small> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+		<td>80</td>
+		<td>4</td>
+		<td>1</td>
+                </tr>
+              </tbody>
+            </table>
+	</div>
+    </div>
+  </body>
+</html>

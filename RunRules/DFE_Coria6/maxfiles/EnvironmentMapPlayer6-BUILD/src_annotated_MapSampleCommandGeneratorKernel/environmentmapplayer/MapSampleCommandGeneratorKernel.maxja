@@ -1,0 +1,144 @@
+    LUTs     FFs   BRAMs    DSPs : MapSampleCommandGeneratorKernel.maxj
+   12573   15607      81      15 : resources used by this file
+   3.64%   2.26%   4.02%   0.94% : % of available
+   7.30%   6.48%   6.19%  16.67% : % of total used
+  10.81%  10.38%  14.11%  16.67% : % of user resources
+
+                                 : package environmentmapplayer;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : 
+                                 : public class MapSampleCommandGeneratorKernel extends Kernel {
+                                 : 
+                                 : 	protected DFEVar clamp(DFEVar v, int min, int max)
+                                 : 	{
+     108     109       0       0 : 		v = v > max ? constant.var(max) : v;
+      38      94       0       0 : 		v = v < min ? constant.var(min) : v;
+                                 : 		return v;
+                                 : 	}
+                                 : 	protected DFEVar clampmin(DFEVar v, int min, int max)
+                                 : 	{
+                                 : 		v = v > max ? constant.var(min) : v;
+                                 : 		v = v < min ? constant.var(min) : v;
+                                 : 		return v;
+                                 : 	}
+                                 : 
+                                 : 	protected final boolean cullInvalidMipSamples = true;
+                                 : 
+                                 : 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
+                                 : 		super(parameters);
+                                 : 
+                                 : 		flush.disabled();
+                                 : 
+                                 : 		/* Read sample parameters from ray caster */
+                                 : 
+       1       1       0       0 : 		DFEVar plane = io.input("plane", dfeUInt(8));
+       1       0       0       0 : 		DFEVar miplevel = io.input("miplevel", dfeUInt(8));
+       1       1       0       0 : 		DFEVar u = io.input("u", dfeFloat(8, 24));
+                                 : 		DFEVar v = io.input("v", dfeFloat(8, 24));
+                                 : 
+                                 : 		/* Restrict the mip level to those contained within the source map set */
+                                 : 
+      20      19       0       0 : 		DFEVar miplevelclamped = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
+                                 : 
+                                 : 		if(cullInvalidMipSamples){
+      12       9       0       0 : 			plane = miplevel.eq(miplevelclamped) ? plane : constant.var(dfeUInt(8),255); //if the mip level is out of range, just draw black
+                                 : 		}
+                                 : 		else
+                                 : 		{
+                                 : 			miplevel = miplevelclamped;
+                                 : 		}
+                                 : 
+                                 : 		/* Compute basic parameters about the mip map in use for determining the memory address */
+                                 : 
+     263     307       2       3 : 		DFEVar face_width_in_pixels = KernelMath.pow2(miplevel, dfeFloat(8,24));
+      19      40       0       0 : 		DFEVar face_width_in_tiles = face_width_in_pixels / EnvironmentParameters.tile_width_in_pixels;
+     133     341       2       1 : 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
+                                 : 
+                                 : 		/* clamp u and v to prevent wasteful lmem accesses into erroneous locations */
+      63      91       0       0 : 		u = clamp(u, 0, 1);
+      63      93       0       0 : 		v = clamp(u, 0, 1);
+                                 : 
+                                 : 		/* Based on the mip level, determine which tile contains the sample */
+                                 : 
+     928    1186       5       1 : 		DFEVar tile_column = KernelMath.floor(u * face_width_in_tiles);
+     918    1157       5       1 : 		DFEVar tile_row = KernelMath.floor(v * face_width_in_tiles);
+                                 : 
+                                 : 		/* Calculate the offset into the tile of the individual sample */
+                                 : 
+    1516    1852       9       1 : 		DFEVar tile_u = KernelMath.floor(u * face_width_in_pixels) - (EnvironmentParameters.tile_width_in_pixels * tile_column);
+    1508    1871       9       1 : 		DFEVar tile_v = KernelMath.floor(v * face_width_in_pixels) - (EnvironmentParameters.tile_width_in_pixels * tile_row);
+                                 : 
+                                 :         //Calculate the difference in size between two sequences of mip maps, to get the offset from the start (highest mip map) of the memory
+                                 :         int distance_to_max_mip_in_pixels = (int)((1 - Math.pow(4, EnvironmentParameters.max_mip_level + 1)) / (1 - 4));
+                                 :         //DFEVar mip_sequence_size_actual = (1 - KernelMath.pow2( KernelMath.pow2(miplevel + 1, dfeFloat(8,24)), dfeFloat(8,24))) / (1 - 4);
+                                 : 
+                                 :         //The following offset calculations are made assuming division of a single face
+     271     314       2       3 :         DFEVar nominator_mip_width = KernelMath.pow2(miplevel + 1, dfeFloat(8,24));
+     133     335       2       1 :         DFEVar nominator_mip_size = nominator_mip_width * nominator_mip_width;
+     569     604       3       0 :         DFEVar nominator = (1 - nominator_mip_size);
+     529     868       9       0 :         DFEVar distance_to_mip_in_pixels = nominator / (1-4);
+                                 : 
+     574     613       3       0 :         DFEVar mip_offset_in_pixels = distance_to_max_mip_in_pixels - distance_to_mip_in_pixels;
+     146     346       2       1 :         DFEVar mip_offset_in_tiles = mip_offset_in_pixels * (EnvironmentParameters.num_faces/(Math.pow(EnvironmentParameters.tile_width_in_pixels, 2)));
+                                 : 
+                                 : 
+                                 : 		/* Convert these coordinate sets into memory addresses */
+                                 : 
+     756     997       6       1 : 		DFEVar tile_offset_in_tiles = (tile_row * face_width_in_tiles) + tile_column; //In the current implementation one tile is one burst
+     188     360       4       1 :         DFEVar face_offset_in_tiles = plane.cast(dfeFloat(8,24)) * tiles_per_face;
+                                 : 
+                                 : 
+    1924    2115      11       0 :         DFEVar addr_burst = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
+    1360    1517       7       0 :         DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * EnvironmentParameters.tile_width_in_pixels));
+                                 : 
+                                 :         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
+                                 : 
+                                 :         DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
+      37      20       0       0 :         DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
+                                 : 
+                                 : 
+                                 : 
+                                 :         /* overwrite the commands if the plane value indicates we should be setting the null colour */
+       2       1       0       0 :         DFEVar command_invalid = plane.eq(255);
+                                 : 
+                                 :         /* signal to send the null colour by setting the sample offset to > 96 pixels. set the cache valid so we dont waste a memory read. */
+                                 : 
+       1       1       0       0 :         cache_valid = command_invalid ? constant.var(true) : cache_valid;
+      32      32       0       0 :         addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel;
+                                 : 
+                                 : 		/*
+                                 : 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
+                                 : 		DFEStruct memoryCommand = memoryCommand_t.newInstance(this);
+                                 : 
+                                 : 		memoryCommand["address"] = address_in_bursts;
+                                 : 		memoryCommand["size"] = constant.var(1).cast(dfeUInt(8));
+                                 : 		memoryCommand["inc"] = constant.var(1).cast(dfeUInt(8));
+                                 : 		memoryCommand["stream"] = constant.var(0).cast(dfeRawBits(15));
+                                 : 		memoryCommand["tag"] = constant.var(false);
+                                 : 
+                                 : 		LMemCommandStream.makeKernelOutput("sample_command", constant.var(true), memoryCommand);
+                                 : 		*/
+                                 : 
+       0       1       0       0 :         io.output("cache_valid", dfeBool()).connect(cache_valid);
+                                 : 
+       1       1       0       0 : 		LMemCommandStream.makeKernelOutput(
+                                 : 				"sample_command",
+                                 : 				~cache_valid,
+     297     252       0       0 : 				addr_burst.cast(dfeUInt(28)),
+                                 : 				constant.var(dfeUInt(8),1),
+                                 : 				constant.var(dfeUInt(7),1),
+                                 : 				constant.var(dfeUInt(4),0),
+                                 : 				constant.var(false));
+                                 : 
+     307     262       0       0 : 		io.output("sample_offset_in_pixels", dfeUInt(32)) <== addr_pixel.cast(dfeUInt(32));
+                                 : 
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 
+                                 : }

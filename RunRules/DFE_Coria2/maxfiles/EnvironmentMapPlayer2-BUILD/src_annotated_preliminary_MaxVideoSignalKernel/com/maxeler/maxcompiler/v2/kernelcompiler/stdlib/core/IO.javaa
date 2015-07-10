@@ -1,0 +1,1298 @@
+    LUTs     FFs   BRAMs    DSPs : IO.java
+       1      26       0       0 : resources used by this file
+   0.00%   0.00%   0.00%   0.00% : % of available
+   0.00%   0.01%   0.00%   0.00% : % of total used
+   0.00%   0.02%   0.00%   0.00% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core;
+                                 : 
+                                 : import java.util.LinkedHashMap;
+                                 : import java.util.LinkedHashSet;
+                                 : import java.util.Map;
+                                 : import java.util.Set;
+                                 : import java.util.Stack;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.FullType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFETypeFactory;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base._KernelBaseTypes;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStruct;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStructType;
+                                 : import com.maxeler.maxcompiler.v2.utils.Bits;
+                                 : import com.maxeler.maxcompiler.v2.utils.MathUtils;
+                                 : import com.maxeler.maxdc.VHDLNameManager;
+                                 : import com.maxeler.networking.statemachines.Flushing;
+                                 : import com.maxeler.photon.core.Node;
+                                 : import com.maxeler.photon.core.PhotonIOInformation;
+                                 : import com.maxeler.photon.core.Var;
+                                 : import com.maxeler.photon.core.VarSourceless;
+                                 : import com.maxeler.photon.core.VarTyped;
+                                 : import com.maxeler.photon.input_arbitration.ArbitratedInput;
+                                 : import com.maxeler.photon.input_arbitration.Strategy;
+                                 : import com.maxeler.photon.libs.IONodeFactory;
+                                 : import com.maxeler.photon.nodes.NodeInput;
+                                 : import com.maxeler.photon.nodes.NodeOutput;
+                                 : import com.maxeler.utils.EnumUtils;
+                                 : import com.maxeler.utils.Pair;
+                                 : 
+                                 : /**
+                                 :  * Contains all the methods and classes for creating and configuring
+                                 :  * input and output streams and scalar inputs and outputs to a Kernel.
+                                 :  * <p>
+                                 :  * There are continuous and user-controlled versions of both inputs and outputs. All input
+                                 :  * and output methods are compatible with all Kernel types.
+                                 :  * <p>
+                                 :  * See the sections on <a href="{@docRoot}/../maxcompiler-tutorial.pdf#destination.controlledio">controlled inputs and outputs</a> and
+                                 :  * <a href="{@docRoot}/../maxcompiler-tutorial.pdf#destination.scalarinputs">scalar inputs</a> in the MaxCompiler Tutorial for more details.
+                                 :  */
+                                 : public class IO {
+                                 : 	private static class Input extends Pair<NodeInput, KernelType<?>> {
+                                 : 		public Input(NodeInput node, KernelType<?> type) { super(node, type); }
+                                 : 	}
+                                 : 
+                                 : 	private static class Output extends Pair<NodeOutput, KernelType<?>> {
+                                 : 		public Output(NodeOutput node, KernelType<?> type) { super(node, type); }
+                                 : 	}
+                                 : 
+                                 : 	private final Map<String, Input> m_input_nodes = new LinkedHashMap<String, Input>();
+                                 : 
+                                 : 	private final Map<String, Output> m_output_nodes = new LinkedHashMap<String, Output>();
+                                 : 
+                                 : 	private final Set<String> m_scalar_input_names = new LinkedHashSet<String>();
+                                 : 
+                                 : 	private final Set<String> m_scalar_output_names = new LinkedHashSet<String>();
+                                 : 
+                                 : 	private final Stack<Boolean> m_input_regs_enable =
+                                 : 		new Stack<Boolean>();
+                                 : 	{
+                                 : 		m_input_regs_enable.push(true);
+                                 : 	}
+                                 : 
+                                 : 	private final Kernel m_design;
+                                 : 	private final IONodeFactory m_imp;
+                                 : 
+                                 : 	IO(Kernel design) {
+                                 : 		m_design = design;
+                                 : 		m_imp = new IONodeFactory(_Kernel.getPhotonDesignData(design));
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Enables (<code>v==true</code>) or disables (<code>v==false</code>) input registering
+                                 : 	 * for subsequently declared inputs in the Kernel until popped using {@link #popInputRegistering}.
+                                 : 	 */
+                                 : 	public void pushInputRegistering(boolean v) {
+                                 : 		m_input_regs_enable.push(v);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Checks the current status of input registering.
+                                 : 	 *
+                                 : 	 * @return <code>true</code> if enabled, <code>false</code> if disabled
+                                 : 	 */
+                                 : 	public boolean peekInputRegistering() {
+                                 : 		return m_input_regs_enable.peek();
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Reverts input registering state to previous state for subsequently declared
+                                 : 	 * inputs in the Kernel.
+                                 : 	 */
+                                 : 	public void popInputRegistering() {
+                                 : 		m_input_regs_enable.pop();
+                                 : 	}
+                                 : 
+                                 : 	private static String debugControlRegName(String ioName) {
+                                 : 		return "io_" + ioName + "_force_disabled";
+                                 : 	}
+                                 : 
+                                 : 	/*
+                                 : 	 *
+                                 : 	 * Input functions.
+                                 : 	 *
+                                 : 	 */
+                                 : 	private DFEVar input(String name, DFEType type, DFEVar control) {
+                                 : 		VarTyped<NodeInput> input_var;
+                                 : 
+                                 : 		if (_Kernel.getPhotonDesignData(m_design).getKernelConfiguration().getDebugIOControlRegsEnabled()) {
+                                 : 			_Kernel.getPhotonDesignData(m_design).pushNodeVisible(false);
+                                 : 			DFEVar disable = scalarInput(debugControlRegName(name), DFETypeFactory.dfeBool(), false, false);
+                                 : 
+                                 : 			m_design.optimization.pushPipeliningFactor(0);
+                                 : 			control = (control == null) ? ~disable : control & ~disable;
+                                 : 			m_design.optimization.popPipeliningFactor();
+                                 : 
+                                 : 			_Kernel.getPhotonDesignData(m_design).popNodeVisible();
+                                 : 		}
+                                 : 
+                                 : 		if (control == null)
+                                 : 			control = m_design.constant.var(true);
+                                 : 
+                                 : 		input_var = m_imp.input(
+                                 : 			name,
+                                 : 			_KernelBaseTypes.toImp(type),
+                                 : 			_KernelBaseTypes.toImp(control)
+                                 : 		);
+                                 : 
+                                 : 		if(!peekInputRegistering())
+                                 : 			input_var.getSrcNode().disableInputRegister();
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, input_var);
+                                 : 	}
+                                 : 
+                                 : 	NodeInput getInputNode(String name) {
+                                 : 		Input in = m_input_nodes.get(name);
+                                 : 
+                                 : 		return in == null ? null : in.key;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Method used to arbitrate between inputs
+                                 : 	 *
+                                 : 	 * if the {@link ArbitrationStrategy#PRIORITY} strategy is used
+                                 : 	 * the ordering of the input names is significant: inputs which are listed
+                                 : 	 * first have higher priority than those that follow
+                                 : 	 */
+                                 : 	public enum ArbitrationStrategy {
+                                 : 		PRIORITY,
+                                 : 		FAIR
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled arbitrated input. Use where packets contain a header in the first word which contains a length field.
+                                 : 	 * <p>
+                                 : 	 * Note that if the {@link ArbitrationStrategy#PRIORITY} strategy is used
+                                 : 	 * the ordering of the input names is significant: inputs which are listed
+                                 : 	 * first have higher priority than those that follow.
+                                 : 	 * @param type The type of the data in the stream.
+                                 : 	 * @param control Control stream of Boolean values to enable or disable the
+                                 : 	 * stream.
+                                 : 	 * @param strategy Method used to arbitrate between inputs.
+                                 : 	 * @param lengthFieldPos The length field's bit position within the first data word.
+                                 : 	 * @param lengthFieldSize The length field's size in bits.
+                                 : 	 * @param lengthFieldMultiplier A multiplier to be applied to the length field.
+                                 : 	 * @param names Names of inputs that will be arbitrated.
+                                 : 	 * @return A {@link DFEStruct} containing 2 fields: "data" and "index". The
+                                 : 	 * "data" field contains the data stream (of the specified type). The
+                                 : 	 * "index" field contains an unsigned integer (a zero-based index) specifying
+                                 : 	 * which input the data came from.
+                                 : 	 */
+                                 : 	public DFEStruct arbitratedInput(
+                                 : 		KernelType<? extends KernelObject<?>> type,
+                                 : 		DFEVar control,
+                                 : 		ArbitrationStrategy strategy,
+                                 : 		int lengthFieldPos,
+                                 : 		int lengthFieldSize,
+                                 : 		double lengthFieldMultiplier,
+                                 : 		String... names
+                                 : 	) {
+                                 : 		if (type == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "type");
+                                 : 		if (control == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "control");
+                                 : 		if (strategy == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "strategy");
+                                 : 		if (names == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "names");
+                                 : 		if (lengthFieldSize < 0)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Length field size must be positive (not %d).", lengthFieldSize);
+                                 : 		if (lengthFieldPos < 0 || lengthFieldPos+lengthFieldSize > type.getTotalBits())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Length field position and size must be between 0 and %d inclusive (not %d->%d).", 0, type.getTotalBits() - 1, lengthFieldPos, lengthFieldPos+lengthFieldSize-1);
+                                 : 		if (names.length < 2)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Must supply at least 2 input names to arbitrate between.");
+                                 : 
+                                 : 		DFEStructType realType = new DFEStructType(
+                                 : 			DFEStructType.sft("data", type),
+                                 : 			DFEStructType.sft("index", DFETypeFactory.dfeUInt(MathUtils.bitsToAddress(names.length)))
+                                 : 		);
+                                 : 
+                                 : 		Strategy strategy_imp = EnumUtils.convert(strategy, Strategy.class);
+                                 : 		ArbitratedInput input = new ArbitratedInput(type.getTotalBits(), strategy_imp, lengthFieldPos, lengthFieldSize, lengthFieldMultiplier, names);
+                                 : 		PhotonIOInformation io_info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 		String fakeInputName = io_info.addArbitratedInput(input);
+                                 : 
+                                 : 		return input(fakeInputName, realType, control);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled arbitrated input. This input is always enabled. Use where packets have a header in their first word containing a length field.
+                                 : 	 * <p>
+                                 : 	 * Note that if the {@link ArbitrationStrategy#PRIORITY} strategy is used
+                                 : 	 * the ordering of the input names is significant: inputs which are listed
+                                 : 	 * first have higher priority than those that follow.
+                                 : 	 * @param type The type of the data in the stream.
+                                 : 	 * @param strategy Method used to arbitrate between inputs.
+                                 : 	 * @param lengthFieldPos The length field's bit position within the first data word.
+                                 : 	 * @param lengthFieldSize The length field's size in bits.
+                                 : 	 * @param lengthFieldMultiplier A multiplier to be applied to the length field.
+                                 : 	 * @param names Names of inputs that will be arbitrated.
+                                 : 	 * @return A {@link DFEStruct} containing 2 fields: "data" and "index". The
+                                 : 	 * "data" field contains the data stream (of the specified type). The
+                                 : 	 * "index" field contains an unsigned integer (a zero-based index) specifying
+                                 : 	 * which input the data came from.
+                                 : 	 * @see #arbitratedInput(KernelType, DFEVar, ArbitrationStrategy, int, String...)
+                                 : 	 */
+                                 : 	public DFEStruct arbitratedInput(
+                                 : 		KernelType<? extends KernelObject<?>> type,
+                                 : 		ArbitrationStrategy strategy,
+                                 : 		int lengthFieldPos,
+                                 : 		int lengthFieldSize,
+                                 : 		double lengthFieldMultiplier,
+                                 : 		String... names
+                                 : 	) {
+                                 : 		return arbitratedInput(
+                                 : 			type,
+                                 : 			m_design.constant.var(true),
+                                 : 			strategy,
+                                 : 			lengthFieldPos,
+                                 : 			lengthFieldSize,
+                                 : 			lengthFieldMultiplier,
+                                 : 			names
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled arbitrated input. End of packet should be marked with a side-band EOF flag.
+                                 : 	 * <p>
+                                 : 	 * Note that if the {@link ArbitrationStrategy#PRIORITY} strategy is used
+                                 : 	 * the ordering of the input names is significant: inputs which are listed
+                                 : 	 * first have higher priority than those that follow.
+                                 : 	 * @param type The type of the data in the stream.
+                                 : 	 * @param control Control stream of Boolean values to enable or disable the
+                                 : 	 * stream.
+                                 : 	 * @param strategy Method used to arbitrate between inputs.
+                                 : 	 * @param end_of_frame_position The bit position within the data word of
+                                 : 	 * the end of frame marker. Position 0 refers to the least significant bit.
+                                 : 	 * @param names Names of inputs that will be arbitrated.
+                                 : 	 * @return A {@link DFEStruct} containing 2 fields: "data" and "index". The
+                                 : 	 * "data" field contains the data stream (of the specified type). The
+                                 : 	 * "index" field contains an unsigned integer (a zero-based index) specifying
+                                 : 	 * which input the data came from.
+                                 : 	 */
+                                 : 	public DFEStruct arbitratedInput(
+                                 : 		KernelType<? extends KernelObject<?>> type,
+                                 : 		DFEVar control,
+                                 : 		ArbitrationStrategy strategy,
+                                 : 		int end_of_frame_position,
+                                 : 		String... names
+                                 : 	) {
+                                 : 		if (type == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "type");
+                                 : 		if (control == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "control");
+                                 : 		if (strategy == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "strategy");
+                                 : 		if (names == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "names");
+                                 : 		if (end_of_frame_position < 0 || end_of_frame_position >= type.getTotalBits())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "End of frame position must be between 0 and %d inclusive (not %d).", 0, type.getTotalBits() - 1, end_of_frame_position);
+                                 : 		if (names.length < 2)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Must supply at least 2 input names to arbitrate between.");
+                                 : 
+                                 : 		DFEStructType realType = new DFEStructType(
+                                 : 			DFEStructType.sft("data", type),
+                                 : 			DFEStructType.sft("index", DFETypeFactory.dfeUInt(MathUtils.bitsToAddress(names.length)))
+                                 : 		);
+                                 : 
+                                 : 		Strategy strategy_imp = EnumUtils.convert(strategy, Strategy.class);
+                                 : 		ArbitratedInput input = new ArbitratedInput(type.getTotalBits(), strategy_imp, end_of_frame_position, names);
+                                 : 		PhotonIOInformation io_info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 		String fakeInputName = io_info.addArbitratedInput(input);
+                                 : 
+                                 : 		return input(fakeInputName, realType, control);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled arbitrated input. This input is always enabled. End of packet should be marked with a side-band EOF flag.
+                                 : 	 * <p>
+                                 : 	 * Note that if the {@link ArbitrationStrategy#PRIORITY} strategy is used
+                                 : 	 * the ordering of the input names is significant: inputs which are listed
+                                 : 	 * first have higher priority than those that follow.
+                                 : 	 * @param type The type of the data in the stream.
+                                 : 	 * @param strategy Method used to arbitrate between inputs.
+                                 : 	 * @param end_of_frame_position The bit position within the data word of
+                                 : 	 * the end of frame marker. Position 0 refers to the least significant bit.
+                                 : 	 * @param names Names of inputs that will be arbitrated.
+                                 : 	 * @return A {@link DFEStruct} containing 2 fields: "data" and "index". The
+                                 : 	 * "data" field contains the data stream (of the specified type). The
+                                 : 	 * "index" field contains an unsigned integer (a zero-based index) specifying
+                                 : 	 * which input the data came from.
+                                 : 	 * @see #arbitratedInput(KernelType, DFEVar, ArbitrationStrategy, int, String...)
+                                 : 	 */
+                                 : 	public DFEStruct arbitratedInput(
+                                 : 		KernelType<? extends KernelObject<?>> type,
+                                 : 		ArbitrationStrategy strategy,
+                                 : 		int end_of_frame_position,
+                                 : 		String... names
+                                 : 	) {
+                                 : 		return arbitratedInput(
+                                 : 			type,
+                                 : 			m_design.constant.var(true),
+                                 : 			strategy,
+                                 : 			end_of_frame_position,
+                                 : 			names
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	public static class NonBlockingInput <T extends KernelObject<T>> {
+                                 : 		/**
+                                 : 		 * Data stream from the input.
+                                 : 		 * <p>
+                                 : 		 * The contents of this stream should only be used when the {@code valid}
+                                 : 		 * stream is {@code true}.
+                                 : 		 */
+                                 : 		public final T data;
+                                 : 		/**
+                                 : 		 * A Boolean value indicating whether the contents of the {@code data}
+                                 : 		 * field are valid or not.
+                                 : 		 */
+                                 : 		public final DFEVar valid;
+                                 : 
+                                 : 		private NonBlockingInput(T data, DFEVar valid) {
+                                 : 			this.data = data;
+                                 : 			this.valid = valid;
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	public enum NonBlockingMode {
+                                 : 		TRICKLING,
+                                 : 		NO_TRICKLING
+                                 : 	}
+                                 : 
+                                 : 	public enum DelimiterMode {
+                                 : 		EOF_POSITION,
+                                 : 		FRAME_LENGTH
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>> NonBlockingInput<T> nonBlockingInput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar enable,
+                                 : 		int delimiter,
+                                 : 		DelimiterMode delimiterMode,
+                                 : 		int interFrameGap,
+                                 : 		NonBlockingMode mode
+                                 : 	) {
+                                 : 		if (name == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "name");
+                                 : 		if (delimiterMode == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "delimiterMode");
+                                 : 
+                                 : 		final int width = type.getTotalBits();
+                                 : 		switch (delimiterMode) {
+                                 : 			case EOF_POSITION:
+                                 : 				if (delimiter < 0 || delimiter >= width)
+                                 : 					throw new MaxCompilerAPIError(m_design.getManager(), "Delimiter specifies an invalid end of frame position (%d). This must be between 0 and %d inclusive.", delimiter, width - 1);
+                                 : 				break;
+                                 : 			case FRAME_LENGTH:
+                                 : 				if (delimiter < 1)
+                                 : 					throw new MaxCompilerAPIError(m_design.getManager(), "Delimiter specifies an invalid frame length (%d). Frame length must be > 0.", delimiter);
+                                 : 				break;
+                                 : 			default:
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Unknown delimited mode: %s", delimiterMode);
+                                 : 		}
+                                 : 
+                                 : 		PhotonIOInformation io_info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 		io_info.markNonBlockingInput(name, width, delimiter, delimiterMode, interFrameGap, mode);
+                                 : 
+                                 : 		// this explicit cast to KernelType<DFEVar> is required otherwise it will
+                                 : 		// incorrectly call the other method which has exactly the same name but
+                                 : 		// is polymorphic based on a subclass of KernelType, weeeeee!
+                                 : 		DFEVar rawInput = input(
+                                 : 			name,
+                                 : 			(KernelType<DFEVar>) DFETypeFactory.dfeRawBits(width + 1),
+                                 : 			enable
+                                 : 		);
+                                 : 
+                                 : 		return new NonBlockingInput<T>(
+                                 : 			type.unpack(rawInput.slice(0, width)),
+                                 : 			DFETypeFactory.dfeBool().unpack(rawInput.slice(width))
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>> NonBlockingInput<T> nonBlockingInput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar control,
+                                 : 		int end_of_frame_position
+                                 : 	) {
+                                 : 		return nonBlockingInput(
+                                 : 			name,
+                                 : 			type,
+                                 : 			control,
+                                 : 			end_of_frame_position,
+                                 : 			NonBlockingMode.NO_TRICKLING
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Input that always generates new input values, even if no data is available
+                                 : 	 * to the {@link Kernel}.
+                                 : 	 * @param name The name of the input
+                                 : 	 * @param type The type of data in the input stream.
+                                 : 	 * @param control Control stream of Boolean values to enable or disable the
+                                 : 	 * input stream.
+                                 : 	 * @param end_of_frame_position The bit position of the 'end of frame' marker
+                                 : 	 * within the data word. Position 0 refers to the least significant bit.
+                                 : 	 * @return A {@link NonBlockingInput} containing the contents of the stream.
+                                 : 	 * @see #nonBlockingInput(String, KernelType, int)
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> NonBlockingInput<T> nonBlockingInput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar control,
+                                 : 		int end_of_frame_position,
+                                 : 		NonBlockingMode mode
+                                 : 	) {
+                                 : 		return nonBlockingInput(
+                                 : 			name,
+                                 : 			type,
+                                 : 			control,
+                                 : 			end_of_frame_position,
+                                 : 			DelimiterMode.EOF_POSITION,
+                                 : 			Flushing.interFrameGapNone,
+                                 : 			mode
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>> NonBlockingInput<T> nonBlockingInput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		int end_of_frame_position,
+                                 : 		NonBlockingMode mode
+                                 : 	) {
+                                 : 		return nonBlockingInput(
+                                 : 			name,
+                                 : 			type,
+                                 : 			m_design.constant.var(true),
+                                 : 			end_of_frame_position,
+                                 : 			mode
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Input that always generates new input values, even if no data is available
+                                 : 	 * to the {@link Kernel}.
+                                 : 	 * @param name The name of the input
+                                 : 	 * @param type The type of data in the input stream.
+                                 : 	 * @param end_of_frame_position The bit position of the 'end of frame' marker
+                                 : 	 * within the data word. Position 0 refers to the least significant bit.
+                                 : 	 * @return A {@link NonBlockingInput} containing the contents of the stream.
+                                 : 	 * @see #nonBlockingInput(String, KernelType, DFEVar, int)
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> NonBlockingInput<T> nonBlockingInput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		int end_of_frame_position
+                                 : 	) {
+                                 : 		return nonBlockingInput(
+                                 : 			name,
+                                 : 			type,
+                                 : 			m_design.constant.var(true),
+                                 : 			end_of_frame_position
+                                 : 		);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled input.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, a new value from the
+                                 : 	 * input will be read into the returned stream in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the previous value from the input will be
+                                 : 	 * rewritten into the returned stream.
+                                 : 	 * <p>
+                                 : 	 * If no data is available at the input and {@code control} is {@code 1}, then the
+                                 : 	 * Kernel will stall until more data is provided and no computation will take place.
+                                 : 	 * <p>
+                                 : 	 * All {@link KernelType}s can be used for <code>type</code>.
+                                 : 	 * @param name The name of the input as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the data in the input stream.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable the stream.
+                                 : 	 * @return The incoming data stream.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> T input(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar control)
+                                 : 	{
+                                 : 		if(type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'type' is null.");
+                                 : 
+       1      25       0       0 : 		return input(name, type.getFullTypeWithoutDoubtInfo(), control);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled input.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, a new value from the
+                                 : 	 * input will be read into the returned stream in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the previous value from the input will be
+                                 : 	 * rewritten into the returned stream.
+                                 : 	 * <p>
+                                 : 	 * If no data is available at the input and {@code control} is {@code 1}, then the
+                                 : 	 * Kernel will stall until more data is provided and no computation will take place.
+                                 : 	 * <p>
+                                 : 	 * All {@link KernelType}s can be used for <code>full_type</code>.
+                                 : 	 * @param name The name of the input as it will appear in the Manager and CPU code.
+                                 : 	 * @param full_type The type of the data in the input stream.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable the stream.
+                                 : 	 * @return The incoming data stream.
+                                 : 	 */
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 	T input(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type,
+                                 : 		DFEVar control)
+                                 : 	{
+                                 : 		if(name == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'name' is null.");
+                                 : 		if(full_type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'full_type' is null.");
+                                 : 		if(control != null && !control.getType().isBool())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'control' must have boolean type, not " + control.getType() +".");
+                                 : 
+                                 : 		checkForExistingName(name, NameType.INPUT);
+                                 : 
+                                 : 		KernelType<?> type = full_type.getKernelType();
+                                 : 
+                                 : 		DFEVar control_doubt = null;
+                                 : 
+                                 : 		if (control != null && control.getDoubtType().hasDoubtInfo()) {
+                                 : 			if (control.getDoubtType().hasDoubtInfo() != full_type.getDoubtType().hasDoubtInfo())
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Incompatible doubt types on input '" + name + "'. Control has doubt information, therefore the input must have doubt information.");
+                                 : 
+                                 : 			control_doubt = control.hasDoubt();
+                                 : 			control_doubt = Reductions.streamHold(control_doubt, control_doubt.eq(1.0), Bits.allZeros(1));
+                                 : 			control = control.removeDoubtInfo();
+                                 : 		}
+                                 : 
+                                 : 		T the_input;
+                                 : 		if(type instanceof DFEType && !full_type.getDoubtType().hasDoubtInfo()) {
+                                 : 			DFEVar in = input(name, (DFEType) type, control);
+                                 : 			addInput(name, in, type);
+                                 : 
+                                 : 			the_input = (T) in;
+                                 : 		} else {
+                                 : 			DFEVar in = input(name, DFETypeFactory.dfeRawBits(full_type.getTotalBits()), control);
+                                 : 			addInput(name, in, type);
+                                 : 
+                                 : 			the_input = full_type.unpack(in);
+                                 : 		}
+                                 : 
+                                 : 		if (control_doubt != null)
+                                 : 			the_input = the_input.setDoubt(control_doubt);
+                                 : 
+                                 : 		return the_input;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous input.
+                                 : 	 * <p>
+                                 : 	 * A new data item is read into the returned stream every stream cycle. If no data is available at the input, then the
+                                 : 	 * Kernel will stall until more data is provided and no computation will take place.
+                                 : 	 * <p>
+                                 : 	 * If, in any stream cycle, the data is not read from the stream, then the data
+                                 : 	 * will be discarded. Use a {@link #input(String, KernelType, DFEVar) user-controlled input}
+                                 : 	 * if the Kernel does not require new data every stream cycle.
+                                 : 	 * <p>
+                                 : 	 * All {@link KernelType}s can be used for <code>type</code>.
+                                 : 	 * @param name The name of the input as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the data in the input stream.
+                                 : 	 * @return The incoming data stream.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> T input(String name, KernelType<T> type) {
+                                 : 		return input(name, type,  null);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous input.
+                                 : 	 * <p>
+                                 : 	 * A new data item is read into the returned stream every stream cycle. If no data is available at the input, then the
+                                 : 	 * Kernel will stall until more data is provided and no computation will take place.
+                                 : 	 * <p>
+                                 : 	 * If, in any stream cycle, the data is not read from the stream, then the data
+                                 : 	 * will be discarded. Use a {@link #input(String, KernelType, DFEVar) user-controlled input}
+                                 : 	 * if the Kernel does not require new data every stream cycle.
+                                 : 	 * <p>
+                                 : 	 * All {@link KernelType}s can be used for <code>full_type</code>.
+                                 : 	 * @param name The name of the input as it will appear in the Manager and CPU code.
+                                 : 	 * @param full_type The type of the data in the input stream.
+                                 : 	 * @return The incoming data stream.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 	T input(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type)
+                                 : 	{
+                                 : 		return input(name, full_type, null);
+                                 : 	}
+                                 : 
+                                 : 	/*
+                                 : 	 *
+                                 : 	 * Output functions.
+                                 : 	 *
+                                 : 	 */
+                                 : 
+                                 : 	private DFEVar output(String name, DFEType type, DFEVar control) {
+                                 : 		if (_Kernel.getPhotonDesignData(m_design).getKernelConfiguration().getDebugIOControlRegsEnabled()) {
+                                 : 			_Kernel.getPhotonDesignData(m_design).pushNodeVisible(false);
+                                 : 			DFEVar disable = scalarInput(debugControlRegName(name), DFETypeFactory.dfeBool(), false, false);
+                                 : 
+                                 : 			m_design.optimization.pushPipeliningFactor(0);
+                                 : 			control = (control == null) ? ~disable : control & ~disable;
+                                 : 			m_design.optimization.popPipeliningFactor();
+                                 : 
+                                 : 			_Kernel.getPhotonDesignData(m_design).popNodeVisible();
+                                 : 		}
+                                 : 
+                                 : 		if (control == null)
+                                 : 			control = m_design.constant.var(true);
+                                 : 
+                                 : 		VarSourceless output = m_imp.output(
+                                 : 			name,
+                                 : 			_KernelBaseTypes.toImp(type),
+                                 : 			_KernelBaseTypes.toImp(control)
+                                 : 		);
+                                 : 
+                                 : 		NodeOutput output_node = (NodeOutput)output.getAllDstNodeIOs().get(0).getNode();
+                                 : 		m_output_nodes.put(name, new Output(output_node, type));
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, output);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled output.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, the value of {@code out_stream}
+                                 : 	 * will be written to the output in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the value from the stream will be discarded.
+                                 : 	 * <p>
+                                 : 	 * If {@code enable} is {@code 1} and no data is being read from the output of the stream,
+                                 : 	 * the Kernel will stall and no computation will take place until reading begins.
+                                 : 	 * <p>
+                                 : 	 * The parameter {@code type} is used to ensure that the correct type of {@code out_stream} is
+                                 : 	 * connected to the output.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param out_stream The internal stream to be connected to the output.
+                                 : 	 * @param type The type of the data in the output stream.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable the stream.
+                                 : 	 */
+                                 : 	public <SrcT extends KernelObject<SrcT>>
+                                 : 		void output(String name, SrcT out_stream, KernelType<SrcT> type, DFEVar control)
+                                 : 	{
+                                 : 		output(name, type, control).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <SrcT extends KernelObject<SrcT>, KernelTypeT extends KernelType<SrcT>>
+                                 : 	void output(
+                                 : 		String name,
+                                 : 		SrcT out_stream,
+                                 : 		FullType<?, KernelTypeT, SrcT> full_type,
+                                 : 		DFEVar control)
+                                 : 	{
+                                 : 		output(name, full_type, control).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled output.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, the value from the
+                                 : 	 * the returned stream will be written to the output in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the value from the stream will be discarded.
+                                 : 	 * <p>
+                                 : 	 * If {@code enable} is {@code 1} and no data is being read from the output of the stream,
+                                 : 	 * the Kernel will stall and no computation will take place until reading begins.
+                                 : 	 * <p>
+                                 : 	 * The returned stream requires connecting to an internal stream using the {@link KernelObject#connect} method.
+                                 : 	 * <p>
+                                 : 	 * <b>Note:</b> as of MaxCompiler 2010.1, it is recommended to use the new {@link #output(String, KernelObject, KernelType, DFEVar)} method
+                                 : 	 * which takes an internal stream as an argument to make code clearer.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the data in the output stream.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable the stream.
+                                 : 	 * @return The data stream connected to the output.
+                                 : 	 */
+                                 : 	public <SrcT extends KernelObject<SrcT>>
+                                 : 		SrcT output(String name, KernelType<SrcT> type, DFEVar control)
+                                 : 	{
+                                 : 		if(type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'type' is null.");
+                                 : 
+                                 : 		return output(name, type.getFullTypeWithoutDoubtInfo(), control);
+                                 : 	}
+                                 : 
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	public <SrcT extends KernelObject<SrcT>, KernelTypeT extends KernelType<SrcT>>
+                                 : 		SrcT output(
+                                 : 			String name,
+                                 : 			FullType<?, KernelTypeT, SrcT> full_type,
+                                 : 			DFEVar control)
+                                 : 	{
+                                 : 		if(name == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'name' is null.");
+                                 : 		if(full_type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'full_type' is null.");
+                                 : 		if(control != null && !control.getType().isBool())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'control' must have boolean type, not " + control.getType() + ".");
+                                 : 
+                                 : 		checkForExistingName(name, NameType.OUTPUT);
+                                 : 
+                                 : 		DFEVar control_doubt = null;
+                                 : 
+                                 : 		if (control != null && control.getDoubtType().hasDoubtInfo()) {
+                                 : 			if (control.getDoubtType().hasDoubtInfo() != full_type.getDoubtType().hasDoubtInfo())
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Incompatible doubt types on output '" + name + "'. Control has doubt information, therefore the output must have doubt information.");
+                                 : 
+                                 : 			control_doubt = control.hasDoubt();
+                                 : 			control_doubt = Reductions.streamHold(control_doubt, control_doubt.eq(1.0), Bits.allZeros(1));
+                                 : 			control = control.removeDoubtInfo();
+                                 : 		}
+                                 : 
+                                 : 		SrcT the_output;
+                                 : 
+                                 : 		KernelType<?> type = full_type.getKernelType();
+                                 : 		if(type instanceof DFEType && !full_type.getDoubtType().hasDoubtInfo()) {
+                                 : 			DFEVar out = output(name, (DFEType)type, control);
+                                 : 			addOutput(name, out, type);
+                                 : 
+                                 : 			the_output = (SrcT) out;
+                                 : 		} else {
+                                 : 			DFEVar out = output(name, DFETypeFactory.dfeRawBits(full_type.getTotalBits()), control);
+                                 : 			addOutput(name, out, type);
+                                 : 
+                                 : 			SrcT sourceless = full_type.newInstance(m_design);
+                                 : 
+                                 : 			if (control_doubt == null)
+                                 : 				out.connect(sourceless.packWithDoubt());
+                                 : 			else
+                                 : 				out.connect(sourceless.setDoubt(control_doubt).packWithDoubt());
+                                 : 
+                                 : 			the_output = sourceless;
+                                 : 		}
+                                 : 
+                                 : 		return the_output;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous output.
+                                 : 	 * <p>
+                                 : 	 * The returned stream requires connecting to an internal stream using the {@link KernelObject#connect} method.
+                                 : 	 * <p>
+                                 : 	 * <b>Note:</b> as of MaxCompiler 2010.1, it is recommended to use the new {@link #output(String, KernelObject, KernelType)} method
+                                 : 	 * which takes an internal stream as an argument to make code clearer.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the data in the output stream.
+                                 : 	 * @return The data stream connected to the output.
+                                 : 	 */
+                                 : 	public <SrcT extends KernelObject<SrcT>> SrcT output(String name, KernelType<SrcT> type) {
+       0       1       0       0 : 		return output(name, type, controlContinuous());
+                                 : 	}
+                                 : 
+                                 : 	public <SrcT extends KernelObject<SrcT>, KernelTypeT extends KernelType<SrcT>>
+                                 : 	SrcT output(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, SrcT> full_type)
+                                 : 	{
+                                 : 		return output(name, full_type, controlContinuous());
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous output.
+                                 : 	 * <p>
+                                 : 	 * The parameter {@code type} is used to ensure that the correct type of {@code out_stream} is
+                                 : 	 * connected to the output.
+                                 : 	 * <p>
+                                 : 	 * If no data is being read from the output of the stream,
+                                 : 	 * the Kernel will stall and no computation will take place until reading begins.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param out_stream The internal stream to be connected to the output.
+                                 : 	 * @param type The type of the data in the output stream.
+                                 : 	 */
+                                 : 	public <SrcT extends KernelObject<SrcT>>
+                                 : 		void output(String name, SrcT out_stream, KernelType<SrcT> type)
+                                 : 	{
+                                 : 		output(name, type, controlContinuous()).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <SrcT extends KernelObject<SrcT>, KernelTypeT extends KernelType<SrcT>>
+                                 : 	void output(
+                                 : 		String name,
+                                 : 		SrcT out_stream,
+                                 : 		FullType<?, KernelTypeT, SrcT> full_type)
+                                 : 	{
+                                 : 		output(name, full_type, controlContinuous()).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	private DFEVar controlContinuous() {
+                                 : 		_Kernel.getPhotonDesignData(m_design).pushNodeVisible(false);
+                                 : 		DFEVar control = DFETypeFactory.dfeBool().newInstance(m_design, true);
+                                 : 		_Kernel.getPhotonDesignData(m_design).popNodeVisible();
+                                 : 		return control;
+                                 : 	}
+                                 : 
+                                 : 	/*
+                                 : 	 *
+                                 : 	 * Mapped register functions.
+                                 : 	 *
+                                 : 	 */
+                                 : 	private DFEVar scalarOutput(String name, DFEType type, DFEVar control, boolean initialiseToZero) {
+                                 : 		//when prefixed with a legal identifier, followed by an underscore, the name must be valid VHDL
+                                 : 		if (!VHDLNameManager.isLegalVHDLName("x_" + name))
+                                 : 			throw new MaxCompilerAPIError("Invalid name '%s'.", name);
+                                 : 
+                                 : 		DFEVar output = type.newInstance(m_design);
+                                 : 
+                                 : 		m_imp.mappedRegOutput(
+                                 : 			name,
+                                 : 			_KernelBaseTypes.toImp(type),
+                                 : 			_KernelBaseTypes.toImp(output),
+                                 : 			_KernelBaseTypes.toImp(control),
+                                 : 			true,
+                                 : 			initialiseToZero);
+                                 : 
+                                 : 		m_scalar_output_names.add(name);
+                                 : 
+                                 : 		return output;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled scalar output.
+                                 : 	 * <p>
+                                 : 	 * A scalar output holds the last value written to it from the connected stream.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, the value from the
+                                 : 	 * {@code out_stream} will be written to the scalar output in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the current value from the stream is discarded.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param out_stream The internal stream to be connected to the scalar output.
+                                 : 	 * @param type The type of the in the scalar output.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable writing to the scalar output.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>>
+                                 : 		void scalarOutput(String name, T out_stream, KernelType<T> type, DFEVar control, boolean initialiseToZero)
+                                 : 	{
+                                 : 		scalarOutput(name, type, control, initialiseToZero).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>>
+                                 : 	void scalarOutput(String name, T out_stream, KernelType<T> type, DFEVar control) {
+                                 : 		scalarOutput(name, out_stream, type, control, false);
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 		void scalarOutput(
+                                 : 			String name,
+                                 : 			T out_stream,
+                                 : 			FullType<?, KernelTypeT, T> full_type,
+                                 : 			DFEVar control,
+                                 : 			boolean initialiseToZero)
+                                 : 	{
+                                 : 		scalarOutput(name, full_type, control, initialiseToZero).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 		void scalarOutput(
+                                 : 			String name,
+                                 : 			T out_stream,
+                                 : 			FullType<?, KernelTypeT, T> full_type,
+                                 : 			DFEVar control)
+                                 : 	{
+                                 : 		scalarOutput(name, out_stream, full_type, control, false);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * User-controlled scalar output.
+                                 : 	 * <p>
+                                 : 	 * A scalar output holds the last value written to it from the connected stream.
+                                 : 	 * <p>
+                                 : 	 * When the current value of <code>control</code> is <code>1</code>, the value from the
+                                 : 	 * returned stream will be written to the scalar output in the same stream cycle. When
+                                 : 	 * <code>control</code> is <code>0</code>, the current value from the stream is discarded.
+                                 : 	 * <p>
+                                 : 	 * The returned stream requires connecting to an internal stream using the {@link KernelObject#connect} method.
+                                 : 	 * <p>
+                                 : 	 * <b>Note:</b> as of MaxCompiler 2010.1. it is recommended to use the new {@link #scalarOutput(String, KernelObject, KernelType, DFEVar)} method
+                                 : 	 * which takes an internal stream as an argument to make code clearer.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the in the scalar output.
+                                 : 	 * @param control Control stream of Boolean values to enable and disable writing to the scalar output.
+                                 : 	 * @return The data stream connected to the scalar output.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> T scalarOutput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar control,
+                                 : 		boolean initialiseToZero)
+                                 : 	{
+                                 : 		if(type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'type' is null.");
+                                 : 
+                                 : 		return scalarOutput(name, type.getFullTypeWithoutDoubtInfo(), control, initialiseToZero);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>> T scalarOutput(
+                                 : 		String name,
+                                 : 		KernelType<T> type,
+                                 : 		DFEVar control)
+                                 : 	{
+                                 : 		return scalarOutput(name, type, control, false);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>> T
+                                 : 	scalarOutput(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type,
+                                 : 		DFEVar control,
+                                 : 		boolean initialiseToZero)
+                                 : 	{
+                                 : 		if(name == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'name' is null.");
+                                 : 		if(full_type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'full_type' is null.");
+                                 : 		if(control == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'control' is null.");
+                                 : 		if(!control.getType().isBool())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'control' must have boolean type, not " + control.getType() + ".");
+                                 : 
+                                 : 		checkForExistingName(name, NameType.SCALAR_OUTPUT);
+                                 : 
+                                 : 		DFEVar control_doubt = null;
+                                 : 
+                                 : 		if (control != null && control.getDoubtType().hasDoubtInfo()) {
+                                 : 			if (control.getDoubtType().hasDoubtInfo() != full_type.getDoubtType().hasDoubtInfo())
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Incompatible doubt types on scalar output '" + name + "'. Control has doubt information, therefore the output must have doubt information.");
+                                 : 
+                                 : 			control_doubt = control.hasDoubt();
+                                 : 			control_doubt = Reductions.streamHold(control_doubt, control_doubt.eq(1.0), Bits.allZeros(1));
+                                 : 			control = control.removeDoubtInfo();
+                                 : 		}
+                                 : 
+                                 : 		T the_output = full_type.newInstance(m_design);
+                                 : 
+                                 : 		KernelType<?> type = full_type.getKernelType();
+                                 : 		if(type instanceof DFEType && !full_type.getDoubtType().hasDoubtInfo())
+                                 : 			scalarOutput(name, (DFEType)type, control, initialiseToZero).connect((DFEVar)the_output);
+                                 : 		else {
+                                 : 			DFEVar v;
+                                 : 
+                                 : 			if (control_doubt == null)
+                                 : 				v = the_output.packWithDoubt();
+                                 : 			else
+                                 : 				v = the_output.setDoubt(control_doubt).packWithDoubt();
+                                 : 
+                                 : 			DFEType output_type = DFETypeFactory.dfeRawBits(full_type.getTotalBits());
+                                 : 			scalarOutput(name, output_type, control, initialiseToZero).connect(v);
+                                 : 		}
+                                 : 
+                                 : 		return the_output;
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>> T
+                                 : 	scalarOutput(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type,
+                                 : 		DFEVar control)
+                                 : 	{
+                                 : 		return scalarOutput(name, full_type, control, false);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous scalar output.
+                                 : 	 * <p>
+                                 : 	 * A scalar output holds the last value written to it from the connected stream.
+                                 : 	 * <p>
+                                 : 	 * The returned stream requires connecting to an internal stream using the {@link KernelObject#connect} method.
+                                 : 	 * <p>
+                                 : 	 * <b>Note:</b> as of MaxCompiler 2010.1. it is recommended to use the new {@link #scalarOutput(String, KernelObject, KernelType)} method
+                                 : 	 * which takes an internal stream as an argument to make code clearer.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the in the scalar output.
+                                 : 	 * @return The data stream connected to the scalar output.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> T scalarOutput(String name, KernelType<T> type,
+                                 : 		boolean initialiseToZero) {
+                                 : 		return scalarOutput(name, type, DFETypeFactory.dfeBool().newInstance(m_design, true), initialiseToZero);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>> T scalarOutput(String name, KernelType<T> type) {
+                                 : 		return scalarOutput(name, type, false);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>> T scalarOutput(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type,
+                                 : 		boolean initialiseToZero)
+                                 : 	{
+                                 : 		return scalarOutput(name, full_type, DFETypeFactory.dfeBool().newInstance(m_design, true), initialiseToZero);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>> T scalarOutput(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type)
+                                 : 	{
+                                 : 		return scalarOutput(name, full_type, false);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Continuous scalar output.
+                                 : 	 * <p>
+                                 : 	 * A scalar output holds the last value written to it from the connected stream.
+                                 : 	 * @param name The name of the output as it will appear in the Manager and CPU code.
+                                 : 	 * @param out_stream The internal stream to be connected to the scalar output.
+                                 : 	 * @param type The type of the in the scalar output.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>>
+                                 : 	void scalarOutput(String name, T out_stream, KernelType<T> type, boolean initialiseToZero)
+                                 : 	{
+                                 : 		scalarOutput(name, type, DFETypeFactory.dfeBool().newInstance(m_design, true), initialiseToZero).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>>
+                                 : 	void scalarOutput(String name, T out_stream, KernelType<T> type)
+                                 : 	{
+                                 : 		scalarOutput(name, out_stream, type, false);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 	void scalarOutput(
+                                 : 		String name,
+                                 : 		T out_stream,
+                                 : 		FullType<?, KernelTypeT, T> full_type,
+                                 : 		boolean initialiseToZero)
+                                 : 	{
+                                 : 		scalarOutput(name, full_type, DFETypeFactory.dfeBool().newInstance(m_design, true), initialiseToZero).connect(out_stream);
+                                 : 	}
+                                 : 
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 	void scalarOutput(
+                                 : 		String name,
+                                 : 		T out_stream,
+                                 : 		FullType<?, KernelTypeT, T> full_type)
+                                 : 	{
+                                 : 		scalarOutput(name, out_stream, full_type);
+                                 : 	}
+                                 : 
+                                 : 	private DFEVar scalarInput(String name, DFEType type, boolean report_unset, boolean visibleToUser) {
+                                 : 		//when prefixed with a legal identifier, followed by an underscore, the name must be valid VHDL
+                                 : 		if (!VHDLNameManager.isLegalVHDLName("x_" + name))
+                                 : 			throw new MaxCompilerAPIError("Invalid name '%s'.", name);
+                                 : 
+                                 : 		DFEVar s = _KernelBaseTypes.fromImp(m_design,
+                                 : 			m_imp.mappedRegInput(
+                                 : 				name,
+                                 : 				_KernelBaseTypes.toImp(type),
+                                 : 				report_unset, visibleToUser));
+                                 : 
+                                 : 		m_scalar_input_names.add(name);
+                                 : 
+                                 : 		return s;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Scalar input.
+                                 : 	 * <p>
+                                 : 	 * Outputs a value set by CPU code.
+                                 : 	 * @param name The name of the scalar input as it will appear in the Manager and CPU code.
+                                 : 	 * @param type The type of the data in the scalar input stream.
+                                 : 	 * @return The data stream from the scalar input.
+                                 : 	 */
+                                 : 	public <T extends KernelObject<T>> T scalarInput(String name, KernelType<T> type) {
+                                 : 		if(type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'type' is null.");
+                                 : 
+                                 : 		return scalarInput(name, type.getFullTypeWithoutDoubtInfo());
+                                 : 	}
+                                 : 
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	public <T extends KernelObject<T>, KernelTypeT extends KernelType<T>>
+                                 : 	T scalarInput(
+                                 : 		String name,
+                                 : 		FullType<?, KernelTypeT, T> full_type)
+                                 : 	{
+                                 : 		if(name == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'name' is null.");
+                                 : 		if(full_type == null)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Parameter 'full_type' is null.");
+                                 : 
+                                 : 		checkForExistingName(name, NameType.SCALAR_INPUT);
+                                 : 
+                                 : 		T the_input;
+                                 : 
+                                 : 		KernelType<?> type = full_type.getKernelType();
+                                 : 		if(type instanceof DFEType && !full_type.getDoubtType().hasDoubtInfo()) {
+                                 : 			DFEType io_type = (DFEType)type;
+                                 : 
+                                 : 			the_input = (T)scalarInput(name, io_type, true, true);
+                                 : 		} else {
+                                 : 			DFEType io_type = DFETypeFactory.dfeRawBits(full_type.getTotalBits());
+                                 : 			DFEVar packed_input = scalarInput(name, io_type, true, true);
+                                 : 
+                                 : 			the_input = full_type.unpack(packed_input);
+                                 : 		}
+                                 : 
+                                 : 		return the_input;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Forces an exact scheduling distance in Kernel cycles between an input and an output.
+                                 : 	 * <p>
+                                 : 	 * A positive value for {@code distance} places an input before an output.
+                                 : 	 * <p>
+                                 : 	 * A negative value for {@code distance} places an output before an input.
+                                 : 	 * <p>
+                                 : 	 * MaxCompiler will produce an error if it is unable to schedule the Kernel
+                                 : 	 * with the given value for {@code distance}. In this case, try increasing the
+                                 : 	 * magnitude of {@code distance}.
+                                 : 	 * @param input_name Name of the input.
+                                 : 	 * @param output_name Name of the output.
+                                 : 	 * @param distance Distance between the input and output in Kernel cycles.
+                                 : 	 */
+                                 : 	public void forceExactIOSeparation(String input_name, String output_name, int distance) {
+                                 : 		if (input_name == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "input_name");
+                                 : 		if (output_name == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "output_name");
+                                 : 
+                                 : 		final PhotonIOInformation info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 
+                                 : 		info.addIODistanceConstraint(input_name, output_name, distance);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Forces selected outputs to appear at identical positions in the stream schedule.
+                                 : 	 * <p>
+                                 : 	 * {@code first_output} and {@code other_outputs} select which two or more outputs should be aligned.
+                                 : 	 * @param first_output First output to align.
+                                 : 	 * @param other_outputs Other outputs to align.
+                                 : 	 */
+                                 : 	public void forceOutputsTogether(String first_output, String... other_outputs) {
+                                 : 		if (first_output == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "first_output");
+                                 : 		if (other_outputs == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "other_outputs");
+                                 : 		if (other_outputs.length == 0)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Can only force 2 or more outputs together (not 1).");
+                                 : 
+                                 : 		final PhotonIOInformation info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 
+                                 : 		info.forceIOsTogether(false, combineIntoArray(first_output, other_outputs));
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Forces selected inputs to be appear in exactly the same stream cycle.
+                                 : 	 * <p>
+                                 : 	 * {@code first_input} and {@code other_inputs} select which two or more inputs should be aligned.
+                                 : 	 * @param first_input First input to align.
+                                 : 	 * @param other_inputs Other inputs to align.
+                                 : 	 */
+                                 : 	public void forceInputsTogether(String first_input, String... other_inputs) {
+                                 : 		if (first_input == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "first_input");
+                                 : 		if (other_inputs == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "other_inputs");
+                                 : 		if (other_inputs.length == 0)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Can only force 2 more inputs together (not 1).");
+                                 : 
+                                 : 		final PhotonIOInformation info = _Kernel.getPhotonDesignData(m_design).getIOInformation();
+                                 : 
+                                 : 		info.forceIOsTogether(true, combineIntoArray(first_input, other_inputs));
+                                 : 	}
+                                 : 
+                                 : 	// this method is needed because 'forceOutputsTogether' and 'forceInputsTogether'
+                                 : 	// have slightly strange signatures... not sure why they're not varargs for all
+                                 : 	// the arguments...
+                                 : 	private static final String[] combineIntoArray(String first, String... others) {
+                                 : 		final String[] s = new String[others.length + 1];
+                                 : 		s[0] = first;
+                                 : 		for (int i = 0; i < others.length; ++i)
+                                 : 			s[i + 1] = others[i];
+                                 : 		return s;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a {@code Map} of all the input names to their respective types.
+                                 : 	 */
+                                 : 	public Map<String, KernelType<?>> getInputs() {
+                                 : 		Map<String, KernelType<?>> m = new LinkedHashMap<String, KernelType<?>>(m_input_nodes.size());
+                                 : 		for (Map.Entry<String, Input> in : m_input_nodes.entrySet())
+                                 : 			m.put(in.getKey(), in.getValue().value);
+                                 : 
+                                 : 		return m;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a {@code Map} of all the output names to their respective types.
+                                 : 	 */
+                                 : 	public Map<String, KernelType<?>> getOutputs() {
+                                 : 		Map<String, KernelType<?>> m = new LinkedHashMap<String, KernelType<?>>(m_output_nodes.size());
+                                 : 		for (Map.Entry<String, Output> out : m_output_nodes.entrySet())
+                                 : 			m.put(out.getKey(), out.getValue().value);
+                                 : 
+                                 : 		return m;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a {@code Set} of all the scalar-input names, omitting those
+                                 : 	 * associated with the input and output streams' control logic.
+                                 : 	 */
+                                 : 	public Set<String> getScalarInputs() {
+                                 : 		Set<String> s = new LinkedHashSet<String>(m_scalar_input_names.size());
+                                 : 		for (String i : m_scalar_input_names) {
+                                 : 			if (!i.contains("_force_disabled")) {
+                                 : 				s.add(i);
+                                 : 			}
+                                 : 		}
+                                 : 		return s;
+                                 : 	}
+                                 : 
+                                 : 	private void addInput(String name, DFEVar in, KernelType<?> type) {
+                                 : 		Var v = _KernelBaseTypes.toImp(in);
+                                 : 		Node n = v.getSrcNode();
+                                 : 
+                                 : 		if (!(n instanceof NodeInput))
+                                 : 			throw new AssertionError("input Var does not point to a NodeInput");
+                                 : 
+                                 : 		m_input_nodes.put(name, new Input((NodeInput) n, type));
+                                 : 	}
+                                 : 
+                                 : 	private void addOutput(String name, DFEVar out, KernelType<?> type) {
+                                 : 		Var v = _KernelBaseTypes.toImp(out);
+                                 : 		Node n = v.getAllDstNodeIOs().get(0).getNode();
+                                 : 
+                                 : 		if (!(n instanceof NodeOutput))
+                                 : 			throw new AssertionError("output Var does not point to a NodeOutput");
+                                 : 
+                                 : 		m_output_nodes.put(name, new Output((NodeOutput) n, type));
+                                 : 	}
+                                 : 
+                                 : 	private enum NameType {
+                                 : 		INPUT("an input"),
+                                 : 		OUTPUT("an output"),
+                                 : 		SCALAR_INPUT("a scalar input"),
+                                 : 		SCALAR_OUTPUT("a scalar output");
+                                 : 
+                                 : 		public final String desc;
+                                 : 
+                                 : 		private NameType(String desc) { this.desc = desc; }
+                                 : 	}
+                                 : 
+                                 : 	private void checkForExistingName(String name, NameType type) {
+                                 : 		if (m_input_nodes.containsKey(name))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Cannot create " + type.desc + " with the same name as an existing input (" + name + ").");
+                                 : 		if (m_output_nodes.containsKey(name))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Cannot create " + type.desc + " with the same name as an existing output (" + name + ").");
+                                 : 		if (m_scalar_input_names.contains(name))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Cannot create " + type.desc + " with the same name as an existing scalar input (" + name + ").");
+                                 : 		if (m_scalar_output_names.contains(name))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Cannot create " + type.desc + " with the same name as an existing scalar output (" + name + ").");
+                                 : 	}
+                                 : }

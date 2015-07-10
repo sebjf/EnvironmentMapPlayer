@@ -1,0 +1,61 @@
+    LUTs     FFs   BRAMs    DSPs : MapSampleReaderKernel.maxj
+     790    2343       0       0 : resources used by this file
+   0.23%   0.34%   0.00%   0.00% : % of available
+   0.46%   0.97%   0.00%   0.00% : % of total used
+   0.68%   1.56%   0.00%   0.00% : % of user resources
+
+                                 : package environmentmapplayer;
+                                 : 
+                                 : import java.util.ArrayList;
+                                 : import java.util.List;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
+                                 : import com.maxeler.maxcompiler.v2.utils.MathUtils;
+                                 : 
+                                 : public class MapSampleReaderKernel extends Kernel {
+                                 : 
+                                 : 	protected DFEVar clamp(DFEVar v, int min, int max)
+                                 : 	{
+      15      10       0       0 : 		v = v > max ? constant.var(max) : v;
+                                 : 		v = v < min ? constant.var(min) : v;
+                                 : 		return v;
+                                 : 	}
+                                 : 
+                                 : 	protected MapSampleReaderKernel(KernelParameters parameters) {
+                                 : 		super(parameters);
+                                 : 
+                                 : 		flush.disabled();
+                                 : 
+                                 : 		DFEVar bgColour = io.scalarInput("backgroundColour", dfeUInt(32));
+                                 : 
+                                 : 		int	burst_size_in_bytes = 384;
+                                 : 		int burst_size_in_bits = burst_size_in_bytes * 8;
+                                 : 
+                                 : 		int bits_per_pixel = EnvironmentParameters.pixel_size_in_bytes * 8;
+                                 : 		int pixels_per_word = (int)Math.floor((float)burst_size_in_bytes/(float)EnvironmentParameters.pixel_size_in_bytes);
+                                 : 
+       2       1       0       0 : 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
+                                 : 
+       1       1       0       0 : 		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits),~cache_valid);
+       1    2305       0       0 : 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
+                                 : 
+       1       1       0       0 : 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
+                                 : 
+      15      10       0       0 : 		sample_offset_in_pixels = clamp(sample_offset_in_pixels, 0, pixels_per_word);
+                                 : 
+                                 : 		List<DFEVar> samples = new ArrayList<DFEVar>();
+                                 : 		for(int i = 0; i < pixels_per_word; i++)
+                                 : 		{
+                                 : 			samples.add(cached_burst.slice(i * bits_per_pixel, bits_per_pixel));
+                                 : 		}
+                                 : 		samples.add(bgColour.cast(dfeRawBits(32)));
+     770      24       0       0 : 		DFEVar sample_content = control.mux(sample_offset_in_pixels.cast(dfeUInt(MathUtils.bitsToAddress(samples.size()+1))), samples).slice(0,24).cast(dfeUInt(24));
+                                 : 
+       0       1       0       0 : 		io.output("sample", dfeUInt(24)) <== sample_content;
+                                 : 	}
+                                 : 
+                                 : 
+                                 : }

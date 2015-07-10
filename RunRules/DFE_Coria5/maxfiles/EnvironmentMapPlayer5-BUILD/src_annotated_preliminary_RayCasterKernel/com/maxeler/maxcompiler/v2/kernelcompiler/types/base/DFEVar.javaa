@@ -1,0 +1,1376 @@
+    LUTs     FFs   BRAMs    DSPs : DFEVar.java
+   77305   90994     297      53 : resources used by this file
+  22.39%  13.18%  14.75%   3.33% : % of available
+  54.99%  40.08%  25.89%  58.89% : % of total used
+  66.63%  55.18%  54.40%  58.89% : % of user resources
+
+                                 : package com.maxeler.maxcompiler.v2.kernelcompiler.types.base;
+                                 : 
+                                 : import java.util.Collections;
+                                 : import java.util.List;
+                                 : 
+                                 : import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
+                                 : import com.maxeler.maxcompiler.v2.errors._AlreadyConnectedException;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler._Kernel;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.DoubtType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObjectVectorizable;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types._InternalUtils;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEFix.SignMode;
+                                 : import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEComplex;
+                                 : import com.maxeler.maxcompiler.v2.managers._Managers;
+                                 : import com.maxeler.photon.core.Node;
+                                 : import com.maxeler.photon.core.Var;
+                                 : import com.maxeler.photon.core.VarSourceless;
+                                 : import com.maxeler.photon.core.Warning;
+                                 : import com.maxeler.photon.hw.Shifter;
+                                 : import com.maxeler.photon.libs.CoreNodeFactory;
+                                 : import com.maxeler.photon.libs.DoubtBitOpFactory;
+                                 : import com.maxeler.photon.libs.WatchFactory;
+                                 : import com.maxeler.photon.nodes.NodeAdd;
+                                 : import com.maxeler.photon.nodes.NodeAnd;
+                                 : import com.maxeler.photon.nodes.NodeCast;
+                                 : import com.maxeler.photon.nodes.NodeCat;
+                                 : import com.maxeler.photon.nodes.NodeDiv;
+                                 : import com.maxeler.photon.nodes.NodeEq;
+                                 : import com.maxeler.photon.nodes.NodeGt;
+                                 : import com.maxeler.photon.nodes.NodeGte;
+                                 : import com.maxeler.photon.nodes.NodeLt;
+                                 : import com.maxeler.photon.nodes.NodeLte;
+                                 : import com.maxeler.photon.nodes.NodeMul;
+                                 : import com.maxeler.photon.nodes.NodeNeg;
+                                 : import com.maxeler.photon.nodes.NodeNeq;
+                                 : import com.maxeler.photon.nodes.NodeNot;
+                                 : import com.maxeler.photon.nodes.NodeOr;
+                                 : import com.maxeler.photon.nodes.NodeReinterpret;
+                                 : import com.maxeler.photon.nodes.NodeShift;
+                                 : import com.maxeler.photon.nodes.NodeSlice;
+                                 : import com.maxeler.photon.nodes.NodeSub;
+                                 : import com.maxeler.photon.nodes.NodeXor;
+                                 : import com.maxeler.photon.op_management.OperatorSupplier.Op;
+                                 : import com.maxeler.utils.EnumUtils;
+                                 : import com.maxeler.utils.MaxCompilerHide;
+                                 : 
+                                 : /**
+                                 :  * {@code DFEVar} streams are of primitive types inherited from {@link DFEType}.
+                                 :  * <h3>Operators</h3>
+                                 :  * {@code DFEVar} streams offer overloaded operators:
+                                 :  * <ul>
+                                 :  * <li>Arithmetic operators ({@code +, -, *, /}).</li>
+                                 :  * <li>Negation operator ({@code -}).</li>
+                                 :  * <li>Relational operators ({@code <, <=, >, >=}).</li>
+                                 :  * <li>Shift operators ({@code <<, >>}).</li>
+                                 :  * <li>Bitwise complement operator ({@code ~}).</li>
+                                 :  * <li>Bitwise operators ({@code &, ^, |}).</li>
+                                 :  * <li>Ternary if operator ({@code ?:}).</li>
+                                 :  * </ul>
+                                 :  * <p>
+                                 :  * <b>Note</b>: The operators == and != are not overloaded in MaxCompiler and therefore are interpreted as standard Java == and !=.
+                                 :  * These test the equality of <em>references</em>.
+                                 :  * Use the methods {@link #eq(DFEVar)} and {@link #neq(DFEVar)} to test the equality of values in {@code DFEVar} streams.
+                                 :  * <p>
+                                 :  * <b>Note</b>: Some operations can only be used on a subset of types. For example, floating-point numbers cannot be shifted and raw bits cannot
+                                 :  * be used in arithmetic expressions. MaxCompiler will throw an exception in these cases.
+                                 :  * <p>
+                                 :  * See <a href="{@docRoot}/com/maxeler/maxcompiler/v2/kernelcompiler/types/package-summary.html">com.maxeler.maxcompiler.v2.kernelcompiler.types</a> for more information on
+                                 :  * the Kernel type and stream reference hierarchy.
+                                 :  */
+                                 : public class DFEVar implements KernelObjectVectorizable<DFEVar, DFEVar> {
+                                 : 	/**
+                                 : 	 * Radix for formatting {@link DFEVar#watch(String) watch} outputs.
+                                 : 	 */
+                                 : 	public enum Radix {
+                                 : 		BINARY,
+                                 : 		HEXADECIMAL,
+                                 : 		DECIMAL
+                                 : 	}
+                                 : 
+                                 : 	final com.maxeler.photon.core.Var m_imp;
+                                 : 	private final Kernel m_design;
+                                 : 
+                                 : 	DFEVar(Kernel data, DFEType type, DFEDoubtType doubt_type) {
+                                 : 		m_imp = new VarSourceless(
+                                 : 			_KernelBaseTypes.toImp(type),
+                                 : 			doubt_type.hasDoubtInfo(),
+                                 : 			_Managers.getBuildManager(data.getManager()));
+                                 : 
+                                 : 		m_design = data;
+                                 : 	}
+                                 : 
+                                 : 	DFEVar(Kernel data, com.maxeler.photon.core.Var imp) {
+                                 : 		m_imp = imp;
+                                 : 		m_design = data;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public Kernel getKernel() {
+                                 : 		return m_design;
+                                 : 	}
+                                 : 
+                                 : 	// JavaDoc in KernelObject interface
+                                 : 	@Override
+                                 : 	public void setReportOnUnused(boolean v) {
+                                 : 		m_imp.setReportUnused(v);
+                                 : 	}
+                                 : 
+                                 : 	public DFEType getType() {
+                                 : 		return _KernelBaseTypes.fromImp(m_imp.getType());
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEDoubtType getDoubtType() {
+                                 : 		return new DFEDoubtType(m_imp.hasDoubt());
+                                 : 	}
+                                 : 
+                                 : 	//Javadoc in KernelObject interface declaration
+                                 : 	public DFEVar connect(DFEVar src) {
+                                 : 		_InternalUtils.assertConnectTypes(this, src);
+                                 : 
+                                 : 		if (m_imp.equals(src.m_imp)) {
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "A DFEVar cannot be connected to itself.");
+                                 : 		}
+                                 : 
+                                 : 		try {
+                                 : 			m_imp.connect(src.m_imp);
+                                 : 		} catch (Var.AlreadyConnectedException e) {
+                                 : 			throw new _AlreadyConnectedException(this);
+                                 : 		}
+                                 : 
+                                 : 		return src;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns a new stream cast to the specified Kernel type from this stream.
+                                 : 	 * <p>
+                                 : 	 * Casting from {@link DFERawBits} to any other Kernel type is free. However, generally
+                                 : 	 * casting to a different Kernel type, for example between {@link DFEFix} and
+                                 : 	 * {@link DFEFloat}, can be expensive in resource usage, so should be
+                                 : 	 * used judiciously.
+                                 : 	 * <p>
+                                 : 	 * Casting to a different Kernel type can lead to a loss of precision, so care
+                                 : 	 * must be taken to ensure that this does not unexpectedly impact the behavior
+                                 : 	 * of the design.
+                                 : 	 * <p>
+                                 : 	 * {@code DFEVar} can only be cast using {@link DFEType} Kernel types. To convert an {@code DFEVar}
+                                 : 	 * to a composite Kernel type, for example {@code DFEComplex}, use {@link KernelType#unpack(DFEVar)}.
+                                 : 	 * @see KernelObject#cast(KernelType)
+                                 : 	 */
+                                 : 	public DFEVar cast(DFEType type) {
+                                 : 		if(type instanceof DFERawBits || getType() instanceof DFERawBits) {
+                                 : 			Node cast_node = new NodeReinterpret(
+                                 : 				_Kernel.getPhotonDesignData(m_design),
+                                 : 				_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 				_KernelBaseTypes.toImp(type));
+                                 : 
+                                 : 			cast_node.connectInput("input", m_imp);
+                                 : 
+                                 : 			return _KernelBaseTypes.fromImp(m_design, cast_node.connectOutput("output"));
+                                 : 		} else {
+     705     635       1       0 : 			Node cast_node = new NodeCast(
+                                 : 				_Kernel.getPhotonDesignData(m_design),
+                                 : 				_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 				_KernelBaseTypes.toImp(type));
+                                 : 
+                                 : 			cast_node.connectInput("i", m_imp);
+                                 : 
+                                 : 			return _KernelBaseTypes.fromImp(m_design, cast_node.connectOutput("o"));
+                                 : 		}
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Concatenates the bits of this {@link DFEVar} object with those of another {@code DFEVar}, e.g.&nbsp;{@code (0b010).cat(0b101)=>0b010101}.
+                                 : 	 * @param lsb The data that will form the least significant
+                                 : 	 * bits of the concatenation. This must not be {@code null}.
+                                 : 	 * @return A new {@code DFEVar} object of Kernel type {@link DFERawBits} which is the concatenation of this
+                                 : 	 * object (the most significant bits) and the argument
+                                 : 	 * {@code lsb} (the least significant bits).
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public DFEVar cat(DFEVar lsb) {
+                                 : 		if (lsb == null)
+                                 : 			throw MaxCompilerAPIError.nullParam(m_design.getManager(), "lsb");
+                                 : 		NodeCat cat_node = new NodeCat(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath());
+                                 : 
+                                 : 		cat_node.addCatInput(m_imp);
+                                 : 		cat_node.addCatInput(lsb.m_imp);
+                                 : 
+                                 : 		Var result = cat_node.connectOutput("result");
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, result);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar shiftLeft(DFEVar rhs) {
+                                 : 		NodeShift shifter = new NodeShift(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 			Shifter.ShiftDirection.Left, false);
+                                 : 
+                                 : 		shifter.connectInput("datain", m_imp);
+                                 : 		shifter.connectInput("shift", rhs.m_imp);
+                                 : 
+                                 : 		DFEVar shifted = _KernelBaseTypes.fromImp(m_design, shifter.connectOutput("dataout"));
+                                 : 
+                                 : 		// Backwards compatibility: DFEFix derived types keep their type after shifting
+                                 : 		if(getType() instanceof DFEFix)
+                                 : 			shifted = shifted.cast(getType());
+                                 : 
+                                 : 		return shifted;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar shiftLeft(int amt) {
+                                 : 		return shiftLeft(DFETypeFactory.dfeUntypedConst().newInstance(m_design, amt));
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar shiftRight(DFEVar rhs) {
+                                 : 		NodeShift shifter = new NodeShift(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 			Shifter.ShiftDirection.Right, false);
+                                 : 
+                                 : 		shifter.connectInput("datain", m_imp);
+                                 : 		shifter.connectInput("shift", rhs.m_imp);
+                                 : 
+                                 : 		DFEVar shifted = _KernelBaseTypes.fromImp(m_design, shifter.connectOutput("dataout"));
+                                 : 
+                                 : 		// Backwards compatibility: DFEFix derived types keep their type after shifting
+                                 : 		if(getType() instanceof DFEFix)
+                                 : 			shifted = shifted.cast(getType());
+                                 : 
+                                 : 		return shifted;
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar shiftRight(int amt) {
+                                 : 		return shiftRight(DFETypeFactory.dfeUntypedConst().newInstance(m_design, amt));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar rotateLeft(DFEVar rhs) {
+                                 : 		NodeShift shifter = new NodeShift(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 			Shifter.ShiftDirection.Left, true);
+                                 : 
+                                 : 		shifter.connectInput("datain", m_imp);
+                                 : 		shifter.connectInput("shift", rhs.m_imp);
+                                 : 
+                                 : 		DFEVar shifted = _KernelBaseTypes.fromImp(m_design, shifter.connectOutput("dataout"));
+                                 : 
+                                 : 		// Backwards compatibility: DFEFix derived types keep their type after shifting
+                                 : 		if(getType() instanceof DFEFix)
+                                 : 			shifted = shifted.cast(getType());
+                                 : 
+                                 : 		return shifted;
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar rotateLeft(int amt) {
+                                 : 		return rotateLeft(DFETypeFactory.dfeUntypedConst().newInstance(m_design, amt));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar rotateRight(DFEVar rhs) {
+                                 : 		NodeShift shifter = new NodeShift(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 			Shifter.ShiftDirection.Right, true);
+                                 : 
+                                 : 		shifter.connectInput("datain", m_imp);
+                                 : 		shifter.connectInput("shift", rhs.m_imp);
+                                 : 
+                                 : 		DFEVar shifted = _KernelBaseTypes.fromImp(m_design, shifter.connectOutput("dataout"));
+                                 : 
+                                 : 		// Backwards compatibility: DFEFix derived types keep their type after shifting
+                                 : 		if(getType() instanceof DFEFix)
+                                 : 			shifted = shifted.cast(getType());
+                                 : 
+                                 : 		return shifted;
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar rotateRight(int amt) {
+                                 : 		return rotateRight(DFETypeFactory.dfeUntypedConst().newInstance(m_design, amt));
+                                 : 	}
+                                 : 
+                                 : 	// Note that the get functions are called from evals
+                                 : 	// which take an explicit range. This slice function
+                                 : 	// takes a range and a base.
+                                 : 	/**
+                                 : 	 * Returns a stream of a selection of bits from this {@code DFEVar} object.
+                                 : 	 * <p>
+                                 : 	 * Returns an {@link DFERawBits} stream of {@code width} bits from position {@code base} in the input stream word.
+                                 : 	 * <p>
+                                 : 	 * e.g.
+                                 : 	 * <code>
+                                 : 	 * DFEVar x = constant.var(dfeUInt(6), 13);	// 0b001101 (13)
+                                 : 	 * DFEVar y = x.slice(2,2);					// 0b11     (3)
+                                 : 	 * </code>
+                                 : 	 * @param base The index of the start bit, with 0 being the least significant bit.
+                                 : 	 * @param width The number of bits to select.
+                                 : 	 * @return A {@code width}-bit wide {@link DFEVar} of type {@link DFERawBits} containing the values of the selected bits.
+                                 : 	 */
+                                 : 	public DFEVar slice(int base, int width) {
+                                 : 		final DFEType type = getType();
+                                 : 		if (type instanceof DFEUntypedConst)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Cannot slice an DFEVar with type DFEUntypedConst.");
+                                 : 
+                                 : 		final int totalBits = type.getTotalBits();
+                                 : 		if (base < 0 || base > totalBits - 1)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Slice base must be between 0 and %d inclusive, not %d.", totalBits - 1, base);
+                                 : 		if (width < 1)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Slice width must be at least 1, not %d.", width);
+                                 : 		if (base + width > totalBits)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "End of slice (%d) exceeds size of type (%s bit%s).", base + width, totalBits, totalBits == 1 ? "" : "s");
+                                 : 
+                                 : 		NodeSlice slice_node = new NodeSlice(
+                                 : 			_Kernel.getPhotonDesignData(m_design),
+                                 : 			_Kernel.getPhotonDesignData(m_design).getGroupPath(),
+                                 : 			base, width);
+                                 : 
+                                 : 		slice_node.connectInput("a", m_imp);
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, slice_node.connectOutput("result"));
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Alias for {@link #slice(int, int) slice(i,1)}.
+                                 : 	 * <p>
+                                 : 	 * This is also accessible through the overloaded {@code []} operator.
+                                 : 	 * @param i The index of the bit, with 0 being the least significant bit.
+                                 : 	 * @return A 1-bit wide {@link DFEVar} of type {@link DFERawBits} containing the value of the bit at
+                                 : 	 * index {@code i}.
+                                 : 	 */
+                                 : 	public DFEVar get(int i) {
+                                 : 		return slice(i, 1);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Alias for {@link #slice(int, int) slice(i,1)}.
+                                 : 	 * @param i The index of the bit, with 0 being the least significant bit.
+                                 : 	 * @return A 1-bit wide {@link DFEVar} of type {@link DFERawBits} containing the value of the bit at
+                                 : 	 * index {@code i}.
+                                 : 	 */
+                                 : 	public DFEVar slice(int i) {
+                                 : 		return slice(i, 1);
+                                 : 	}
+                                 : 
+                                 : 	private DFEVar abNode(DFEVar rhs, Node node) {
+                                 : 		node.connectInput("a", m_imp);
+                                 : 		node.connectInput("b", rhs.m_imp);
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, node.connectOutput("result"));
+                                 : 	}
+                                 : 
+                                 : 	private DFEVar abBitwiseNode(DFEVar rhs, Node node) {
+                                 : 		// NodeBitwise expects matching input types. For backwards compatibility, we have to do some
+                                 : 		// extra casting to simulate old-style typing in cases that don't involve DFERawBits.
+                                 : 		//if (getType() instanceof DFERawBits && rhs.getType() instanceof DFERawBits)
+                                 : 		//	return abNode(rhs, node);		// Strict typing!
+                                 : 
+                                 : 		// Backwards-compatible typing:
+                                 : 		DFEType a_type = getType();
+                                 : 		DFEType b_type = rhs.getType();
+                                 : 
+                                 : 		if (!a_type.isConcreteType() && !b_type.isConcreteType())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Bitwise operations are not valid on two untyped inputs.");
+                                 : 
+                                 : 		else if (a_type instanceof DFEFloat || b_type instanceof DFEFloat)
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Bitwise operations are not valid on float types.");
+                                 : 
+                                 : 		else if (!a_type.isConcreteType() || !b_type.isConcreteType()) {
+                                 : 			DFEType var      = a_type.isConcreteType() ? a_type : b_type;
+                                 : 
+                                 : 			if (var instanceof DFEFix && ((DFEFix) var).getOffset() != 0)
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 					"Bitwise operations between a non-integer fix type and an untyped constant are not valid.");
+                                 : 
+                                 : 		} else if (!a_type.equals(b_type)) {
+                                 : 
+                                 : 			if(a_type.getTotalBits() != b_type.getTotalBits())
+                                 : 			{
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Inputs to bitwise operator must match in size. " + a_type +
+                                 : 					" and " + b_type + " do not");
+                                 : 			}
+                                 : 
+                                 : 			if(a_type.getTotalBits() != 1)
+                                 : 			{
+                                 : 				throw new MaxCompilerAPIError(m_design.getManager(), "Inputs to bitwise operator must match in type, unless they are only 1 bit wide. " + a_type +
+                                 : 					" and " + b_type + " do not match and are wider than 1 bit.");
+                                 : 			}
+                                 : 
+                                 : 			//we allow bitwise operations across RawBits and Integers of width 1
+                                 : 			if((a_type instanceof DFEFix && ((DFEFix)a_type).getFractionBits()!= 0) || (b_type instanceof DFEFix && ((DFEFix)b_type).getFractionBits()!= 0))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(), "Inputs to bitwise operator must match. " + a_type +
+                                 : 				" and " + b_type + " do not");
+                                 : 		}
+                                 : 
+                                 : 		return abNode(rhs, node);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(DFEVar rhs) {
+                                 : 		return abBitwiseNode(rhs, new NodeOr(_Kernel.getPhotonDesignData(m_design), _Kernel.getPhotonDesignData(m_design).getGroupPath()));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(double rhs) {
+                                 : 		return or(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(float rhs) {
+                                 : 		return or(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(int rhs) {
+                                 : 		return or(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(boolean rhs) {
+                                 : 		return or(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar or(long rhs) {
+                                 : 		return or(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar orAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).or(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar orAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).or(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar orAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).or(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar orAsRHS(boolean lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).or(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar orAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).or(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(DFEVar rhs) {
+                                 : 		return abBitwiseNode(rhs, new NodeXor(_Kernel.getPhotonDesignData(m_design), _Kernel.getPhotonDesignData(m_design).getGroupPath()));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(double rhs) {
+                                 : 		return xor(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(float rhs) {
+                                 : 		return xor(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(int rhs) {
+                                 : 		return xor(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(boolean rhs) {
+                                 : 		return xor(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xor(long rhs) {
+                                 : 		return xor(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xorAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).xor(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xorAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).xor(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xorAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).xor(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xorAsRHS(boolean lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).xor(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar xorAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).xor(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(DFEVar rhs) {
+       7       0       0       0 : 		return abBitwiseNode(rhs, new NodeAnd(_Kernel.getPhotonDesignData(m_design), _Kernel.getPhotonDesignData(m_design).getGroupPath()));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(double rhs) {
+                                 : 		return and(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(float rhs) {
+                                 : 		return and(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(int rhs) {
+                                 : 		return and(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(boolean rhs) {
+                                 : 		return and(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar and(long rhs) {
+                                 : 		return and(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar andAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).and(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar andAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).and(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar andAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).and(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar andAsRHS(boolean lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).and(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar andAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).and(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar eq(DFEVar rhs) {
+                                 : 		return abNode(rhs, new NodeEq(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar eq(double rhs) {
+                                 : 		return eq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar eq(float rhs) {
+                                 : 		return eq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar eq(int rhs) {
+       2       1       0       0 : 		return eq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar eq(long rhs) {
+                                 : 		return eq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar eq(boolean rhs) {
+                                 : 		return eq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar eqAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).eq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar eqAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).eq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar eqAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).eq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar eqAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).eq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar eqAsRHS(boolean lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).eq(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar neq(DFEVar rhs) {
+                                 : 		return abNode(rhs, new NodeNeq(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 
+                                 : 	public DFEVar neq(double rhs) {
+                                 : 		return neq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar neq(float rhs) {
+                                 : 		return neq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar neq(int rhs) {
+                                 : 		return neq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar neq(long rhs) {
+                                 : 		return neq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar neq(boolean rhs) {
+                                 : 		return neq(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}	/**
+                                 : 	 * Returns a new stream cast to the specified type from this stream.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: {@code DFEVar} can only be cast using {@link DFEType} types.
+                                 : 	 * @see DFEVar#cast(DFEType)
+                                 : 	 */
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neqAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).neq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neqAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).neq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neqAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).neq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neqAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).neq(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neqAsRHS(boolean lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).neq(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lte(DFEVar rhs) {
+                                 : 		return abNode(rhs, new NodeLte(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lte(double rhs) {
+      31      24       0       0 : 		return lte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lte(float rhs) {
+                                 : 		return lte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lte(int rhs) {
+                                 : 		return lte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lte(long rhs) {
+                                 : 		return lte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lteAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lteAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lteAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lteAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lte(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gte(DFEVar rhs) {
+                                 : 		return abNode(rhs, new NodeGte(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gte(double rhs) {
+                                 : 		return gte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gte(float rhs) {
+                                 : 		return gte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gte(int rhs) {
+                                 : 		return gte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gte(long rhs) {
+                                 : 		return gte(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gteAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gteAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gteAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gte(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gteAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gte(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gt(DFEVar rhs) {
+                                 : 		return abNode(rhs, new NodeGt(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gt(double rhs) {
+                                 : 		return gt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gt(float rhs) {
+                                 : 		return gt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gt(int rhs) {
+     117      86       0       0 : 		return gt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gt(long rhs) {
+                                 : 		return gt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gtAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gtAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gtAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar gtAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).gt(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lt(DFEVar rhs) {
+     280     112       0       0 : 		return abNode(rhs, new NodeLt(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lt(double rhs) {
+                                 : 		return lt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lt(float rhs) {
+                                 : 		return lt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lt(int rhs) {
+                                 : 		return lt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar lt(long rhs) {
+                                 : 		return lt(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ltAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ltAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ltAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lt(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ltAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).lt(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar add(DFEVar rhs) {
+   11037   12806      40       0 : 		return abNode(rhs, new NodeAdd(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar add(double rhs) {
+    2224    2248       8       0 : 		return add(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar add(float rhs) {
+                                 : 		return add(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar add(int rhs) {
+                                 : 		return add(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar add(long rhs) {
+                                 : 		return add(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar addAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).add(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar addAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).add(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar addAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).add(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar addAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).add(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar sub(DFEVar rhs) {
+   12829   14230      50       0 : 		return abNode(rhs, new NodeSub(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar sub(double rhs) {
+                                 : 		return sub(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar sub(float rhs) {
+                                 : 		return sub(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar sub(int rhs) {
+                                 : 		return sub(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar sub(long rhs) {
+                                 : 		return sub(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar subAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).sub(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar subAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).sub(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar subAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).sub(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar subAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).sub(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mul(DFEVar rhs) {
+    6272   21857      61      53 : 		return abNode(rhs, new NodeMul(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mul(double rhs) {
+                                 : 		return mul(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mul(float rhs) {
+      42      64       0       0 : 		return mul(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mul(int rhs) {
+                                 : 		return mul(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mul(long rhs) {
+                                 : 		return mul(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mulAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).mul(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mulAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).mul(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mulAsRHS(int lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).mul(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar mulAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).mul(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar div(DFEVar rhs) {
+   36831   32780     110       0 : 		return abNode(rhs, new NodeDiv(_Kernel.getPhotonDesignData(m_design)));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar div(double rhs) {
+                                 : 		return div(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar div(float rhs) {
+    3531    2958      18       0 : 		return div(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar div(int rhs) {
+                                 : 		return div(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar div(long rhs) {
+                                 : 		return div(DFETypeFactory.dfeUntypedConst().newInstance(m_design, rhs));
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar divAsRHS(double lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).div(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar divAsRHS(float lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).div(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar divAsRHS(int lhs) {
+    3222    2968       9       0 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).div(this);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar divAsRHS(long lhs) {
+                                 : 		return DFETypeFactory.dfeUntypedConst().newInstance(m_design, lhs).div(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar complement() {
+                                 : 		NodeNot not_node = new NodeNot(_Kernel.getPhotonDesignData(m_design), _Kernel.getPhotonDesignData(m_design).getGroupPath());
+                                 : 
+                                 : 		not_node.connectInput("a", m_imp);
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, not_node.connectOutput("result"));
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar neg() {
+                                 : 		NodeNeg neg_node = new NodeNeg(_Kernel.getPhotonDesignData(m_design));
+                                 : 
+                                 : 		neg_node.connectInput("a", m_imp);
+                                 : 
+                                 : 		Var result = neg_node.connectOutput("result");
+                                 : 
+                                 : 		if (getType() instanceof DFEFix &&
+                                 : 			((DFEFix)getType()).getSignMode() == SignMode.UNSIGNED &&
+                                 : 			neg_node.getOperatorSupplier().getTypeModeForOp(Op.NEG).m_bin_op_types_must_match)
+                                 : 		{
+                                 : 			_Kernel.getPhotonDesignData(m_design).raiseWarning(
+                                 : 				Warning.UNSIGNED_NEGATION_IN_NON_BITGROWTH_MODE, neg_node,
+                                 : 				"Negating unsigned fixed-point number with bit growth disabled");
+                                 : 		}
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, result);
+                                 : 	}
+                                 : 
+                                 : 	private CoreNodeFactory getCoreNodeFactory() {
+                                 : 		return new CoreNodeFactory(_Kernel.getPhotonDesignData(m_design));
+                                 : 	}
+                                 : 
+                                 : 	private WatchFactory getWatchFactory() {
+                                 : 		return new WatchFactory(_Kernel.getPhotonDesignData(m_design));
+                                 : 	}
+                                 : 
+                                 : 	private DoubtBitOpFactory getDoubtBitOpFactory() {
+                                 : 		return new DoubtBitOpFactory(_Kernel.getPhotonDesignData(m_design));
+                                 : 	}
+                                 : 
+                                 : 	//Javadoc in KernelObject interface declaration
+                                 : 	@Override
+                                 : 	public DFEVar simWatch(String name) {
+                                 : 		if(m_design.getManager().isTargetSimulation())
+                                 : 			getWatchFactory().watch(name, m_imp);
+                                 : 
+                                 : 		return this;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a watch to the stream, formatted with a specific radix.
+                                 : 	 * @param name The name for the watch node as it will appear in the output.
+                                 : 	 * @param radix The radix with which to format the output.
+                                 : 	 */
+                                 : 	public DFEVar simWatch(String name, Radix radix) {
+                                 : 		if(m_design.getManager().isTargetSimulation())
+                                 : 			getWatchFactory().watch(
+                                 : 				name,
+                                 : 				m_imp,
+                                 : 				EnumUtils.convert(radix, WatchFactory.Radix.class));
+                                 : 
+                                 : 		return this;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Adds a watch to the stream, formatted with a specific radix.
+                                 : 	 * @param name The name for the watch node as it will appear in the output.
+                                 : 	 * @param radix The radix with which to format the output.
+                                 : 	 * @param fmt_str Extra formatting for the output.
+                                 : 	 */
+                                 : 	public DFEVar simWatch(String name, Radix radix, String fmt_str) {
+                                 : 		if(m_design.getManager().isTargetSimulation())
+                                 : 			getWatchFactory().watch(
+                                 : 				name,
+                                 : 				m_imp,
+                                 : 				EnumUtils.convert(radix, WatchFactory.Radix.class),
+                                 : 				fmt_str);
+                                 : 
+                                 : 		return this;
+                                 : 	}
+                                 : 
+                                 : 	@Deprecated /** Replaced by simWatch() */
+                                 : 	public DFEVar watch(String name) {
+                                 : 		return simWatch(name);
+                                 : 	}
+                                 : 
+                                 : 	@Deprecated /** Replaced by simWatch() */
+                                 : 	public DFEVar watch(String name, Radix radix) {
+                                 : 		return simWatch(name, radix);
+                                 : 	}
+                                 : 
+                                 : 	@Deprecated /** Replaced by simWatch() */
+                                 : 	public DFEVar watch(String name, Radix radix, String fmt_str) {
+                                 : 		return simWatch(name, radix, fmt_str);
+                                 : 	}
+                                 : 
+                                 : 	@SuppressWarnings("unchecked")
+                                 : 	@Override
+                                 : 	@MaxCompilerHide
+                                 : 	public <T extends KernelObject<T>> T ternaryIf(T true_cond, T false_cond) {
+     175     225       0       0 : 		return getKernel().control.mux(this, false_cond, true_cond);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(DFEVar true_cond, double false_cond) {
+                                 : 		return ternaryIf(true_cond, getKernel().constant.var(true_cond.getType(), false_cond));
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(DFEVar true_cond, float false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(DFEVar true_cond, int false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(DFEVar true_cond, long false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(double true_cond, DFEVar false_cond) {
+                                 : 		return ternaryIf(getKernel().constant.var(false_cond.getType(), true_cond), false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(float true_cond, DFEVar false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(int true_cond, DFEVar false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEVar ternaryIf(long true_cond, DFEVar false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(DFEComplex true_cond, double false_cond) {
+                                 : 		return ternaryIf(true_cond, getKernel().constant.cplx(true_cond.getType(), false_cond, 0));
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(DFEComplex true_cond, float false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(DFEComplex true_cond, int false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(DFEComplex true_cond, long false_cond) {
+                                 : 		return ternaryIf(true_cond, (double)false_cond);
+                                 : 	}
+                                 : 
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(double true_cond, DFEComplex false_cond) {
+                                 : 		return ternaryIf(getKernel().constant.cplx(false_cond.getType(), true_cond, 0), false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(float true_cond, DFEComplex false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(int true_cond, DFEComplex false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 	@MaxCompilerHide
+                                 : 	public DFEComplex ternaryIf(long true_cond, DFEComplex false_cond) {
+                                 : 		return ternaryIf((double)true_cond, false_cond);
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Only accepts {@link DFEType}.&nbsp;See {@link #cast(DFEType)} for details.
+                                 : 	 * <p>
+                                 : 	 * <b>Note</b>: {@code DFEVar} can only be cast using {@link DFEType} types.
+                                 : 	 * @see KernelObject#cast(KernelType)
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public KernelObject<?> cast(KernelType<?> type) {
+                                 : 		if(type instanceof DFEType)
+                                 : 			return cast((DFEType)type);
+                                 : 
+                                 : 		throw new MaxCompilerAPIError(m_design.getManager(), "DFEVar can only be cast using DFEType types.");
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns the type of this object.
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public String toString() {
+                                 : 		DFEType type = getType();
+                                 : 
+                                 : 		String str = type == null ? "(no type)" : type.toString();
+                                 : 		if (getDoubtType().hasDoubtInfo())
+                                 : 			str += " with doubt info";
+                                 : 
+                                 : 		return str;
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar hasDoubt() {
+                                 : 		if(getDoubtType().hasDoubtInfo())
+                                 : 			return _KernelBaseTypes.fromImp(m_design, getDoubtBitOpFactory().getDoubt(m_imp));
+                                 : 		else
+                                 : 			return m_design.constant.var(false);
+                                 : 	}
+                                 : 
+                                 : 	public DFEVar castDoubtType(DFEDoubtType doubt_type) {
+                                 : 		if(doubt_type.hasDoubtInfo() == getDoubtType().hasDoubtInfo())
+                                 : 			return this;
+                                 : 
+                                 : 		if (doubt_type.hasDoubtInfo())
+                                 : 			return _KernelBaseTypes.fromImp(m_design, getDoubtBitOpFactory().setDoubt(
+                                 : 				m_imp,
+                                 : 				m_design.constant.var(false).m_imp));
+                                 : 		else
+                                 : 			return _KernelBaseTypes.fromImp(m_design, getDoubtBitOpFactory().removeDoubt(
+                                 : 				m_imp));
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar castDoubtType(DoubtType doubt_type) {
+                                 : 		if(!(doubt_type instanceof DFEDoubtType))
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"DFEVar can only be doubt-type casted using a DFEDoubtType object.");
+                                 : 
+                                 : 		return castDoubtType((DFEDoubtType)doubt_type);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public List<DFEVar> packToList() {
+                                 : 		return Collections.singletonList(this);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar packWithDoubt() {
+                                 : 		return
+                                 : 			getDoubtType().hasDoubtInfo() ?
+                                 : 				_KernelBaseTypes.fromImp(m_design, getDoubtBitOpFactory().makeDoubtExplicit(m_imp)) :
+                                 : 				packWithoutDoubt();
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar packWithoutDoubt() {
+                                 : 		if(!getType().isConcreteType())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Cannot pack DFEVar as type " + getType() + " is not concrete.");
+                                 : 
+                                 : 		DFEVar data_packed =
+                                 : 			 _KernelBaseTypes.fromImp(m_design,
+                                 : 					getCoreNodeFactory().reinterpretCast(
+                                 : 						m_imp,
+                                 : 						_KernelBaseTypes.toImp(DFETypeFactory.dfeRawBits(getType().getTotalBits()))));
+                                 : 
+                                 : 		return
+                                 : 			getDoubtType().hasDoubtInfo() ?
+                                 : 				data_packed.castDoubtType(new DFEDoubtType(false)) :
+                                 : 				data_packed;
+                                 : 	}
+                                 : 
+                                 : 	/**
+                                 : 	 * Returns this {@code DFEVar} object cast to {@link DFERawBits}.
+                                 : 	 */
+                                 : 	@Override
+                                 : 	public DFEVar pack() {
+                                 : 		if(getDoubtType().hasDoubtInfo())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Cannot use pack() on this stream as it contains doubt " +
+                                 : 				"information. If you want to explicitly discard this information " +
+                                 : 				"use packWithoutDoubt(), otherwise use packWithDoubt().");
+                                 : 
+                                 : 		return packWithoutDoubt();
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar addDoubtInfo() {
+                                 : 		return castDoubtType(getType().getFullTypeWithDoubtInfo().getDoubtType());
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar removeDoubtInfo() {
+                                 : 		return castDoubtType(getType().getFullTypeWithoutDoubtInfo().getDoubtType());
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar setDoubt(DFEVar doubt) {
+                                 : 		return setDoubt(doubt, SetDoubtOperation.OVERRIDE);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar setDoubt(boolean doubt) {
+                                 : 		return setDoubt(doubt, SetDoubtOperation.OVERRIDE);
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar setDoubt(DFEVar doubt, SetDoubtOperation operation) {
+                                 : 		if (!getDoubtType().hasDoubtInfo())
+                                 : 			throw new MaxCompilerAPIError(m_design.getManager(),
+                                 : 				"Cannot use setDoubt on this stream as it doesn't contain doubt information.");
+                                 : 
+                                 : 		DFEVar combined_doubt = null;
+                                 : 
+                                 : 		switch(operation) {
+                                 : 			case AND:
+                                 : 				combined_doubt = doubt & hasDoubt();
+                                 : 				break;
+                                 : 			case OR:
+                                 : 				combined_doubt = doubt | hasDoubt();
+                                 : 				break;
+                                 : 			case OVERRIDE:
+                                 : 				combined_doubt = doubt;
+                                 : 				break;
+                                 : 		}
+                                 : 
+                                 : 		return _KernelBaseTypes.fromImp(m_design, getDoubtBitOpFactory().setDoubt(m_imp, _KernelBaseTypes.toImp(combined_doubt)));
+                                 : 	}
+                                 : 
+                                 : 	@Override
+                                 : 	public DFEVar setDoubt(boolean doubt, SetDoubtOperation operation) {
+                                 : 		return setDoubt(m_design.constant.var(doubt), operation);
+                                 : 	}
+                                 : }

@@ -111,7 +111,7 @@ int main(void)
 		MouseDelta d = mouse.readMouse(false);
 		//characterController.update();
 
-		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[3]);
+		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
 
 		if(d.changed()){
 			inclination += -d.y;

@@ -3,6 +3,7 @@ package environmentmapplayer;
 import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
+import com.maxeler.maxcompiler.v2.kernelcompiler._KernelConfiguration;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
@@ -27,8 +28,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(200);
-		config.setOnCardMemoryFrequency(475); //400 for maia
+		//disable trickling
+		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
+
+		config.setDefaultStreamClockFrequency(240);
+		config.setOnCardMemoryFrequency(533); //400 for maia
 
 		/*MemoryControllerConfig mcc = new MemoryControllerConfig();
 		config.setOnCardMemoryFrequency(800);
@@ -55,11 +59,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock rayCasterKernel = addKernel(new RayCasterKernel(makeKernelParameters("RayCasterKernel")));
 
 		KernelBlock commandGeneratorKernel = addKernel(new MapSampleCommandGeneratorKernel(makeKernelParameters("MapSampleCommandGeneratorKernel")));
-//		KernelBlock commandGeneratorKernel = addKernel(new EnvironmentMapSampleCommandGeneratorKernelSimple(makeKernelParameters("MapSampleCommandGeneratorKernelSimple")));
 
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
-
-		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
 		/* Connect the Ray Caster to the inputs from the CPU */
 
@@ -83,21 +84,41 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		commandGeneratorKernel.getInput("v").connect(rayCasterKernel.getOutput("v"));
 
 		DFELink sample_memory_stream = addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command"));
-
-		mapSampleReaderKernel.getInput("cache_valid").connect(commandGeneratorKernel.getOutput("cache_valid"));
 		mapSampleReaderKernel.getInput("burst_input").connect(sample_memory_stream);
-		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(commandGeneratorKernel.getOutput("sample_offset_in_pixels"));
 
-		/* Connect up the video signal generator kernel and the clock signals  */
+		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
-		videoSignalKernel.getInput("rgb").connect(mapSampleReaderKernel.getOutput("sample"));
+		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
+		int cache_valid_stream_buffer_size = 1 * 4096;
+		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, cache_valid_stream_buffer_size);
+		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
 
-		/* Finally configure the video data outputs */
+		DFELink sample_offset_in_pixels_stream = commandGeneratorKernel.getOutput("sample_offset_in_pixels");
+		int sample_offset_in_pixels_stream_buffer_size = 32 * 4096;
+		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, sample_offset_in_pixels_stream_buffer_size);
+		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
 
-	//	addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+		/* Create the kernel which will generate the timing data */
+		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
+
+		/* connect up the kernel to the colour data */
+		DFELink video_colour_data_stream = mapSampleReaderKernel.getOutput("sample");
+		int video_colour_data_stream_buffer_size = 24 * 4096;
+		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, video_colour_data_stream_buffer_size);
+		videoSignalKernel.getInput("rgb").connect(video_colour_data_stream);
+
+		/* Finally configure the video data outputs and clocking */
+
+//		DFELink videoStreamOut = getVideoStream("videoStream", 165.0f);
+//		videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
+//
+//		WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
+//		videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
+
+//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
 		DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-		int videoDataStreamBufferSize = 64 * 256;
+		int videoDataStreamBufferSize = 64 * 2048;
 		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
 		getVideoStream("videoStream", 165.0f).connect(videoDataStream);
 
