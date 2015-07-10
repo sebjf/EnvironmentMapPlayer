@@ -1,0 +1,5 @@
+#
+# This file is managed by MaxIDE. Do NOT change.
+#
+HEADERS:= Camera.hpp CharacterController.hpp EnvironmentMap.hpp Mouse.hpp Oculus.hpp SampleParameterMap.hpp VirtualMonitor.h 
+SOURCES:= EnvironmentMapPlayerCpuCode.cpp Mouse.cpp VirtualMonitor.cpp 
