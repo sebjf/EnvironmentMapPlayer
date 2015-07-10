@@ -15,6 +15,9 @@
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
+#include "Oculus.hpp"
+
+#define DEG2RAD	0.0174532925
 
 bool run = true;
 
@@ -34,8 +37,11 @@ int main(void)
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
-	max_file_t *maxfile = EnvironmentMapPlayer_init();
+	max_file_t *maxfile = EnvironmentMapPlayer4_init();
+    //max_set_max_runnable_timing_score(maxfile, 1000);
 	max_engine_t *engine = max_load(maxfile, "*");
+
+	sleep(1);
 
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
@@ -53,13 +59,6 @@ int main(void)
 	/* ignore memory input on subsequent runs */
 
 	max_ignore_lmem(act,"environment_map");
-
-	/* Specify camera properties */
-
-	Camera camera;
-	camera.set_eye(0, 100, -50);
-	camera.set_lookat(90,90);
-
 
 	/* Rendering parameters */
 
@@ -100,7 +99,13 @@ int main(void)
 	CharacterController characterController("/dev/input/by-id/usb-DELL_Dell_USB_Entry_Keyboard-event-kbd");
 	characterController.set_position(0, 100, -50);
 
+	/* Specify camera properties */
+
+	Camera camera;
 	camera.connect(engine);
+
+	/* Get the Oculus */
+	Oculus oculus;
 
 	printf("Press CTRL+C key to exit.\n");
 
@@ -118,7 +123,9 @@ int main(void)
 			elevation += -d.x;
 		}
 
-		camera.set_lookat(inclination,elevation);
+		oculus.Update();
+
+		camera.set_ovr(oculus.m_forward, oculus.m_up);
 
 	}
 

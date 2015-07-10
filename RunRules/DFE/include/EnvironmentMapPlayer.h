@@ -1,15 +1,15 @@
 /**\file */
-#ifndef SLIC_DECLARATIONS_EnvironmentMapPlayer_H
-#define SLIC_DECLARATIONS_EnvironmentMapPlayer_H
+#ifndef SLIC_DECLARATIONS_EnvironmentMapPlayer4_H
+#define SLIC_DECLARATIONS_EnvironmentMapPlayer4_H
 #include "MaxSLiCInterface.h"
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-#define EnvironmentMapPlayer_DisplayTotalWidth (1138)
-#define EnvironmentMapPlayer_DisplayActiveHeight (1920)
-#define EnvironmentMapPlayer_DisplayActiveWidth (1080)
-#define EnvironmentMapPlayer_DisplayTotalHeight (1933)
+#define EnvironmentMapPlayer4_DisplayTotalWidth (1138)
+#define EnvironmentMapPlayer4_DisplayActiveHeight (1920)
+#define EnvironmentMapPlayer4_DisplayActiveWidth (1080)
+#define EnvironmentMapPlayer4_DisplayTotalHeight (1933)
 
 
 /*----------------------------------------------------------------------------*/
@@ -26,7 +26,7 @@ extern "C" {
  * \param [in] param_size Interface Parameter "size".
  * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
  */
-void EnvironmentMapPlayer_memoryInitialisation(
+void EnvironmentMapPlayer4_memoryInitialisation(
 	int32_t param_address,
 	int32_t param_size,
 	const int32_t *instream_environment_map_in);
@@ -44,7 +44,7 @@ void EnvironmentMapPlayer_memoryInitialisation(
  * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_memoryInitialisation_nonblock(
+max_run_t *EnvironmentMapPlayer4_memoryInitialisation_nonblock(
 	int32_t param_address,
 	int32_t param_size,
 	const int32_t *instream_environment_map_in);
@@ -57,7 +57,7 @@ typedef struct {
 	int32_t param_address; /**<  [in] Interface Parameter "address". */
 	int32_t param_size; /**<  [in] Interface Parameter "size". */
 	const int32_t *instream_environment_map_in; /**<  [in] The stream should be of size (param_size / 4) bytes. */
-} EnvironmentMapPlayer_memoryInitialisation_actions_t;
+} EnvironmentMapPlayer4_memoryInitialisation_actions_t;
 
 /**
  * \brief Advanced static function for the interface 'memoryInitialisation'.
@@ -65,9 +65,9 @@ typedef struct {
  * \param [in] engine The engine on which the actions will be executed.
  * \param [in,out] interface_actions Actions to be executed.
  */
-void EnvironmentMapPlayer_memoryInitialisation_run(
+void EnvironmentMapPlayer4_memoryInitialisation_run(
 	max_engine_t *engine,
-	EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+	EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions);
 
 /**
  * \brief Advanced static non-blocking function for the interface 'memoryInitialisation'.
@@ -81,9 +81,9 @@ void EnvironmentMapPlayer_memoryInitialisation_run(
  * \param [in] interface_actions Actions to be executed.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_nonblock(
+max_run_t *EnvironmentMapPlayer4_memoryInitialisation_run_nonblock(
 	max_engine_t *engine,
-	EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+	EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions);
 
 /**
  * \brief Group run advanced static function for the interface 'memoryInitialisation'.
@@ -93,7 +93,7 @@ max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_nonblock(
  *
  * Run the actions on the first device available in the group.
  */
-void EnvironmentMapPlayer_memoryInitialisation_run_group(max_group_t *group, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+void EnvironmentMapPlayer4_memoryInitialisation_run_group(max_group_t *group, EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions);
 
 /**
  * \brief Group run advanced static non-blocking function for the interface 'memoryInitialisation'.
@@ -108,7 +108,7 @@ void EnvironmentMapPlayer_memoryInitialisation_run_group(max_group_t *group, Env
  * \param [in] interface_actions Actions to run.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+max_run_t *EnvironmentMapPlayer4_memoryInitialisation_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions);
 
 /**
  * \brief Array run advanced static function for the interface 'memoryInitialisation'.
@@ -119,7 +119,7 @@ max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_group_nonblock(max_grou
  * Run the array of actions on the array of engines.  The length of interface_actions
  * must match the size of engarray.
  */
-void EnvironmentMapPlayer_memoryInitialisation_run_array(max_engarray_t *engarray, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions[]);
+void EnvironmentMapPlayer4_memoryInitialisation_run_array(max_engarray_t *engarray, EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions[]);
 
 /**
  * \brief Array run advanced static non-blocking function for the interface 'memoryInitialisation'.
@@ -134,7 +134,7 @@ void EnvironmentMapPlayer_memoryInitialisation_run_array(max_engarray_t *engarra
  * \param [in] interface_actions The array of actions to run.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions[]);
+max_run_t *EnvironmentMapPlayer4_memoryInitialisation_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions[]);
 
 /**
  * \brief Converts a static-interface action struct into a dynamic-interface max_actions_t struct.
@@ -145,7 +145,7 @@ max_run_t *EnvironmentMapPlayer_memoryInitialisation_run_array_nonblock(max_enga
  * \param [in] interface_actions The interface-specific actions to run.
  * \return The dynamic-interface actions to run, or NULL in case of error.
  */
-max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *maxfile, EnvironmentMapPlayer_memoryInitialisation_actions_t *interface_actions);
+max_actions_t* EnvironmentMapPlayer4_memoryInitialisation_convert(max_file_t *maxfile, EnvironmentMapPlayer4_memoryInitialisation_actions_t *interface_actions);
 
 
 
@@ -174,7 +174,7 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_address_environment_map Linear LMem control for "environment_map" stream: base address, in bytes.
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
-void EnvironmentMapPlayer(
+void EnvironmentMapPlayer4(
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -214,7 +214,7 @@ void EnvironmentMapPlayer(
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_nonblock(
+max_run_t *EnvironmentMapPlayer4_nonblock(
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -249,7 +249,7 @@ typedef struct {
 	size_t instream_size_environment_map_in; /**<  [in] The size of the stream instream_environment_map_in in bytes. */
 	size_t lmem_address_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: base address, in bytes. */
 	size_t lmem_arr_size_environment_map; /**<  [in] Linear LMem control for "environment_map" stream: array size, in bytes. */
-} EnvironmentMapPlayer_actions_t;
+} EnvironmentMapPlayer4_actions_t;
 
 /**
  * \brief Advanced static function for the interface 'default'.
@@ -257,9 +257,9 @@ typedef struct {
  * \param [in] engine The engine on which the actions will be executed.
  * \param [in,out] interface_actions Actions to be executed.
  */
-void EnvironmentMapPlayer_run(
+void EnvironmentMapPlayer4_run(
 	max_engine_t *engine,
-	EnvironmentMapPlayer_actions_t *interface_actions);
+	EnvironmentMapPlayer4_actions_t *interface_actions);
 
 /**
  * \brief Advanced static non-blocking function for the interface 'default'.
@@ -273,9 +273,9 @@ void EnvironmentMapPlayer_run(
  * \param [in] interface_actions Actions to be executed.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_run_nonblock(
+max_run_t *EnvironmentMapPlayer4_run_nonblock(
 	max_engine_t *engine,
-	EnvironmentMapPlayer_actions_t *interface_actions);
+	EnvironmentMapPlayer4_actions_t *interface_actions);
 
 /**
  * \brief Group run advanced static function for the interface 'default'.
@@ -285,7 +285,7 @@ max_run_t *EnvironmentMapPlayer_run_nonblock(
  *
  * Run the actions on the first device available in the group.
  */
-void EnvironmentMapPlayer_run_group(max_group_t *group, EnvironmentMapPlayer_actions_t *interface_actions);
+void EnvironmentMapPlayer4_run_group(max_group_t *group, EnvironmentMapPlayer4_actions_t *interface_actions);
 
 /**
  * \brief Group run advanced static non-blocking function for the interface 'default'.
@@ -300,7 +300,7 @@ void EnvironmentMapPlayer_run_group(max_group_t *group, EnvironmentMapPlayer_act
  * \param [in] interface_actions Actions to run.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer_actions_t *interface_actions);
+max_run_t *EnvironmentMapPlayer4_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer4_actions_t *interface_actions);
 
 /**
  * \brief Array run advanced static function for the interface 'default'.
@@ -311,7 +311,7 @@ max_run_t *EnvironmentMapPlayer_run_group_nonblock(max_group_t *group, Environme
  * Run the array of actions on the array of engines.  The length of interface_actions
  * must match the size of engarray.
  */
-void EnvironmentMapPlayer_run_array(max_engarray_t *engarray, EnvironmentMapPlayer_actions_t *interface_actions[]);
+void EnvironmentMapPlayer4_run_array(max_engarray_t *engarray, EnvironmentMapPlayer4_actions_t *interface_actions[]);
 
 /**
  * \brief Array run advanced static non-blocking function for the interface 'default'.
@@ -326,7 +326,7 @@ void EnvironmentMapPlayer_run_array(max_engarray_t *engarray, EnvironmentMapPlay
  * \param [in] interface_actions The array of actions to run.
  * \return A handle on the execution status of the actions, or NULL in case of error.
  */
-max_run_t *EnvironmentMapPlayer_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer_actions_t *interface_actions[]);
+max_run_t *EnvironmentMapPlayer4_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer4_actions_t *interface_actions[]);
 
 /**
  * \brief Converts a static-interface action struct into a dynamic-interface max_actions_t struct.
@@ -337,25 +337,25 @@ max_run_t *EnvironmentMapPlayer_run_array_nonblock(max_engarray_t *engarray, Env
  * \param [in] interface_actions The interface-specific actions to run.
  * \return The dynamic-interface actions to run, or NULL in case of error.
  */
-max_actions_t* EnvironmentMapPlayer_convert(max_file_t *maxfile, EnvironmentMapPlayer_actions_t *interface_actions);
+max_actions_t* EnvironmentMapPlayer4_convert(max_file_t *maxfile, EnvironmentMapPlayer4_actions_t *interface_actions);
 
 /**
  * \brief Initialise a maxfile.
  */
-max_file_t* EnvironmentMapPlayer_init(void);
+max_file_t* EnvironmentMapPlayer4_init(void);
 
 /* Error handling functions */
-int EnvironmentMapPlayer_has_errors(void);
-const char* EnvironmentMapPlayer_get_errors(void);
-void EnvironmentMapPlayer_clear_errors(void);
+int EnvironmentMapPlayer4_has_errors(void);
+const char* EnvironmentMapPlayer4_get_errors(void);
+void EnvironmentMapPlayer4_clear_errors(void);
 /* Free statically allocated maxfile data */
-void EnvironmentMapPlayer_free(void);
+void EnvironmentMapPlayer4_free(void);
 /* These are dummy functions for hardware builds. */
-int EnvironmentMapPlayer_simulator_start(void);
-int EnvironmentMapPlayer_simulator_stop(void);
+int EnvironmentMapPlayer4_simulator_start(void);
+int EnvironmentMapPlayer4_simulator_stop(void);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-#endif /* SLIC_DECLARATIONS_EnvironmentMapPlayer_H */
+#endif /* SLIC_DECLARATIONS_EnvironmentMapPlayer4_H */
 

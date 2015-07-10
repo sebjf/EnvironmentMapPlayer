@@ -40,9 +40,21 @@ else
  O_FLAGS = -g -O0
 endif
 
-CFLAGS    = -std=gnu99 $(O_FLAGS) -Wall -Wextra -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS)
-CXXFLAGS  = -Wall -Wextra $(O_FLAGS) -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS)
-LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lXrandr -lGL $(RUNRULE_LDFLAGS)
+OVRINCS  = -I/home/sfriston/projects/ovr_sdk_linux_0.3.2/LibOVR/Include -I/home/sfriston/projects/ovr_sdk_linux_0.3.2/LibOVR/Src
+OVRLIBS  = -L/home/sfriston/projects/ovr_sdk_linux_0.3.2/LibOVR/Lib/Linux/Debug/x86_64 \
+		-lovr \
+		-ludev \
+		-lpthread \
+		-lGL \
+		-lX11 \
+        -lXinerama \
+        -lXxf86vm \
+		-lXrandr \
+		-lusb-1.0
+
+CFLAGS    = -std=gnu99 $(O_FLAGS) -Wall -Wextra -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
+CXXFLAGS  = -Wall -Wextra $(O_FLAGS) -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
+LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lXrandr -lGL $(RUNRULE_LDFLAGS) $(OVRLIBS)
 
 #   Add other user-defined extensions here, e.g. --
 #CFLAGS    += -I/my/header/files
