@@ -37,11 +37,9 @@ int main(void)
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
-	max_file_t *maxfile = EnvironmentMapPlayer6_init();
+	max_file_t *maxfile = EnvironmentMapPlayer_init();
     //max_set_max_runnable_timing_score(maxfile, 1000);
 	max_engine_t *engine = max_load(maxfile, "*");
-
-	sleep(1);
 
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
@@ -72,6 +70,7 @@ int main(void)
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", 0.01);
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
 
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0x101010);
 
 	/* Video signal parameters */
@@ -79,6 +78,11 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
+	//disable burst input for debugging
+
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_cache_valid_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_sample_offset_in_pixels_force_disabled",1);
 
 	printf("Running on DFE...\n");
 
@@ -96,7 +100,7 @@ int main(void)
 	int inclination = 60;
 	int elevation = 90;
 
-	CharacterController characterController("/dev/input/by-id/usb-DELL_Dell_USB_Entry_Keyboard-event-kbd");
+	CharacterController characterController("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd");
 	characterController.set_position(0, 100, -50);
 
 	/* Specify camera properties */
@@ -124,8 +128,7 @@ int main(void)
 		}
 
 		oculus.Update();
-
-	//	camera.set_ovr(oculus.m_forward, oculus.m_up);
+		camera.set_ovr(oculus.m_forward, oculus.m_up);
 
 	}
 

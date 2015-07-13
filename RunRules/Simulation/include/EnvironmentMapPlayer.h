@@ -25,12 +25,12 @@ extern "C" {
  * 
  * \param [in] param_address Interface Parameter "address".
  * \param [in] param_size Interface Parameter "size".
- * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
+ * \param [in] instream_environment_map_in The stream should be of size param_size bytes.
  */
 void EnvironmentMapPlayer_memoryInitialisation(
-	int32_t param_address,
-	int32_t param_size,
-	const int32_t *instream_environment_map_in);
+	int64_t param_address,
+	int64_t param_size,
+	const uint8_t *instream_environment_map_in);
 
 /**
  * \brief Basic static non-blocking function for the interface 'memoryInitialisation'.
@@ -42,22 +42,22 @@ void EnvironmentMapPlayer_memoryInitialisation(
  * 
  * \param [in] param_address Interface Parameter "address".
  * \param [in] param_size Interface Parameter "size".
- * \param [in] instream_environment_map_in The stream should be of size (param_size / 4) bytes.
+ * \param [in] instream_environment_map_in The stream should be of size param_size bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_memoryInitialisation_nonblock(
-	int32_t param_address,
-	int32_t param_size,
-	const int32_t *instream_environment_map_in);
+	int64_t param_address,
+	int64_t param_size,
+	const uint8_t *instream_environment_map_in);
 
 /**
  * \brief Advanced static interface, structure for the engine interface 'memoryInitialisation'
  * 
  */
 typedef struct { 
-	int32_t param_address; /**<  [in] Interface Parameter "address". */
-	int32_t param_size; /**<  [in] Interface Parameter "size". */
-	const int32_t *instream_environment_map_in; /**<  [in] The stream should be of size (param_size / 4) bytes. */
+	int64_t param_address; /**<  [in] Interface Parameter "address". */
+	int64_t param_size; /**<  [in] Interface Parameter "size". */
+	const uint8_t *instream_environment_map_in; /**<  [in] The stream should be of size param_size bytes. */
 } EnvironmentMapPlayer_memoryInitialisation_actions_t;
 
 /**
@@ -160,6 +160,7 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
 /**
  * \brief Basic static function for the interface 'default'.
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
@@ -178,6 +179,7 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -203,6 +205,7 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
@@ -222,6 +225,7 @@ void EnvironmentMapPlayer(
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -244,6 +248,7 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  * 
  */
 typedef struct { 
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used". */
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour; /**<  [in] Input scalar parameter "MapSampleReaderKernel.backgroundColour". */
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity". */
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */

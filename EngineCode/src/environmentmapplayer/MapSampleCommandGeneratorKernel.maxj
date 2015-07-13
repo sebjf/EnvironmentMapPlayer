@@ -14,14 +14,11 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		v = v < min ? constant.var(min) : v;
 		return v;
 	}
-	protected DFEVar clampmin(DFEVar v, int min, int max)
-	{
-		v = v > max ? constant.var(min) : v;
-		v = v < min ? constant.var(min) : v;
-		return v;
-	}
 
-	protected final boolean cullInvalidMipSamples = false;
+	protected final int bank_address_bits_count = 3;
+	protected final int bank_address_bits_offset = 25; //from the lsb
+
+	public final int m_banks_to_use = 2; //note that banks to use starts from
 
 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
@@ -37,15 +34,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Restrict the mip level to those contained within the source map set */
 
-		DFEVar miplevelclamped = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
+		miplevel = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
 
-		if(cullInvalidMipSamples){
-			plane = miplevel.eq(miplevelclamped) ? plane : constant.var(dfeUInt(8),255); //if the mip level is out of range, just draw black
-		}
-		else
-		{
-			miplevel = miplevelclamped;
-		}
 
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 
@@ -54,8 +44,9 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
 
 		/* clamp u and v to prevent wasteful lmem accesses into erroneous locations */
+
 		u = clamp(u, 0, 1);
-		v = clamp(u, 0, 1);
+		v = clamp(v, 0, 1);
 
 		/* Based on the mip level, determine which tile contains the sample */
 
@@ -104,6 +95,17 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
         cache_valid = command_invalid ? constant.var(true) : cache_valid;
         addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel;
+
+        /* do the bank offset */
+
+        DFEVar num_banks_used = io.scalarInput("num_banks_used", dfeUInt(32));
+
+        //counter counts to num_banks_used - 1 over and over
+        DFEVar bank_bits = control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
+
+        //add the bank offset
+        addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
+
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();

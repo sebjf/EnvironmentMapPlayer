@@ -31,22 +31,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		//disable trickling
 		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
 
-		config.setDefaultStreamClockFrequency(240);
+		config.setDefaultStreamClockFrequency(220);
 		config.setOnCardMemoryFrequency(533); //400 for maia
-
-		/*MemoryControllerConfig mcc = new MemoryControllerConfig();
-		config.setOnCardMemoryFrequency(800);
-		mcc.setMAX4qMode(true);
-		mcc.setBurstSize(8);
-		mcc.setEnableParityMode(true, true, 72, false);
-		mcc.setEnableFlagCommands(true);
-		config.setMemoryControllerConfig(mcc);*/
-
-	//	MemoryControllerConfig mcc = new MemoryControllerConfig();
-	//	mcc.setCMDQSize(64);
-		//mcc.setCmdFIFOPipelineRegInBlockRAM(false); //trade off lut usage for better timing.
-	//	mcc.setEnableParityMode(false, false, 0, false);
-	//	config.setMemoryControllerConfig(mcc);
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
@@ -107,20 +93,28 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, video_colour_data_stream_buffer_size);
 		videoSignalKernel.getInput("rgb").connect(video_colour_data_stream);
 
-		/* Finally configure the video data outputs and clocking */
 
-//		DFELink videoStreamOut = getVideoStream("videoStream", 165.0f);
-//		videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
-//
-//		WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
-//		videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
+		if(isTargetSimulation()){
 
-//		addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
+			addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
-		DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-		int videoDataStreamBufferSize = 64 * 2048;
-		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
-		getVideoStream("videoStream", 165.0f).connect(videoDataStream);
+		}else{
+
+			/* Finally configure the video data outputs and clocking */
+
+//			DFELink videoStreamOut = getVideoStream("videoStream", 165.0f);
+//			videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
+
+//			WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
+//			videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
+
+
+
+		//	DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
+		//	int videoDataStreamBufferSize = 64 * 2048;
+		//	_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
+		//	getVideoStream("videoStream", 165.0f).connect(videoDataStream);
+		}
 
 		configBuild(engineParameters);
 	}
@@ -129,10 +123,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 	{
 		EngineInterface engine_interface = new EngineInterface("memoryInitialisation");
 
-		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT32);
-		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT32);
+		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT64);
+		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
 		engine_interface.setLMemLinear("environment_map", lmem_address, lmem_size);
-		engine_interface.setStream("environment_map_in", CPUTypes.INT32, lmem_size / 4);
+		engine_interface.setStream("environment_map_in", CPUTypes.UINT8, lmem_size);
 
 		engine_interface.ignoreAll(Direction.IN_OUT);
 
