@@ -118,7 +118,7 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-		//characterController.update();
+		characterController.update();
 
 		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
 
