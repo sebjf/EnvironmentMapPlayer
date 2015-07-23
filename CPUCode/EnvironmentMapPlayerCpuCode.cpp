@@ -15,7 +15,10 @@
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
+
+#ifdef USEOCULUS
 #include "Oculus.hpp"
+#endif
 
 #define DEG2RAD	0.0174532925
 
@@ -46,7 +49,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine, maxfile);
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/map.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* Initialise the sample parameter map */
 
@@ -67,11 +70,14 @@ int main(void)
 
 	//max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
 	//max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", 0.01);
+	float fov = 90.0f;
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", tan(DEG2RAD*(fov/2)));
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
+	max_set_double( act,"RayCasterKernel", "viewplane_hres", 960);
+	max_set_double( act,"RayCasterKernel", "viewplane_vres", 1080);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
-	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0x101010);
+	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
 	/* Video signal parameters */
 
@@ -97,11 +103,11 @@ int main(void)
 	/* Set up the input devices */
 
 	Mouse mouse(false);
-	int inclination = 60;
-	int elevation = 90;
+	int inclination = 0;
+	int elevation = 0;
 
 	CharacterController characterController("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd");
-	characterController.set_position(0, 100, -50);
+	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */
 
@@ -109,7 +115,9 @@ int main(void)
 	camera.connect(engine);
 
 	/* Get the Oculus */
+#ifdef USEOCULUS
 	Oculus oculus;
+#endif
 
 	printf("Press CTRL+C key to exit.\n");
 
@@ -127,8 +135,12 @@ int main(void)
 			elevation += -d.x;
 		}
 
+#ifdef USEOCULUS
 		oculus.Update();
-		camera.set_ovr(oculus.m_forward, oculus.m_up);
+		camera.set_ovr(oculus.GetCameraForward(), oculus.GetCameraUp());
+#else
+		camera.set_lookat(inclination, elevation);
+#endif
 
 	}
 

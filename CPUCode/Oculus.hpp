@@ -10,6 +10,7 @@
 
 #include <OVR.h>
 #include <Kernel/OVR_Math.h>
+#include "Camera.hpp"
 
 using namespace OVR;
 
@@ -65,6 +66,16 @@ public:
 		m_up      = (oneEighty * OVR::Quat<float>(state.Recorded.Pose.Orientation)).Rotate(up);
 		m_forward = (oneEighty * OVR::Quat<float>(state.Recorded.Pose.Orientation)).Rotate(forward);
 
+	}
+
+	Camera::vector3 GetCameraForward()
+	{
+		return vector3(m_forward.x, m_forward.y, m_forward.z);
+	}
+
+	Camera::vector3 GetCameraUp()
+	{
+		return vector3(m_up.x, m_up.y, m_up.z);
 	}
 
 	void Reset()

@@ -18,8 +18,6 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 	protected final int bank_address_bits_count = 3;
 	protected final int bank_address_bits_offset = 25; //from the lsb
 
-	public final int m_banks_to_use = 2; //note that banks to use starts from
-
 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
 
@@ -36,17 +34,11 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		miplevel = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
 
-
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 
 		DFEVar face_width_in_pixels = KernelMath.pow2(miplevel, dfeFloat(8,24));
 		DFEVar face_width_in_tiles = face_width_in_pixels / EnvironmentParameters.tile_width_in_pixels;
 		DFEVar tiles_per_face = face_width_in_tiles * face_width_in_tiles;
-
-		/* clamp u and v to prevent wasteful lmem accesses into erroneous locations */
-
-		u = clamp(u, 0, 1);
-		v = clamp(v, 0, 1);
 
 		/* Based on the mip level, determine which tile contains the sample */
 
