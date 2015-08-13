@@ -37,7 +37,7 @@ public:
 		this->m_maxfile = maxfile;
 		m_map_size_in_bytes = 0;
 
-		num_banks_used = 1;
+		num_banks_used = 3;
 		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 	}
