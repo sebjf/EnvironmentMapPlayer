@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <buildProfile>
 <common>
-<boardModel type="MAIA"/>
+<boardModel type="CORIA"/>
 <simulation enabled="false"/>
 <enableMPCX enabled="false"/>
 </common>

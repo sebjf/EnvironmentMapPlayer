@@ -16,6 +16,8 @@
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
 
+#define USEOCULUS
+
 #ifdef USEOCULUS
 #include "Oculus.hpp"
 #endif
