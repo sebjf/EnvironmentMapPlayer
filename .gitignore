@@ -55,7 +55,6 @@ hs_err_pid*
 
 RunRules/Simulation/maxfiles/
 RunRules/Simulation/binaries/
-RunRules/DFE/maxfiles/
 *-BUILD/
 objects/
 RunRules/Simulation/maxfiles/*

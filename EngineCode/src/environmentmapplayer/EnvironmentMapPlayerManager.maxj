@@ -16,6 +16,7 @@ import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.InterfaceParam;
+import com.maxeler.maxeleros.managercompiler.core.WrapperClock;
 
 import displaystandards.DisplayStandard;
 
@@ -31,7 +32,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		//disable trickling
 		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
 
-		config.setDefaultStreamClockFrequency(220);
+		config.setDefaultStreamClockFrequency(210);
 		config.setOnCardMemoryFrequency(533); //400 for maia
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
@@ -102,12 +103,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 			/* Finally configure the video data outputs and clocking */
 
-//			DFELink videoStreamOut = getVideoStream("videoStream", 165.0f);
-//			videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
+			DFELink videoStreamOut = getVideoStream("videoStream", 165.0f);
+			videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
 
-//			WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
-//			videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
-
+			WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
+			videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
 
 
 		//	DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
