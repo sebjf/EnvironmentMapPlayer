@@ -32,7 +32,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		//disable trickling
 		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
 
-		config.setDefaultStreamClockFrequency(210);
+		config.setDefaultStreamClockFrequency(220);
 		config.setOnCardMemoryFrequency(533); //400 for maia
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
@@ -155,8 +155,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	private void configBuild(EnvironmentMapPlayerEngineParameters params) {
 		BuildConfig buildConfig = getBuildConfig();
-		buildConfig.setMPPRCostTableSearchRange(1, 16);
-		buildConfig.setMPPRParallelism(4);
+		buildConfig.setMPPRCostTableSearchRange(1, 30);
+		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
 		buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
 	}
