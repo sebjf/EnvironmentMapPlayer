@@ -6,7 +6,7 @@
 <enableMPCX enabled="false"/>
 </common>
 <maxFiles>
-<maxFile buildName="EnvironmentMapPlayer" buildOrUseExisting="build">
+<maxFile buildName="EnvironmentMapPlayer1" buildOrUseExisting="build">
 <runConfiguration askBeforeAutoBuild="true">
 <mainClass>environmentmapplayer.EnvironmentMapPlayerManager</mainClass>
 <maxHeapSize>2</maxHeapSize>

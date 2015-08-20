@@ -49,20 +49,20 @@ build: maxfiles
 maxfiles: $(MAXFILES_MAX)
 
 #
-# MaxFile: EnvironmentMapPlayer
+# MaxFile: EnvironmentMapPlayer1
 #
 
 
-BUILDNAME_MAXFILE_1:=EnvironmentMapPlayer
-MAXFILE_1:=EnvironmentMapPlayer.max
+BUILDNAME_MAXFILE_1:=EnvironmentMapPlayer1
+MAXFILE_1:=EnvironmentMapPlayer1.max
 
-include/EnvironmentMapPlayer.h: maxfiles/EnvironmentMapPlayer.h
+include/EnvironmentMapPlayer1.h: maxfiles/EnvironmentMapPlayer1.h
 	cp $< $@
 
-maxfiles/EnvironmentMapPlayer.max maxfiles/EnvironmentMapPlayer.h:
+maxfiles/EnvironmentMapPlayer1.max maxfiles/EnvironmentMapPlayer1.h:
 # Ensure that maxfiles do not get build by this Makefile when running in MaxIDE
 ifndef MAXIDE_RUN
-	test -f $@ || env  MAX_BUILDPARAMS=" DFEModel=CORIA  target=DFE  maxFileName=EnvironmentMapPlayer "  ant -v -f EnvironmentMapPlayer.xml
+	test -f $@ || env  MAX_BUILDPARAMS=" DFEModel=CORIA  target=DFE  maxFileName=EnvironmentMapPlayer1 "  ant -v -f EnvironmentMapPlayer1.xml
 else
 	test -f $@ || ( echo 'Maxfile unavailable: $@' >/dev/stderr ; exit 1 )
 endif

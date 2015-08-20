@@ -91,9 +91,10 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         /* do the bank offset */
 
         DFEVar num_banks_used = io.scalarInput("num_banks_used", dfeUInt(32));
+        DFEVar start_bank_num = io.scalarInput("start_bank_num", dfeUInt(32));
 
         //counter counts to num_banks_used - 1 over and over
-        DFEVar bank_bits = control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
+        DFEVar bank_bits = start_bank_num + control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
 
         //add the bank offset
         addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);

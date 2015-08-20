@@ -25,6 +25,9 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 	public static final int burstCount = 4;
 	public static final int burstSizeInBytes = 384;
 
+	protected final int bank_address_bits_count = 3;
+	protected final int bank_address_bits_offset = 25; //from the lsb
+
 	protected RaySampleCommandGeneratorKernel(KernelParameters parameters, DisplayStandard displayStandard) throws Exception {
 		super(parameters);
 
@@ -53,6 +56,17 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 
         DFEVar previous_address_in_bursts = stream.offset(sample_address_in_bursts, -1);
         DFEVar cache_valid = previous_address_in_bursts.eq(sample_address_in_bursts);
+
+        /* do the bank offset */
+
+        DFEVar num_banks_used = io.scalarInput("num_banks_used", dfeUInt(32));
+        DFEVar start_bank_num = io.scalarInput("start_bank_num", dfeUInt(32));
+
+        //counter counts to num_banks_used - 1 over and over
+        DFEVar bank_bits = start_bank_num + control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
+
+        //add the bank offset
+        sample_address_in_bursts = sample_address_in_bursts.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
 
 		LMemCommandStream.makeKernelOutput(
 				"sample_parameter_read_command",
