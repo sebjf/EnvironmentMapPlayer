@@ -405,6 +405,8 @@ class RayCasterKernel extends Kernel {
 		//here we will use the range to clamp the possible mip map levels to those contained in the source dataset. the actual sample distance may
 		//be higher or lower, but the result would be clamped to these anyway.
 		Range mip_width_range = new KernelMath.Range(1,2048);
+//		desired_map_width = desired_map_width < constant.var(dfefloat, 1)    ? constant.var(dfefloat, 1) : desired_map_width;
+//		desired_map_width = desired_map_width > constant.var(dfefloat, 2048) ? constant.var(dfefloat, 2048) : desired_map_width;
 		DFEVar miplevel = KernelMath.ceil(KernelMath.log2(mip_width_range, desired_map_width, dfeFloat(8,24)));
 
 		optimization.popPipeliningFactor();
