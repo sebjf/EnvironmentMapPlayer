@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <linux/input.h>
 
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
@@ -15,6 +16,7 @@
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
+#include "Logging.hpp"
 
 #define USEOCULUS
 
@@ -42,7 +44,7 @@ int main(void)
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
-	max_file_t *maxfile = EnvironmentMapPlayer_init();
+	max_file_t *maxfile = EnvironmentMapPlayer2_init();
     //max_set_max_runnable_timing_score(maxfile, 1000);
 	max_engine_t *engine = max_load(maxfile, "*");
 
@@ -65,8 +67,10 @@ int main(void)
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act, "RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
-	max_set_uint64t(act, "RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
+	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 
 	max_set_double(act, "RayCasterKernel", "ipd", 3.5f);
 
@@ -79,6 +83,7 @@ int main(void)
 	max_set_double( act,"RayCasterKernel", "viewplane_vres", 1080);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
 	/* Video signal parameters */
@@ -91,6 +96,19 @@ int main(void)
 //	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
 //	max_set_uint64t(act,"MapSampleReaderKernel","io_cache_valid_force_disabled",1);
 //	max_set_uint64t(act,"MapSampleReaderKernel","io_sample_offset_in_pixels_force_disabled",1);
+
+//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sample_command_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
+
+//	max_set_uint64t(act,"RayCasterKernel","io_cameraUpdates_force_disabled",1);
+
+	//disable all memory access
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sample_command_force_disabled",1);
+
+//	max_set_uint64t(act,"RaySampleReaderKernel","io_sample_parameter_read_data_force_disabled",1);
+
+
 
 	printf("Running on DFE...\n");
 
@@ -108,7 +126,7 @@ int main(void)
 	int inclination = 0;
 	int elevation = 0;
 
-	CharacterController characterController("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd");
+	CharacterController characterController("/dev/input/by-id/usb-LITEON_Technology_USB_Multimedia_Keyboard-event-kbd");
 	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */
@@ -121,6 +139,10 @@ int main(void)
 	Oculus oculus;
 #endif
 
+	/* Begin the head tracking logging */
+
+	//Logging logger;
+
 	printf("Press CTRL+C key to exit.\n");
 
 	while(run){
@@ -128,7 +150,7 @@ int main(void)
 		monitor.Refresh();
 
 		MouseDelta d = mouse.readMouse(false);
-		characterController.update();
+		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
 
 		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
 
@@ -140,15 +162,25 @@ int main(void)
 #ifdef USEOCULUS
 		oculus.Update();
 		camera.set_ovr(oculus.GetCameraForward(), oculus.GetCameraUp());
+	//	logger.Add(oculus);
 #else
 		camera.set_lookat(inclination, elevation);
 #endif
 
+		if(keycode == KEY_T)
+		{
+	//		logger.Instrument();
+		}
+		if(keycode == KEY_Y)
+		{
+	//		logger.Save();
+		}
 	}
 
+	printf("Exiting...");
 
 	max_unload(engine);
-	
+
 	printf("Done.\n");
 	return 0;
 }
