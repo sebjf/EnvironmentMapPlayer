@@ -15,6 +15,13 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		return v;
 	}
 
+	protected DFEVar clamp(DFEVar v, DFEVar min, DFEVar max)
+	{
+		v = v > max ? max : v;
+		v = v < min ? min : v;
+		return v;
+	}
+
 	protected final int bank_address_bits_count = 3;
 	protected final int bank_address_bits_offset = 25; //from the lsb
 
@@ -32,7 +39,10 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Restrict the mip level to those contained within the source map set */
 
-		miplevel = clamp(miplevel, EnvironmentParameters.min_mip_level, EnvironmentParameters.max_mip_level);
+		DFEVar min_mip_level = io.scalarInput("min_mip_level", dfeUInt(32)).cast(dfeUInt(8));
+		DFEVar max_mip_level = io.scalarInput("max_mip_level", dfeUInt(32)).cast(dfeUInt(8));
+
+		miplevel = clamp(miplevel, min_mip_level, max_mip_level);
 
 		/* Compute basic parameters about the mip map in use for determining the memory address */
 

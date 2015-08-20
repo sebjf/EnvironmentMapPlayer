@@ -159,6 +159,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
 /**
  * \brief Basic static function for the interface 'default'.
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_start_bank_num Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
@@ -181,6 +183,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
@@ -210,6 +214,8 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_start_bank_num Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
@@ -233,6 +239,8 @@ void EnvironmentMapPlayer(
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
@@ -259,6 +267,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  * 
  */
 typedef struct { 
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level". */
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num". */
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour; /**<  [in] Input scalar parameter "MapSampleReaderKernel.backgroundColour". */
