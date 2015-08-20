@@ -159,7 +159,10 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
 /**
  * \brief Basic static function for the interface 'default'.
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_start_bank_num Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
@@ -168,7 +171,9 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
+ * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
@@ -178,7 +183,10 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] lmem_arr_size_environment_map Linear LMem control for "environment_map" stream: array size, in bytes.
  */
 void EnvironmentMapPlayer(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -187,7 +195,9 @@ void EnvironmentMapPlayer(
 	double inscalar_RayCasterKernel_viewplane_pixelsize,
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	double inscalar_RayCasterKernel_viewplane_vres,
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
@@ -204,7 +214,10 @@ void EnvironmentMapPlayer(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_start_bank_num Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_MapSampleReaderKernel_backgroundColour Input scalar parameter "MapSampleReaderKernel.backgroundColour".
  * \param [in] inscalar_MaxVideoSignalKernel_HSyncPolarity Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity".
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
@@ -213,7 +226,9 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
+ * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
@@ -224,7 +239,10 @@ void EnvironmentMapPlayer(
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour,
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity,
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
@@ -233,7 +251,9 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	double inscalar_RayCasterKernel_viewplane_pixelsize,
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	double inscalar_RayCasterKernel_viewplane_vres,
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
@@ -247,7 +267,10 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  * 
  */
 typedef struct { 
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level". */
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used". */
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.start_bank_num". */
 	uint64_t inscalar_MapSampleReaderKernel_backgroundColour; /**<  [in] Input scalar parameter "MapSampleReaderKernel.backgroundColour". */
 	uint64_t inscalar_MaxVideoSignalKernel_HSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.HSyncPolarity". */
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */
@@ -256,7 +279,9 @@ typedef struct {
 	double inscalar_RayCasterKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_pixelsize". */
 	double inscalar_RayCasterKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_viewdistance". */
 	double inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
+	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
