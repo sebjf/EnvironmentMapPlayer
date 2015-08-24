@@ -6,6 +6,9 @@ import java.util.List;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
@@ -33,7 +36,34 @@ public class MapSampleReaderKernel extends Kernel {
 
 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
 
-		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits),~cache_valid);
+		//DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits),~cache_valid);
+
+		DFEVar previous_reads_waiting = dfeBool().newInstance(this);
+
+		NonBlockingInput<DFEVar> burst_input =
+			io.nonBlockingInput("burst_input", dfeRawBits(burst_size_in_bits), ~cache_valid,
+					1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+		DFEVar burst = Reductions.streamHold(burst_input.data, burst_input.valid);
+
+		DFEVar failed_read = (~cache_valid) & (~(burst_input.valid));
+
+//		//keep track of the number of outstanding reads (cycles were a previous read has failed) the purpose is to empty the incoming buffer even if cache is valid, so
+//		//we dont underreport how many misses there are when they are desired
+
+		DFEVar failed_reads = control.count.makeCounter(control.count.makeParams(32).withEnable(failed_read)).getCount();
+		DFEVar attempted_reads = control.count.makeCounter(control.count.makeParams(32).withEnable(~cache_valid)).getCount();
+		DFEVar successful_reads = control.count.makeCounter(control.count.makeParams(32).withEnable((~cache_valid | previous_reads_waiting) & burst_input.valid)).getCount();
+
+		previous_reads_waiting.connect(stream.offset(successful_reads < attempted_reads, -8));
+
+	//	debug.dfePrintf(failed_read, "Empty Memory on Read in MapSampleReaderKernel. ");//attempted %d successful %d", attempted_reads.cast(dfeUInt(32)), successful_reads.cast(dfeUInt(32)));
+
+		io.scalarOutput("MapSampleReaderKernelFailedReadCount", dfeUInt(32)).connect(failed_reads);
+		//io.scalarOutput("MapSampleReaderKernelAttemptedReadCount", dfeUInt(32)).connect(attempted_reads);
+		//io.scalarOutput("MapSampleReaderKernelSuccessfulReadCount", dfeUInt(32)).connect(successful_reads);
+
+		//we can't stall the output on this kernel, because it has multiple inputs we have already read so either way we will lose sync
+
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
