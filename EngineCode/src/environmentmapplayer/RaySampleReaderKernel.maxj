@@ -9,9 +9,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
@@ -53,25 +50,8 @@ public class RaySampleReaderKernel extends Kernel {
 
         /* Read or do not read the memory accordingly */
 
-		//DFEVar burst = io.input("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid);
-
-		NonBlockingInput<DFEVar> burst_input =
-			io.nonBlockingInput("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid,
-					1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
-		DFEVar burst = Reductions.streamHold(burst_input.data, burst_input.valid);
-
-		DFEVar failed_read = (~cache_valid) & (~(burst_input.valid));
-
-		DFEVar failed_reads = control.count.makeCounter(control.count.makeParams(32).withEnable(failed_read)).getCount();
-		io.scalarOutput("RaySampleReaderKernel", dfeUInt(32)).connect(failed_reads);
-	//	debug.dfePrintf(failed_read, "Empty Memory on Read in RaySampleReaderKernel");
-
+		DFEVar burst = io.input("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
-
-		// blocking the output will not help with sync since the counters will be out of order, but it may help with debugging elsewhere
-
-		DFEVar force_output_enable = io.scalarInput("force_output_enable", dfeUInt(32));
-		DFEVar output_enable = ~failed_read | (force_output_enable > constant.var(dfeUInt(32),0));
 
 		/* Read the cache and extract the sample data */
 
@@ -84,7 +64,7 @@ public class RaySampleReaderKernel extends Kernel {
 
 		/* Output the sample data */
 
-		io.output("sampleParameters", RaySampleCommandGeneratorKernel.SampleParameters_t, output_enable).connect(RaySampleCommandGeneratorKernel.SampleParameters_t.unpack(sample_content));
+		io.output("sampleParameters", RaySampleCommandGeneratorKernel.SampleParameters_t).connect(RaySampleCommandGeneratorKernel.SampleParameters_t.unpack(sample_content));
 
 		optimization.popPipeliningFactor();
 	}
