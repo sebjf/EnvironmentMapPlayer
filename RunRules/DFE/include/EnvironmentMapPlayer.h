@@ -174,10 +174,7 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
- * \param [in] inscalar_RaySampleReaderKernel_force_output_enable Input scalar parameter "RaySampleReaderKernel.force_output_enable".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [out] outscalar_MapSampleReaderKernel_MapSampleReaderKernelFailedReadCount Output scalar parameter "MapSampleReaderKernel.MapSampleReaderKernelFailedReadCount".
- * \param [out] outscalar_RaySampleReaderKernel_RaySampleReaderKernel Output scalar parameter "RaySampleReaderKernel.RaySampleReaderKernel".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
@@ -201,10 +198,7 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
-	uint64_t inscalar_RaySampleReaderKernel_force_output_enable,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	uint64_t *outscalar_MapSampleReaderKernel_MapSampleReaderKernelFailedReadCount,
-	uint64_t *outscalar_RaySampleReaderKernel_RaySampleReaderKernel,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
@@ -235,10 +229,7 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
- * \param [in] inscalar_RaySampleReaderKernel_force_output_enable Input scalar parameter "RaySampleReaderKernel.force_output_enable".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
- * \param [out] outscalar_MapSampleReaderKernel_MapSampleReaderKernelFailedReadCount Output scalar parameter "MapSampleReaderKernel.MapSampleReaderKernelFailedReadCount".
- * \param [out] outscalar_RaySampleReaderKernel_RaySampleReaderKernel Output scalar parameter "RaySampleReaderKernel.RaySampleReaderKernel".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
@@ -263,10 +254,7 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
-	uint64_t inscalar_RaySampleReaderKernel_force_output_enable,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
-	uint64_t *outscalar_MapSampleReaderKernel_MapSampleReaderKernelFailedReadCount,
-	uint64_t *outscalar_RaySampleReaderKernel_RaySampleReaderKernel,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
@@ -294,10 +282,7 @@ typedef struct {
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num". */
-	uint64_t inscalar_RaySampleReaderKernel_force_output_enable; /**<  [in] Input scalar parameter "RaySampleReaderKernel.force_output_enable". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
-	uint64_t *outscalar_MapSampleReaderKernel_MapSampleReaderKernelFailedReadCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.MapSampleReaderKernelFailedReadCount". */
-	uint64_t *outscalar_RaySampleReaderKernel_RaySampleReaderKernel; /**<  [out] Output scalar parameter "RaySampleReaderKernel.RaySampleReaderKernel". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */
