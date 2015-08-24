@@ -108,7 +108,7 @@ public:
 		//to read in with the number of records we have, but we will only do it once
 		FILE* fd = fopen("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadLogs.csv","w");
 
-		for(int i = 0; i < m_records.size(); i++){
+		for(uint i = 0; i < m_records.size(); i++){
 			Record r = m_records[i];
 			fprintf(fd, "%f,%f,%f,%f,%f,%f,%f,%f\n", (float)(r.timestamp), r.x, r.y, r.z, r.w, r.yaw, r.pitch, r.roll);
 		}
