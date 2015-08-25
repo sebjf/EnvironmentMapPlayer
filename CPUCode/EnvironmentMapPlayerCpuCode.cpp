@@ -65,7 +65,6 @@ int main(void)
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
 	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
-	//sampleParameterMap.InitialiseBasicMap();
 
 	/* ignore memory input on subsequent runs */
 
@@ -74,14 +73,12 @@ int main(void)
 	/* Rendering parameters */
 
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", 1);
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", 1);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", sampleParameterMap.num_banks_used);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", sampleParameterMap.bank_start_num);
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 
-	max_set_double(act, "RayCasterKernel", "ipd", 3.5f);
+	max_set_double(act, "RayCasterKernel", "ipd", 3.2f);
 
-	//max_set_uint64t(act,"RayCasterKernel", "viewplane_hres", max_get_constant_uint64t(maxfile,"DisplayActiveWidth"));
-	//max_set_uint64t(act,"RayCasterKernel", "viewplane_vres", max_get_constant_uint64t(maxfile,"DisplayActiveHeight"));
 	float fov = 90.0f;
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", tan(DEG2RAD*(fov/2)));
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
@@ -99,26 +96,6 @@ int main(void)
 
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
-
-
-	//disable burst input for debugging
-
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_cache_valid_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_sample_offset_in_pixels_force_disabled",1);
-
-//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sample_command_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
-
-//	max_set_uint64t(act,"RayCasterKernel","io_cameraUpdates_force_disabled",1);
-
-	//disable all memory access
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_burst_input_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sample_command_force_disabled",1);
-
-//	max_set_uint64t(act,"RaySampleReaderKernel","io_sample_parameter_read_data_force_disabled",1);
-
-
 
 	printf("Running on DFE...\n");
 
@@ -177,16 +154,6 @@ int main(void)
 		camera.set_lookat(inclination, elevation);
 #endif
 
-		if(keycode == KEY_T)
-		{
-	//		logger.Instrument();
-		}
-		if(keycode == KEY_Y)
-		{
-	//		logger.Save();
-		}
-
-		sleep(1);
 	}
 
 	printf("Exiting...");

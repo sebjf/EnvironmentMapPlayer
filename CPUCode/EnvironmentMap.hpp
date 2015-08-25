@@ -39,7 +39,7 @@ public:
 		m_map_size_in_bytes = 0;
 
 		bank_start_num = 0;
-		num_banks_used = 4;
+		num_banks_used = 3;
 		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 	}

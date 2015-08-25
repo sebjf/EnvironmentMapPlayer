@@ -65,7 +65,7 @@ public:
 		bank_address_bits_offset = 25;
 
 		bank_start_num = 4;
-		num_banks_used = 4;
+		num_banks_used = 2;
 
 		m_SampleParameters = new SampleParameters_t *[m_width];
 		for ( int i = 0; i < m_width; i++ ){
