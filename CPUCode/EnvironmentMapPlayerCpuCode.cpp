@@ -19,7 +19,7 @@
 #include "Logging.hpp"
 #include "ArduinoLED.hpp"
 
-//#define USEOCULUS
+#define USEOCULUS
 
 #ifdef USEOCULUS
 #include "Oculus.hpp"
@@ -64,8 +64,8 @@ int main(void)
 
 	SampleParameterMap sampleParameterMap(engine, maxfile);
 	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	//sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
-	sampleParameterMap.InitialiseBasicMap();
+	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+	//sampleParameterMap.InitialiseBasicMap();
 
 	/* ignore memory input on subsequent runs */
 
@@ -74,10 +74,9 @@ int main(void)
 	/* Rendering parameters */
 
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", 1);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", 1);
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
-	max_set_uint64t(act,"RaySampleReaderKernel", "force_output_enable", 1);
 
 	max_set_double(act, "RayCasterKernel", "ipd", 3.5f);
 
@@ -94,7 +93,7 @@ int main(void)
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 10);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 11);
 
 	/* Video signal parameters */
 
@@ -184,14 +183,6 @@ int main(void)
 		}
 		if(keycode == KEY_Y)
 		{
-			uint64_t v = 0;
-			max_get_uint64t(act,"RaySampleReaderKernel","RaySampleReaderKernel",&v);
-			printf("Ray sample reader kernel failed reads: %i\n",v);
-			max_get_uint64t(act,"MapSampleReaderKernel","MapSampleReaderKernelFailedReadCount",&v);
-			printf("Map sample reader kernel failed reads: %i\n",v);
-
-			fflush(stdout);
-
 	//		logger.Save();
 		}
 
