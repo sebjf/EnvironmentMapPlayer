@@ -264,7 +264,8 @@ class RayCasterKernel extends Kernel {
 
 		/* Inputs from host defining how ray should be computed */
 
-		DFEVar viewplane_pixelsize = io.scalarInput("viewplane_pixelsize", dfefloat);
+		DFEVar viewplane_pixelsize_v = io.scalarInput("viewplane_pixelsize_v", dfefloat);
+		DFEVar viewplane_pixelsize_h = io.scalarInput("viewplane_pixelsize_h", dfefloat);
 		DFEVar viewplane_viewdistance = io.scalarInput("viewplane_viewdistance", dfefloat);
 		DFEVar viewplane_hres = io.scalarInput("viewplane_hres", dfefloat);
 		DFEVar viewplane_vres = io.scalarInput("viewplane_vres", dfefloat);
@@ -296,8 +297,8 @@ class RayCasterKernel extends Kernel {
 		DFEVar row = sampleParameters["row"];
 		DFEVar camOffsetScalar = sampleParameters["cam_scalar"];
 
-		DFEVar x_cam = viewplane_pixelsize * (col.cast(dfefloat)/viewplane_hres);
-		DFEVar y_cam = viewplane_pixelsize * (row.cast(dfefloat)/viewplane_vres);
+		DFEVar x_cam = viewplane_pixelsize_h * (col.cast(dfefloat)/viewplane_hres);
+		DFEVar y_cam = viewplane_pixelsize_v * (row.cast(dfefloat)/viewplane_vres);
 
 		/* Compute the ray in the world reference frame */
 

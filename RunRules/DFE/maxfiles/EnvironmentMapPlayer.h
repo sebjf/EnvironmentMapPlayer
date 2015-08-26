@@ -168,7 +168,8 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
  * \param [in] inscalar_RayCasterKernel_ipd Input scalar parameter "RayCasterKernel.ipd".
  * \param [in] inscalar_RayCasterKernel_viewplane_hres Input scalar parameter "RayCasterKernel.viewplane_hres".
- * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize_h Input scalar parameter "RayCasterKernel.viewplane_pixelsize_h".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize_v Input scalar parameter "RayCasterKernel.viewplane_pixelsize_v".
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
@@ -192,7 +193,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
 	double inscalar_RayCasterKernel_ipd,
 	double inscalar_RayCasterKernel_viewplane_hres,
-	double inscalar_RayCasterKernel_viewplane_pixelsize,
+	double inscalar_RayCasterKernel_viewplane_pixelsize_h,
+	double inscalar_RayCasterKernel_viewplane_pixelsize_v,
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	double inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
@@ -223,7 +225,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_MaxVideoSignalKernel_VSyncPolarity Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity".
  * \param [in] inscalar_RayCasterKernel_ipd Input scalar parameter "RayCasterKernel.ipd".
  * \param [in] inscalar_RayCasterKernel_viewplane_hres Input scalar parameter "RayCasterKernel.viewplane_hres".
- * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize Input scalar parameter "RayCasterKernel.viewplane_pixelsize".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize_h Input scalar parameter "RayCasterKernel.viewplane_pixelsize_h".
+ * \param [in] inscalar_RayCasterKernel_viewplane_pixelsize_v Input scalar parameter "RayCasterKernel.viewplane_pixelsize_v".
  * \param [in] inscalar_RayCasterKernel_viewplane_viewdistance Input scalar parameter "RayCasterKernel.viewplane_viewdistance".
  * \param [in] inscalar_RayCasterKernel_viewplane_vres Input scalar parameter "RayCasterKernel.viewplane_vres".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_num_banks_used Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used".
@@ -248,7 +251,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity,
 	double inscalar_RayCasterKernel_ipd,
 	double inscalar_RayCasterKernel_viewplane_hres,
-	double inscalar_RayCasterKernel_viewplane_pixelsize,
+	double inscalar_RayCasterKernel_viewplane_pixelsize_h,
+	double inscalar_RayCasterKernel_viewplane_pixelsize_v,
 	double inscalar_RayCasterKernel_viewplane_viewdistance,
 	double inscalar_RayCasterKernel_viewplane_vres,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used,
@@ -276,7 +280,8 @@ typedef struct {
 	uint64_t inscalar_MaxVideoSignalKernel_VSyncPolarity; /**<  [in] Input scalar parameter "MaxVideoSignalKernel.VSyncPolarity". */
 	double inscalar_RayCasterKernel_ipd; /**<  [in] Input scalar parameter "RayCasterKernel.ipd". */
 	double inscalar_RayCasterKernel_viewplane_hres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_hres". */
-	double inscalar_RayCasterKernel_viewplane_pixelsize; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_pixelsize". */
+	double inscalar_RayCasterKernel_viewplane_pixelsize_h; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_pixelsize_h". */
+	double inscalar_RayCasterKernel_viewplane_pixelsize_v; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_pixelsize_v". */
 	double inscalar_RayCasterKernel_viewplane_viewdistance; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_viewdistance". */
 	double inscalar_RayCasterKernel_viewplane_vres; /**<  [in] Input scalar parameter "RayCasterKernel.viewplane_vres". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.num_banks_used". */
