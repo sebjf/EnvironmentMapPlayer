@@ -12,18 +12,25 @@
 
 #include <sys/time.h>
 #include <vector>
+#include <iostream>
+#include <istream>
+#include <fstream>
+#include <string>
 #include <OVR.h>
+#include <OVR_CAPI.h>
 #include "Camera.hpp"
 #include "Oculus.hpp"
 
 using namespace std;
+using namespace OVR;
 
 class Logging
 {
-private:
+public:
+
 	struct Record
 	{
-		double timestamp; //time in ms from first record
+		double timestamp;
 		float x;
 		float y;
 		float z;
@@ -33,128 +40,124 @@ private:
 		float roll;
 	};
 
-	vector<Record> m_records;
-	double m_starttime;
-
-public:
-
-	void Add(Oculus& oculus)
+	Logging(ovrHmd hmd)
 	{
-		/* first read is invalid */
+		m_HMD = hmd;
+		m_locked = false;
+	}
 
-		if(oculus.GetTimeInSeconds() <= 0)
+	void Update()
+	{
+		if(m_locked)
 		{
 			return;
 		}
 
-		/* get the starting time of this capture set */
+		ovrSensorState state = ovrHmd_GetSensorState(m_HMD, 0.0);
 
-		if(m_records.size() <= 0)
+		static double lasttime = 0;
+
+		if(state.Recorded.TimeInSeconds == lasttime)
 		{
-			m_starttime = oculus.GetTimeInSeconds();
+			return;
 		}
 
-		/* get the offset of the new reading */
-
-		double timestamp = oculus.GetTimeInSeconds() - m_starttime;
-
-		/* if this is not a new reading skip it */
-
-		if(m_records.size() > 0)
-		{
-			float dt = timestamp - m_records.back().timestamp;
-
-			/* filter invalid reads */
-
-			if(dt <= 0)
-			{
-				return;
-			}
-
-			if(dt < 0.0001)
-			{
-				//the sensor cannot be this fast!
-				//it is not clear how ovr sets the TimeInSeconds member, but it is possible it may be slightly different even when
-				//no new values have been set, due to floating point error
-				//in either case, we know these values aren't real sensor readings, so discard them
-				printf("\nRead strange sensor dt of %f\n",dt);
-				return;
-			}
-			if(dt > 10)
-			{
-				//the sensor cannot be this slow! (i.e. somewhere we have stored a starting value)
-				printf("\nRead strange sensor dt of %f\n",dt);
-				return;
-			}
-		}
-
-		/* otherwise store the record */
+		lasttime = state.Recorded.TimeInSeconds;
 
 		Record r;
-		r.timestamp = timestamp;
-		r.x = oculus.GetOrientation().x;
-		r.y = oculus.GetOrientation().y;
-		r.z = oculus.GetOrientation().z;
-		r.w = oculus.GetOrientation().w;
-		oculus.GetOrientation().GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&(r.yaw),&(r.pitch),&(r.roll));
+		r.timestamp = state.Recorded.TimeInSeconds;
+		r.x = state.Recorded.Pose.Orientation.x;
+		r.y = state.Recorded.Pose.Orientation.y;
+		r.z = state.Recorded.Pose.Orientation.z;
+		r.w = state.Recorded.Pose.Orientation.w;
 
-		m_records.push_back(r);
+		((OVR::Quatf)state.Recorded.Pose.Orientation).GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&(r.yaw), &(r.pitch), &(r.roll));
 
+		log.push_back(r);
 	}
 
-	void Save()
+	OVR::Quatf GetState(double timeInSeconds)
 	{
-		//open the file - we will write in csv plaintext. It wont be the fastest thing
-		//to read in with the number of records we have, but we will only do it once
-		FILE* fd = fopen("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadLogs.csv","w");
-
-		for(uint i = 0; i < m_records.size(); i++){
-			Record r = m_records[i];
-			fprintf(fd, "%f,%f,%f,%f,%f,%f,%f,%f\n", (float)(r.timestamp), r.x, r.y, r.z, r.w, r.yaw, r.pitch, r.roll);
+		for(unsigned int i = 0; i < log.size(); i++)
+		{
+			double offset = log[i].timestamp - log.front().timestamp;
+			if(offset > timeInSeconds)
+			{
+				Record r = log[i-1];
+				return OVR::Quatf(r.x,r.y,r.z,r.w);
+			}
 		}
 
-		fclose(fd);
+		return OVR::Quatf(log.back().x,log.back().y,log.back().z,log.back().w);
+	}
 
-		Reset();
+	double GetLastTime()
+	{
+		return log.back().timestamp - log.front().timestamp;
 	}
 
 	void Reset()
 	{
-		m_records = vector<Record>();
-	}
-
-	void Instrument()
-	{
-		/* print some properties of the log */
-
-		float avg_delta = 0;
-		float max_delta = 0;
-		float min_delta = 0;
-
-		float avg_delta_acc = 0;
-		float avg_delta_cnt = 0;
-
-		for(int i = 1; i < m_records.size(); i++)
+		if(m_locked)
 		{
-			float dt = m_records[i].timestamp - m_records[i-1].timestamp;
-
-			if(dt > max_delta){
-				max_delta = dt;
-			}
-
-			if(dt < min_delta){
-				min_delta = dt;
-			}
-
-			avg_delta_acc += dt;
-			avg_delta_cnt ++;
+			return;
 		}
 
-		avg_delta = avg_delta_acc / avg_delta_cnt;
-
-		printf("\nTime Deltas: Avg: %f, Min %f, Max %f, Total Records: %i\n", avg_delta, min_delta, max_delta, (int)avg_delta_cnt);
+		log = std::vector<Logging::Record>();
 	}
 
+	void Save()
+	{
+		if(m_locked)
+		{
+			return;
+		}
+
+		std::ofstream file;
+		file.open("C:\\HeadLogs\\Log.csv",std::ios::trunc);
+
+		for(unsigned int i = 0; i < log.size(); i++)
+		{
+			Record r = log[i];
+			file << std::fixed << r.timestamp << "," << r.x << "," << r.y << "," << r.z << "," << r.w << "," << r.roll << "," << r.pitch << "," << r.yaw <<  "\n";
+		}
+
+		file.close();
+		Reset();
+	}
+
+	void Load(std::string filename)
+	{
+		Reset();
+		ifstream file;
+		file.open(filename.c_str(),ios::in);
+		string item;
+		while(file.good())
+		{
+			Record r;
+			std::getline(file, item, ','); r.timestamp = strtod(item.c_str(), NULL);
+
+			if(item.length() <= 0)
+				break;
+
+			std::getline(file, item, ','); r.x = strtod(item.c_str(), NULL);
+			std::getline(file, item, ','); r.y = strtod(item.c_str(), NULL);
+			std::getline(file, item, ','); r.z = strtod(item.c_str(), NULL);
+			std::getline(file, item, ','); r.w = strtod(item.c_str(), NULL);
+			std::getline(file, item, ','); r.yaw = strtod(item.c_str(), NULL);
+			std::getline(file, item, ','); r.pitch = strtod(item.c_str(), NULL);
+			std::getline(file, item); r.roll = strtod(item.c_str(), NULL);
+			log.push_back(r);
+		}
+		m_locked = true;
+		file.close();
+	}
+
+	std::vector<Logging::Record> log;
+	bool m_locked;
+
+private:
+	ovrHmd m_HMD;
 
 };
 

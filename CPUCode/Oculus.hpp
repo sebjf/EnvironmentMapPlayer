@@ -17,10 +17,8 @@ using namespace OVR;
 class Oculus
 {
 	ovrHmdDesc HmdDesc;
-	ovrHmd Hmd;
+
 	bool initialised;
-
-
 
 public:
 	OVR::Vector3<float> m_up;
@@ -28,6 +26,8 @@ public:
 
 	OVR::Quatf m_orientation;
 	double m_timeInSeconds;
+
+	ovrHmd Hmd;
 
 public:
 	Oculus()
@@ -51,6 +51,18 @@ public:
 		ovrHmd_ResetSensor(Hmd);
 
 		initialised = true;
+	}
+
+	// override the orientation reported from the hmd
+	void Update(ovrQuatf orientation)
+	{
+		OVR::Vector3<float> up = OVR::Vector3<float>(0,1,0);
+		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,1);
+		m_orientation = orientation;
+		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,1),3.14f);
+		m_up      = (oneEighty * m_orientation).Rotate(up);
+		m_forward = (oneEighty * m_orientation).Rotate(forward);
+
 	}
 
 	void Update()

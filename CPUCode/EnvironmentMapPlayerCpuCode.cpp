@@ -18,6 +18,7 @@
 #include "CharacterController.hpp"
 #include "Logging.hpp"
 #include "ArduinoLED.hpp"
+#include "Stopwatch.hpp"
 
 #define USEOCULUS
 
@@ -44,8 +45,7 @@ int main(void)
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	/* set up arduino for sync indication */
-//	ArduinoLED led;
-
+	ArduinoLED led(true);
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -80,7 +80,8 @@ int main(void)
 	max_set_double(act, "RayCasterKernel", "ipd", 3.2f);
 
 	float fov = 90.0f;
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize", tan(DEG2RAD*(fov/2)));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(DEG2RAD*(fov/2)));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(DEG2RAD*(fov/2)));
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
 	max_set_double( act,"RayCasterKernel", "viewplane_hres", 960);
 	max_set_double( act,"RayCasterKernel", "viewplane_vres", 1080);
@@ -124,13 +125,24 @@ int main(void)
 	/* Get the Oculus */
 #ifdef USEOCULUS
 	Oculus oculus;
+	Logging logger(oculus.Hmd);
 #endif
+
+	Stopwatch stopwatch;
 
 	/* Begin the head tracking logging */
 
-	//Logging logger;
-
 	printf("Press CTRL+C key to exit.\n");
+
+	bool enablePlayback = true;
+	bool startPlayback = false;
+	bool enableInteractive = !enablePlayback;
+
+	if(enablePlayback){
+		logger.Load("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadMotionMaster.csv");
+	}
+
+	double timeInSeconds = 0;
 
 	while(run){
 
@@ -139,7 +151,9 @@ int main(void)
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
 
-		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
+		if(enableInteractive){
+			camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
+		}
 
 		if(d.changed()){
 			inclination += -d.y;
@@ -147,9 +161,55 @@ int main(void)
 		}
 
 #ifdef USEOCULUS
-		oculus.Update();
+
+		switch(keycode)
+		{
+		case KEY_S:
+			startPlayback = true;
+			break;
+		}
+
+		if(enablePlayback && startPlayback)
+		{
+			static bool isFirstRun = true;
+
+			//when we signal we are about to read the first head log, that should be point at which we start syncing the leds
+			if(isFirstRun)
+			{
+				isFirstRun = false;
+				stopwatch.Restart();
+				led.On();
+			}
+
+			timeInSeconds = stopwatch.getTimeInSeconds();
+
+			oculus.Update(logger.GetState(timeInSeconds));
+
+			static float lastFiveHundredMsSegment = 0;
+			float fiveHundredMsSegmentNum = floor(timeInSeconds / 0.5f);
+
+			if(fiveHundredMsSegmentNum != lastFiveHundredMsSegment)
+			{
+				lastFiveHundredMsSegment = fiveHundredMsSegmentNum;
+				led.Invert();
+			}
+
+			double logLength = logger.GetLastTime();
+			if(timeInSeconds >= logLength)
+			{
+				isFirstRun = true;
+				startPlayback = false;
+
+				printf("total time: %f", stopwatch.getTimeInSeconds());
+			}
+		}
+		else
+		{
+			oculus.Update();
+		}
+
 		camera.set_ovr(oculus.GetCameraForward(), oculus.GetCameraUp());
-	//	logger.Add(oculus);
+
 #else
 		camera.set_lookat(inclination, elevation);
 #endif
