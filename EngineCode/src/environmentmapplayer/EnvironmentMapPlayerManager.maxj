@@ -57,8 +57,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
 
-		DFELink sampleParameters = raySampleReaderKernel.getOutput("sampleParameters");
-		rayCasterKernel.getInput("sampleParameters").connect(sampleParameters);
+		rayCasterKernel.getInput("sampleParameters").connect(raySampleReaderKernel.getOutput("sampleParameters"));
 
 		/* Connect the sample parameter command generator & reader kernels to memory */
 
