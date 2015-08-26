@@ -98,6 +98,8 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
+	max_reset_engine(engine);
+
 	printf("Running on DFE...\n");
 
 	max_run(engine, act);
@@ -167,6 +169,9 @@ int main(void)
 		case KEY_S:
 			startPlayback = true;
 			break;
+		case KEY_R:
+			max_reset_engine(engine);
+			break;
 		}
 
 		if(enablePlayback && startPlayback)
@@ -199,8 +204,9 @@ int main(void)
 			{
 				isFirstRun = true;
 				startPlayback = false;
+				led.Off();
 
-				printf("total time: %f", stopwatch.getTimeInSeconds());
+				printf("total time: %f\n", stopwatch.getTimeInSeconds());
 			}
 		}
 		else

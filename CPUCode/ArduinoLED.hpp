@@ -25,11 +25,12 @@ public:
 			return;
 		}
 
-		m_comPort = open("/dev/ttyACM1", O_RDWR|O_NOCTTY);
+		m_comPort = open("/dev/ttyACM0", O_RDWR|O_NOCTTY);
 
 		if(m_comPort <= 0)
 		{
 			printf("Could not open arduino com port - permissions are right?\n");
+			return;
 		}
 
 		int parity = 0;
@@ -65,7 +66,7 @@ public:
 
 		connected = true;
 		state = false;
-		enable_loopback = true;
+		enable_loopback = false;
 	}
 
 	void On()
@@ -107,7 +108,7 @@ private:
 		if(enable_loopback){
 			if(WaitAck() != byte)
 			{
-				printf("Serial Port Error.");
+				printf("Serial Port Error.\n");
 			}
 		}
 	}
