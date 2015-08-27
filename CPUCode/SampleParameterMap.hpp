@@ -65,7 +65,7 @@ public:
 		bank_address_bits_offset = 25;
 
 		bank_start_num = 4;
-		num_banks_used = 2;
+		num_banks_used = 1;
 
 		m_SampleParameters = new SampleParameters_t *[m_width];
 		for ( int i = 0; i < m_width; i++ ){
@@ -93,6 +93,8 @@ public:
 			for(int x = 0; x < m_width; x++)
 			{
 				file.read((char*)&(m_SampleParameters[x][y]),sizeof(SampleParameters_t));
+
+				m_SampleParameters[x][y].row = - m_SampleParameters[x][y].row; //flip the distortion map around the Y axis
 			}
 		}
 

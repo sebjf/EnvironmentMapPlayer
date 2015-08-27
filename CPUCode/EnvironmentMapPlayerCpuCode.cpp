@@ -80,8 +80,8 @@ int main(void)
 	max_set_double(act, "RayCasterKernel", "ipd", 3.2f);
 
 	float fov = 90.0f;
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(DEG2RAD*(fov/2)));
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(DEG2RAD*(fov/2)));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(1.19f/1.0f));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(1.21f/1.0f));
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
 	max_set_double( act,"RayCasterKernel", "viewplane_hres", 960);
 	max_set_double( act,"RayCasterKernel", "viewplane_vres", 1080);
@@ -91,7 +91,7 @@ int main(void)
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 11);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 10);
 
 	/* Video signal parameters */
 
@@ -116,7 +116,8 @@ int main(void)
 	int inclination = 0;
 	int elevation = 0;
 
-	CharacterController characterController("/dev/input/by-id/usb-LITEON_Technology_USB_Multimedia_Keyboard-event-kbd");
+//	CharacterController characterController("/dev/input/by-id/usb-LITEON_Technology_USB_Multimedia_Keyboard-event-kbd");
+	CharacterController characterController("/dev/input/by-id/usb-Logitech_USB_Keyboard-event-kbd");
 	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */
@@ -140,9 +141,11 @@ int main(void)
 	bool startPlayback = false;
 	bool enableInteractive = !enablePlayback;
 
+#ifdef USEOCULUS
 	if(enablePlayback){
 		logger.Load("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadMotionMaster.csv");
 	}
+#endif
 
 	double timeInSeconds = 0;
 
@@ -204,6 +207,7 @@ int main(void)
 			{
 				isFirstRun = true;
 				startPlayback = false;
+				lastFiveHundredMsSegment = 0;
 				led.Off();
 
 				printf("total time: %f\n", stopwatch.getTimeInSeconds());
@@ -213,6 +217,8 @@ int main(void)
 		{
 			oculus.Update();
 		}
+
+
 
 		camera.set_ovr(oculus.GetCameraForward(), oculus.GetCameraUp());
 
