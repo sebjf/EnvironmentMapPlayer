@@ -77,11 +77,11 @@ int main(void)
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", sampleParameterMap.bank_start_num);
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
 
-	max_set_double(act, "RayCasterKernel", "ipd", 3.2f);
+	max_set_double(act, "RayCasterKernel", "ipd", 0.0f);
 
 	float fov = 90.0f;
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(1.19f/1.0f));
-	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(1.21f/1.0f));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(1.15f/1.0f));
+	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(1.235f/1.0f));
 	max_set_double( act,"RayCasterKernel", "viewplane_viewdistance", 1);
 	max_set_double( act,"RayCasterKernel", "viewplane_hres", 960);
 	max_set_double( act,"RayCasterKernel", "viewplane_vres", 1080);
@@ -137,7 +137,7 @@ int main(void)
 
 	printf("Press CTRL+C key to exit.\n");
 
-	bool enablePlayback = true;
+	bool enablePlayback = false;
 	bool startPlayback = false;
 	bool enableInteractive = !enablePlayback;
 
