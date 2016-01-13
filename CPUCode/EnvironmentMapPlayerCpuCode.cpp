@@ -27,6 +27,7 @@
 bool run = true;
 
 void int_handler(int s){
+	(void)s;
    run = false;
    exit(1);
 }
@@ -108,7 +109,7 @@ int main(void)
 	int inclination = 0;
 	int elevation = 0;
 
-	CharacterController characterController("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd");
+	CharacterController characterController(string("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd").c_str());
 	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */

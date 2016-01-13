@@ -155,7 +155,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 	private void configBuild(EnvironmentMapPlayerEngineParameters params) {
 		BuildConfig buildConfig = getBuildConfig();
 		buildConfig.setMPPRCostTableSearchRange(1, 30);
-		buildConfig.setMPPRParallelism(8);
+		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
 		buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
 	}

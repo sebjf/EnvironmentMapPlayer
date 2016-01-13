@@ -24,7 +24,7 @@
 class CharacterController
 {
 public:
-	CharacterController(char* device)
+	CharacterController(const char* device)
 	{
 		fd = open(device, O_RDONLY | O_NONBLOCK);
 		if(fd < 0)

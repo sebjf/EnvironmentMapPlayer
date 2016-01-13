@@ -70,12 +70,12 @@ public:
 
 	Camera::vector3 GetCameraForward()
 	{
-		return vector3(m_forward.x, m_forward.y, m_forward.z);
+		return Camera::vector3(m_forward.x, m_forward.y, m_forward.z);
 	}
 
 	Camera::vector3 GetCameraUp()
 	{
-		return vector3(m_up.x, m_up.y, m_up.z);
+		return Camera::vector3(m_up.x, m_up.y, m_up.z);
 	}
 
 	void Reset()

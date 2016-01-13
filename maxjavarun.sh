@@ -1,1 +1,1 @@
- maxJavaRun environmentmapplayer.EnvironmentMapPlayerManager DFEModel=MAIA maxFileName=EnvironmentMapPlayer4 target=DFE
+ maxJavaRun environmentmapplayer.EnvironmentMapPlayerManager DFEModel=ISCA maxFileName=EnvironmentMapPlayer target=DFE
