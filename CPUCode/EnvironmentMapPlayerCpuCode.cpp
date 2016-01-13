@@ -45,7 +45,7 @@ int main(void)
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	/* set up arduino for sync indication */
-	ArduinoLED led(true);
+	ArduinoLED led(false);
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 

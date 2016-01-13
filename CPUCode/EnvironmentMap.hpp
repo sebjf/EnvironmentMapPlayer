@@ -16,6 +16,7 @@
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
+
 class EnvironmentMap
 {
 private:
