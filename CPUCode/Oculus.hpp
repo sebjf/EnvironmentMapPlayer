@@ -17,16 +17,17 @@ using namespace OVR;
 class Oculus
 {
 	ovrHmdDesc HmdDesc;
-	ovrHmd Hmd;
+
 	bool initialised;
 
-
-
 public:
-	float roll, pitch, yaw;
-
 	OVR::Vector3<float> m_up;
 	OVR::Vector3<float> m_forward;
+
+	OVR::Quatf m_orientation;
+	double m_timeInSeconds;
+
+	ovrHmd Hmd;
 
 public:
 	Oculus()
@@ -52,6 +53,18 @@ public:
 		initialised = true;
 	}
 
+	// override the orientation reported from the hmd
+	void Update(ovrQuatf orientation)
+	{
+		OVR::Vector3<float> up = OVR::Vector3<float>(0,1,0);
+		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,-1);  //our world is reversed, relative to the GPU world where the original transforms came from
+		m_orientation = orientation;
+		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,-1),3.14f);
+		m_up      = ( m_orientation).Rotate(up);
+		m_forward = ( m_orientation).Rotate(forward);
+
+	}
+
 	void Update()
 	{
 		ovrSensorState state = ovrHmd_GetSensorState(Hmd, 0.0);
@@ -59,13 +72,26 @@ public:
 		OVR::Vector3<float> up = OVR::Vector3<float>(0,1,0);
 		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,1);
 
+		m_orientation = state.Recorded.Pose.Orientation;
+		m_timeInSeconds = state.Recorded.TimeInSeconds;
+
 		//because the y axis is inverted (i.e. the screen y counter starts at 0, but really its drawing down from the top) we must do a 180 degree turn around z
 		//to flip the world
 		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,1),3.14f);
 
-		m_up      = (oneEighty * OVR::Quat<float>(state.Recorded.Pose.Orientation)).Rotate(up);
-		m_forward = (oneEighty * OVR::Quat<float>(state.Recorded.Pose.Orientation)).Rotate(forward);
+		m_up      = (oneEighty * m_orientation).Rotate(up);
+		m_forward = (oneEighty * m_orientation).Rotate(forward);
 
+	}
+
+	Quatf GetOrientation()
+	{
+		return m_orientation;
+	}
+
+	double GetTimeInSeconds()
+	{
+		return m_timeInSeconds;
 	}
 
 	Camera::vector3 GetCameraForward()

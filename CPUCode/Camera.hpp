@@ -35,7 +35,7 @@ public:
 		vector3 camera_eye;
 		vector3 camera_lookat;
 		vector3 camera_up;
-		char	padding[12];
+		char	padding[28];
 	};
 
 	CameraUpdate camera_settings;

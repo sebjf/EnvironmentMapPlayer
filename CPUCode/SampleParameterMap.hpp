@@ -33,6 +33,10 @@ public:
 
 	int m_offset_in_bursts;
 
+public:
+	int num_banks_used;
+	int bank_start_num;
+
 private:
 	max_engine_t* m_engine;
 	max_file_t* m_maxfile;
@@ -45,6 +49,9 @@ private:
 
 	SampleParameters_t** m_SampleParameters;
 
+    int bank_address_bits_count;
+    int bank_address_bits_offset;
+
 public:
 	SampleParameterMap(max_engine_t* engine, max_file_t* maxfile)
 	{
@@ -53,6 +60,12 @@ public:
 		m_width = max_get_constant_uint64t(maxfile,"DisplayActiveWidth");
 		m_height = max_get_constant_uint64t(maxfile,"DisplayActiveHeight");
 		m_offset_in_bursts = 0;
+
+		bank_address_bits_count = 3;
+		bank_address_bits_offset = 25;
+
+		bank_start_num = 4;
+		num_banks_used = 1;
 
 		m_SampleParameters = new SampleParameters_t *[m_width];
 		for ( int i = 0; i < m_width; i++ ){
@@ -80,6 +93,8 @@ public:
 			for(int x = 0; x < m_width; x++)
 			{
 				file.read((char*)&(m_SampleParameters[x][y]),sizeof(SampleParameters_t));
+
+			//	m_SampleParameters[x][y].row = - m_SampleParameters[x][y].row; //flip the distortion map around the Y axis
 			}
 		}
 
@@ -214,12 +229,25 @@ private:
 			}
 		}
 
-		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
-		max_set_param_uint64t(memact, "size", m_sampleParameterDataSize);
-		max_set_param_uint64t(memact, "address", GetOffsetInBytes());
-		max_queue_input(memact,"environment_map_in",m_sampleParameterData,m_sampleParameterDataSize);
+		max_actions_t* actions[num_banks_used];
 
-		max_run(m_engine, memact);
+		for(int i = 0; i < num_banks_used; i++){
+
+			int64_t map_offset_in_bytes = GetOffsetInBytes();
+			int64_t bank_offset_in_bursts = bank_start_num + ((int64_t)i << bank_address_bits_offset);
+			int64_t bank_offset_in_bytes = bank_offset_in_bursts * 384;
+			int64_t address = map_offset_in_bytes + bank_offset_in_bytes;
+
+			max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
+			max_set_param_uint64t(memact, "size", m_sampleParameterDataSize);
+			max_set_param_uint64t(memact, "address", address);
+
+			max_queue_input(memact,"environment_map_in",m_sampleParameterData,m_sampleParameterDataSize);
+			actions[i] = memact;
+
+			max_run(m_engine, memact);
+		}
+
 	}
 
 };

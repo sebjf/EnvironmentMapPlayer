@@ -25,23 +25,23 @@ public class MapSampleReaderKernel extends Kernel {
 
 		DFEVar bgColour = io.scalarInput("backgroundColour", dfeUInt(32));
 
-		int	burst_size_in_bytes = 384;
-		int burst_size_in_bits = burst_size_in_bytes * 8;
+		int	map_sample_size_in_bytes = Constants.burstSizeInBytes * Constants.mapSampleBursts;
+		int map_sample_size_in_bits = map_sample_size_in_bytes * 8;
 
-		int bits_per_pixel = EnvironmentParameters.pixel_size_in_bytes * 8;
-		int pixels_per_word = (int)Math.floor((float)burst_size_in_bytes/(float)EnvironmentParameters.pixel_size_in_bytes);
+		int bits_per_pixel = Constants.pixel_size_in_bytes * 8;
+		int pixels_per_sample = (int)Math.floor((float)map_sample_size_in_bytes/(float)Constants.pixel_size_in_bytes);
 
 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
 
-		DFEVar burst = io.input("burst_input",dfeRawBits(burst_size_in_bits),~cache_valid);
+		DFEVar burst = io.input("burst_input",dfeRawBits(map_sample_size_in_bits),~cache_valid);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
 
-		sample_offset_in_pixels = clamp(sample_offset_in_pixels, 0, pixels_per_word);
+		sample_offset_in_pixels = clamp(sample_offset_in_pixels, 0, pixels_per_sample);
 
 		List<DFEVar> samples = new ArrayList<DFEVar>();
-		for(int i = 0; i < pixels_per_word; i++)
+		for(int i = 0; i < pixels_per_sample; i++)
 		{
 			samples.add(cached_burst.slice(i * bits_per_pixel, bits_per_pixel));
 		}

@@ -16,6 +16,7 @@
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
+
 class EnvironmentMap
 {
 private:
@@ -29,6 +30,7 @@ private:
 
 public:
 	int num_banks_used;
+	int bank_start_num;
 
 public:
 	EnvironmentMap(max_engine_t* engine, max_file_t* maxfile)
@@ -37,7 +39,8 @@ public:
 		this->m_maxfile = maxfile;
 		m_map_size_in_bytes = 0;
 
-		num_banks_used = 1;
+		bank_start_num = 0;
+		num_banks_used = 3;
 		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 	}
@@ -61,7 +64,8 @@ public:
 
 		if(num_banks_used > 1)
 		{
-			if(((2 ^ bank_address_bits_offset)*384) <= m_map_size_in_bytes)
+			unsigned long bank_size = (pow(2, bank_address_bits_offset)*384);
+			if(bank_size <= (unsigned long)m_map_size_in_bytes)
 			{
 				printf("Warning: texture too large to fit in a single bank.");
 			}
@@ -72,7 +76,7 @@ public:
 		for(int i = 0; i < num_banks_used; i++){
 
 			int64_t map_offset_in_bytes = 0;
-			int64_t bank_offset_in_bursts = (int64_t)i << bank_address_bits_offset;
+			int64_t bank_offset_in_bursts = bank_start_num + ((int64_t)i << bank_address_bits_offset);
 			int64_t bank_offset_in_bytes = bank_offset_in_bursts * 384;
 			int64_t address = map_offset_in_bytes + bank_offset_in_bytes;
 
@@ -85,10 +89,6 @@ public:
 
 			max_run(m_engine, memact);
 		}
-
-	//	max_run_multi(m_engine, actions, num_banks_used);
-
-		//max_run(m_engine, memact);
 	}
 
 	int GetMapSizeInBursts()

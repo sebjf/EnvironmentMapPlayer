@@ -58,7 +58,7 @@ class RayCasterKernel extends Kernel {
 				DFEStructType.sft("camera_eye", vector3),
 				DFEStructType.sft("camera_lookat", vector3),
 				DFEStructType.sft("camera_up", vector3),
-				DFEStructType.sft("padding", dfeRawBits(96)));
+				DFEStructType.sft("padding", dfeRawBits(224)));
 
 	private class Vector3
 	{

@@ -30,7 +30,7 @@ public class RaySampleReaderKernel extends Kernel {
 		/* Predict what command was last sent to the memory from the Ray Command Generator kernel upstream, and thus the offset into the data word
 		 * and whether the cache is valid */
 
-		int	word_size_in_bytes = RaySampleCommandGeneratorKernel.burstCount * RaySampleCommandGeneratorKernel.burstSizeInBytes;
+		int	word_size_in_bytes = RaySampleCommandGeneratorKernel.burstCount * Constants.burstSizeInBytes;
 		int word_size_in_bits = word_size_in_bytes * 8;
 		int bits_per_sample = RaySampleCommandGeneratorKernel.SampleParameters_t.getTotalBits();
 		float bytes_per_sample = bits_per_sample / 8;

@@ -12,6 +12,7 @@ import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface.Direction;
@@ -33,12 +34,16 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		debug.setDebugLevel(myDebugLevel);
 
 		config.setDefaultStreamClockFrequency(200);
-		config.setOnCardMemoryFrequency(533); //400 for maia
+		config.setOnCardMemoryFrequency(800); //400 for maia
+
+		MemoryControllerConfig memoryConfig = new MemoryControllerConfig();
+		memoryConfig.setEnableParityMode(true, true, 72, false);
+		memoryConfig.setMAX4qMode(true);
+		config.setMemoryControllerConfig(memoryConfig);
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
 		VideoCounter.displayStandard = displayStandard;
-
 
 		KernelBlock raySampleCommandGeneratorKernel = addKernel(new RaySampleCommandGeneratorKernel(makeKernelParameters("RaySampleCommandGeneratorKernel"), displayStandard));
 		KernelBlock raySampleReaderKernel = addKernel(new RaySampleReaderKernel(makeKernelParameters("RaySampleReaderKernel")));
@@ -72,7 +77,9 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
-		mapSampleReaderKernel.getInput("burst_input").connect(addStreamFromOnCardMemory("sample_memory_stream", commandGeneratorKernel.getOutput("sample_command")));
+		DFELink memorySampleCommand = commandGeneratorKernel.getOutput("sample_command");
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommand, 64 * 2048);
+		mapSampleReaderKernel.getInput("burst_input").connect(addStreamFromOnCardMemory("sample_memory_stream", memorySampleCommand));
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
@@ -106,12 +113,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 			videoStreamOut.connect(videoSignalKernel.getOutput("displayDataOut"));
 			WrapperClock videoStreamClk = _CustomManagers.streamToImp(videoStreamOut).getSink().getClock();
 			videoSignalKernel.setClock(_CustomManagers.fromImp(videoStreamClk));
-
-
-//			DFELink videoDataStream = videoSignalKernel.getOutput("displayDataOut");
-//			int videoDataStreamBufferSize = 64 * 2048;
-//			_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, videoDataStreamBufferSize);
-//			getVideoStream("videoStream", 165.0f).connect(videoDataStream);
 		}
 
 		configBuild(engineParameters);

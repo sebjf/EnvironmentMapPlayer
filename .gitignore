@@ -55,11 +55,14 @@ hs_err_pid*
 
 RunRules/Simulation/maxfiles/
 RunRules/Simulation/binaries/
-*-BUILD/
-objects/
 RunRules/Simulation/maxfiles/*
 RunRules/Simulation/debug*
+*-BUILD/
+objects/
+RunRules/DFE/maxfiles/
+#^RunRules/DFE/maxfiles/*.max (not until we get large file support)
 RunRules/DFE/*.png
 RunRules/Simulation/*.png
 EngineCode/bin/
 *.dot
+lazarus_map.bmp

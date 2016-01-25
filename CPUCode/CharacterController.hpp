@@ -45,8 +45,10 @@ public:
 		position[Z] = z;
 	}
 
-	void update()
+	__u16 update()
 	{
+		__u16 ret = 0x0;
+
 		rd = read(fd, &ev, sizeof(struct input_event));
 		if(rd >= (int)sizeof(struct input_event)){
 			if(ev.type == EV_KEY){
@@ -70,13 +72,14 @@ public:
 				case KEY_D:
 					dposition[X] = ev.value;
 					break;
-				default:
-					printf("unknown key: %i\n", ev.code);
 				};
+				ret = ev.code;
 			}
 		}
 
 		position = add(position, divide(dposition, scale));
+
+		return ret;
 
 	}
 
