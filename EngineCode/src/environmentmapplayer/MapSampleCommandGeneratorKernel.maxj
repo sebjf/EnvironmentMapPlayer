@@ -82,8 +82,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
       //  int tiles_per_word = constant.
 
         DFEVar addr_tiles = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
-        DFEVar addr_words = addr_tiles / Constants.GetTilesPerWord();
-        DFEVar addr_burst = addr_words * Constants.GetBurstsPerWord();
+        DFEVar addr_burst = addr_tiles * Constants.GetTileStrideInBursts();
         DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * Constants.tile_width_in_pixels));
 
         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
@@ -134,7 +133,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				"sampleMap_cmd1",
 				~cache_valid & dimm.eq(0),
 				addr_burst.cast(dfeUInt(28)),
-				constant.var(dfeUInt(8),Constants.GetBurstsPerWord()),
+				constant.var(dfeUInt(8),Constants.GetBurstsPerTile()),
 				constant.var(dfeUInt(7),1),
 				constant.var(dfeUInt(4),0),
 				constant.var(false));
@@ -143,7 +142,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				"sampleMap_cmd2",
 				~cache_valid & dimm.eq(1),
 				addr_burst.cast(dfeUInt(28)),
-				constant.var(dfeUInt(8),Constants.GetBurstsPerWord()),
+				constant.var(dfeUInt(8),Constants.GetBurstsPerTile()),
 				constant.var(dfeUInt(7),1),
 				constant.var(dfeUInt(4),0),
 				constant.var(false));

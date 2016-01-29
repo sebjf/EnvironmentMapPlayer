@@ -65,16 +65,16 @@ public class MapSampleReaderKernel extends Kernel {
 
 		DFEVar bgColour = io.scalarInput("backgroundColour", dfeUInt(32));
 
-		int	word_size_in_bytes = Constants.burstSizeInBytes * Constants.GetBurstsPerWord();
-		int word_size_in_bits = word_size_in_bytes * 8;
+		int	sample_word_size_in_bytes = Constants.burstSizeInBytes * Constants.GetBurstsPerTile();
+		int sample_word_size_in_bits = sample_word_size_in_bytes * 8;
 		int bits_per_pixel = Constants.pixel_size_in_bytes * 8;
-		int pixels_per_word = Constants.GetTilesPerWord() * Constants.tile_width_in_pixels * Constants.tile_width_in_pixels;
+		int pixels_per_word = (int)Math.floor(sample_word_size_in_bytes / Constants.pixel_size_in_bytes);
 
 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
 		DFEVar dimm = io.input("dimm", dfeUInt(1));
 
-		DFEVar sampleDimm1 = io.input("sampleMap_fromDimm1",dfeRawBits(word_size_in_bits),~cache_valid & dimm.eq(0));
-		DFEVar sampleDimm2 = io.input("sampleMap_fromDimm2",dfeRawBits(word_size_in_bits),~cache_valid & dimm.eq(1));
+		DFEVar sampleDimm1 = io.input("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));
+		DFEVar sampleDimm2 = io.input("sampleMap_fromDimm2",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(1));
 		DFEVar burst = control.mux(dimm, sampleDimm1, sampleDimm2);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
