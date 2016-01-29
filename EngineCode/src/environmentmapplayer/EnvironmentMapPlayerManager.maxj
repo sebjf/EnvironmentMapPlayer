@@ -103,8 +103,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		DFELink memorySampleCommandDimm2 = commandGeneratorKernel.getOutput("sampleMap_cmd2");
 		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1, 64 * 2048);
 		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2, 64 * 2048);
-		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1));
-		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2));
+		DFELink sampleMapDimm1Stream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1);
+		DFELink sampleMapDimm2Stream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2);
+		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1Stream);
+		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm2Stream);
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
