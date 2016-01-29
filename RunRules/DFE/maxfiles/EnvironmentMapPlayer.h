@@ -176,6 +176,12 @@ max_actions_t* EnvironmentMapPlayer_memoryInitialisation_convert(max_file_t *max
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_WouldStallCount Output scalar parameter "MapSampleReaderKernel.burst_input_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_enableCount Output scalar parameter "MapSampleReaderKernel.burst_input_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_validCount Output scalar parameter "MapSampleReaderKernel.burst_input_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_cache_valid_validCount Output scalar parameter "MapSampleReaderKernel.cache_valid_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_runCounter Output scalar parameter "MapSampleReaderKernel.runCounter".
+ * \param [out] outscalar_MapSampleReaderKernel_sample_offset_in_pixels_validCount Output scalar parameter "MapSampleReaderKernel.sample_offset_in_pixels_validCount".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
@@ -201,6 +207,12 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_cache_valid_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_runCounter,
+	uint64_t *outscalar_MapSampleReaderKernel_sample_offset_in_pixels_validCount,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
@@ -233,6 +245,12 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_WouldStallCount Output scalar parameter "MapSampleReaderKernel.burst_input_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_enableCount Output scalar parameter "MapSampleReaderKernel.burst_input_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_burst_input_validCount Output scalar parameter "MapSampleReaderKernel.burst_input_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_cache_valid_validCount Output scalar parameter "MapSampleReaderKernel.cache_valid_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_runCounter Output scalar parameter "MapSampleReaderKernel.runCounter".
+ * \param [out] outscalar_MapSampleReaderKernel_sample_offset_in_pixels_validCount Output scalar parameter "MapSampleReaderKernel.sample_offset_in_pixels_validCount".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_environment_map_in Stream "environment_map_in".
@@ -259,6 +277,12 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_cache_valid_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_runCounter,
+	uint64_t *outscalar_MapSampleReaderKernel_sample_offset_in_pixels_validCount,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_environment_map_in,
@@ -288,6 +312,12 @@ typedef struct {
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_WouldStallCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.burst_input_WouldStallCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_enableCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.burst_input_enableCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_burst_input_validCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.burst_input_validCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_cache_valid_validCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.cache_valid_validCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_runCounter; /**<  [out] Output scalar parameter "MapSampleReaderKernel.runCounter". */
+	uint64_t *outscalar_MapSampleReaderKernel_sample_offset_in_pixels_validCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sample_offset_in_pixels_validCount". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_environment_map_in; /**<  [in] Stream "environment_map_in". */

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <buildProfile>
 <common>
-<boardModel type="CORIA"/>
+<boardModel type="ISCA"/>
 <simulation enabled="true"/>
 <enableMPCX enabled="false"/>
 </common>
@@ -45,5 +45,6 @@
 <ipAddressTwo/>
 <netmaskTwo/>
 <pcapFileTwo/>
+<max4v1net enabled="true"/>
 </simulator>
 </buildProfile>

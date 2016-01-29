@@ -12,7 +12,7 @@
 
 #include "Camera.hpp"
 #include "EnvironmentMap.hpp"
-#include "SampleParameterMap.hpp"
+#include "RayParameterMap.hpp"
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
@@ -20,7 +20,7 @@
 #include "ArduinoLED.hpp"
 #include "Stopwatch.hpp"
 
-#define USEOCULUS
+//#define USEOCULUS
 
 #ifdef USEOCULUS
 #include "Oculus.hpp"
@@ -51,7 +51,6 @@ int main(void)
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
 	max_file_t *maxfile = EnvironmentMapPlayer_init();
-    //max_set_max_runnable_timing_score(maxfile, 1000);
 	max_engine_t *engine = max_load(maxfile, "*");
 
 	max_actions_t* act = max_actions_init(maxfile, NULL);
@@ -63,20 +62,22 @@ int main(void)
 
 	/* Initialise the sample parameter map */
 
-	SampleParameterMap sampleParameterMap(engine, maxfile);
-	sampleParameterMap.m_offset_in_bursts = environmentMap.GetMapSizeInBursts();
-	sampleParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+	RayParameterMap rayParameterMap(engine, maxfile);
+	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 
 	/* ignore memory input on subsequent runs */
 
-	max_ignore_lmem(act,"environment_map");
+	max_ignore_block(act,"sampleDataFanout");
+	max_ignore_lmem(act,"rayParameterMap_toMem");
+	max_ignore_lmem(act,"sampleMap_toDimm1");
+	max_ignore_lmem(act,"sampleMap_toDimm2");
 
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", sampleParameterMap.num_banks_used);
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", sampleParameterMap.bank_start_num);
-	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", sampleParameterMap.GetOffsetInBursts());
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", rayParameterMap.num_banks_used);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", rayParameterMap.bank_start_num);
+	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 
 	max_set_double(act, "RayCasterKernel", "ipd", 0.0f);
 
@@ -90,8 +91,8 @@ int main(void)
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 10);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 11);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 11);
 
 	/* Video signal parameters */
 

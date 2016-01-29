@@ -9,9 +9,11 @@ import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.Fanout;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
-import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControlGroup.MemoryAccessPattern;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemCommandGroup.MemoryAccessPattern;
+import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.EngineInterface;
@@ -27,7 +29,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		super(engineParameters);
 
 		//disable trickling
+
 		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
+
+		// Configure the stream status debug blocks and the memory
 
 		DebugLevel myDebugLevel = new DebugLevel();
 		myDebugLevel.setHasStreamStatus(true);
@@ -41,9 +46,13 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		memoryConfig.setMAX4qMode(true);
 		config.setMemoryControllerConfig(memoryConfig);
 
+		// Set the display standard
+
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
 		displayStandard.AddMaxFileConstants(this);
 		VideoCounter.displayStandard = displayStandard;
+
+		// Create the kernels
 
 		KernelBlock raySampleCommandGeneratorKernel = addKernel(new RaySampleCommandGeneratorKernel(makeKernelParameters("RaySampleCommandGeneratorKernel"), displayStandard));
 		KernelBlock raySampleReaderKernel = addKernel(new RaySampleReaderKernel(makeKernelParameters("RaySampleReaderKernel")));
@@ -54,11 +63,24 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
 
+		// Create the memory interfaces
+
+		LMemInterface rayParameterMapDimm = addLMemInterface("rayParameterMapDimm", 1);
+		LMemInterface sampleMapDimm1 = addLMemInterface("sampleMapDimm1", 1);
+		LMemInterface sampleMapDimm2 = addLMemInterface("sampleMapDimm2", 1);
+
+		// Create memory initialisation interfaces
+
+		rayParameterMapDimm.addStreamToLMem("rayParameterMap_toMem", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("rayParameterMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
+
+		Fanout sampleDataFanout = fanout("sampleDataFanout");
+		sampleDataFanout.getInput() <== addStreamFromCPU("sampleMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
+		sampleMapDimm1.addStreamToLMem("sampleMap_toDimm1", MemoryAccessPattern.LINEAR_1D) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_1");
+		sampleMapDimm2.addStreamToLMem("sampleMap_toDimm2", MemoryAccessPattern.LINEAR_1D) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_2");
+
 		/* Connect the Ray Caster to the inputs from the CPU */
 
 		rayCasterKernel.getInput("cameraUpdates").connect(addStreamFromCPU("cameraUpdates",StreamMode.LOW_LATENCY_ENABLED));
-
-		addStreamToOnCardMemory("environment_map", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("environment_map_in",StreamMode.LOW_LATENCY_ENABLED);
 
 		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
 
@@ -66,7 +88,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* Connect the sample parameter command generator & reader kernels to memory */
 
-		raySampleReaderKernel.getInput("sample_parameter_read_data").connect(addStreamFromOnCardMemory("sample_parameter_memory_stream", raySampleCommandGeneratorKernel.getOutput("sample_parameter_read_command")));
+		raySampleReaderKernel.getInput("rayParameterMap_fromMem_in").connect(rayParameterMapDimm.addStreamFromLMem("rayParameterMap_fromMem", raySampleCommandGeneratorKernel.getOutput("rayParameterMap_fromMem_cmdStream")));
 
 		/* Connect the Ray Caster and Colour Sampling Kernels Together */
 
@@ -77,14 +99,21 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
-		DFELink memorySampleCommand = commandGeneratorKernel.getOutput("sample_command");
-		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommand, 64 * 2048);
-		mapSampleReaderKernel.getInput("burst_input").connect(addStreamFromOnCardMemory("sample_memory_stream", memorySampleCommand));
+		DFELink memorySampleCommandDimm1 = commandGeneratorKernel.getOutput("sampleMap_cmd1");
+		DFELink memorySampleCommandDimm2 = commandGeneratorKernel.getOutput("sampleMap_cmd2");
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1, 64 * 2048);
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2, 64 * 2048);
+		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1));
+		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2));
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
 		int cache_valid_stream_buffer_size = 1 * 2048;
 		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, cache_valid_stream_buffer_size);
+
+		DFELink dimm_stream = commandGeneratorKernel.getOutput("dimm");
+		mapSampleReaderKernel.getInput("dimm").connect(dimm_stream);
+		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * 2048);
 
 		DFELink sample_offset_in_pixels_stream = commandGeneratorKernel.getOutput("sample_offset_in_pixels");
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
@@ -119,14 +148,30 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	}
 
-	private static EngineInterface memoryInitialisationInterface()
+	private static EngineInterface rayParameterMap_initialisation()
 	{
-		EngineInterface engine_interface = new EngineInterface("memoryInitialisation");
+		EngineInterface engine_interface = new EngineInterface("rayParameterMap_initialisation");
 
 		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT64);
 		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
-		engine_interface.setLMemLinear("environment_map", lmem_address, lmem_size);
-		engine_interface.setStream("environment_map_in", CPUTypes.UINT8, lmem_size);
+		engine_interface.setLMemLinear("rayParameterMapDimm","rayParameterMap_toMem", lmem_address, lmem_size);
+		engine_interface.setStream("rayParameterMap_fromCPU", CPUTypes.UINT8, lmem_size);
+
+		engine_interface.ignoreAll(Direction.IN_OUT);
+
+		return engine_interface;
+	}
+
+	private static EngineInterface sampleMap_initialisation()
+	{
+		EngineInterface engine_interface = new EngineInterface("sampleMap_initialisation");
+
+		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT64);
+		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
+		engine_interface.route("sampleDataFanout -> sampleMapDimm1_fromCPU_1, sampleDataFanout -> sampleMapDimm1_fromCPU_2");
+		engine_interface.setLMemLinear("sampleMapDimm1","sampleMap_toDimm1", lmem_address, lmem_size);
+		engine_interface.setLMemLinear("sampleMapDimm2","sampleMap_toDimm2", lmem_address, lmem_size);
+		engine_interface.setStream("sampleMap_fromCPU", CPUTypes.UINT8, lmem_size);
 
 		engine_interface.ignoreAll(Direction.IN_OUT);
 
@@ -164,7 +209,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 	public static void main(String[] args) throws Exception {
 		EnvironmentMapPlayerManager manager = new EnvironmentMapPlayerManager(new EnvironmentMapPlayerEngineParameters(args));
 
-		manager.createSLiCinterface(memoryInitialisationInterface());
+		manager.createSLiCinterface(rayParameterMap_initialisation());
+		manager.createSLiCinterface(sampleMap_initialisation());
 
 		manager.build();
 	}

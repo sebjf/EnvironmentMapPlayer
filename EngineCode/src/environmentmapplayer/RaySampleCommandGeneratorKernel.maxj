@@ -22,7 +22,7 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 				DFEStructType.sft("row", dfefloat),
 				DFEStructType.sft("cam_scalar", dfeInt(8)));
 
-	public static final int burstCount = 8;
+	public static final int burstCount = 6;
 
 	protected final int bank_address_bits_count = 3;
 	protected final int bank_address_bits_offset = 25; //from the lsb
@@ -49,7 +49,7 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 
 		DFEVar sample_address_in_samples = (row * displayStandard.H_Active) + col;
 		DFEVar sample_address_in_words = KernelMath.floor(sample_address_in_samples.cast(dfefloat) / samples_per_word).cast(dfeUInt(32));
-		DFEVar sample_address_in_bursts = offset + (sample_address_in_words * RaySampleCommandGeneratorKernel.burstCount);
+		DFEVar sample_address_in_bursts = offset + ((sample_address_in_words * word_size_in_bytes) / Constants.burstSizeInBytes);
 
 		/* Determine whether this read needs to read from the memory, or whether the downstream kernel will be able to determine that it can read from the cache */
 
@@ -68,7 +68,7 @@ class RaySampleCommandGeneratorKernel extends Kernel {
         sample_address_in_bursts = sample_address_in_bursts.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
 
 		LMemCommandStream.makeKernelOutput(
-				"sample_parameter_read_command",
+				"rayParameterMap_fromMem_cmdStream",
 				~cache_valid,
 				sample_address_in_bursts.cast(dfeUInt(28)),
 				constant.var(dfeUInt(8),burstCount),

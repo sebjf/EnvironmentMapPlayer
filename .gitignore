@@ -62,6 +62,7 @@ objects/
 RunRules/DFE/maxfiles/
 #^RunRules/DFE/maxfiles/*.max (not until we get large file support)
 RunRules/DFE/*.png
+RunRules/DFE/*.txt
 RunRules/Simulation/*.png
 EngineCode/bin/
 *.dot

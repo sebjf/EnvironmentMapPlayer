@@ -76,11 +76,17 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 		/* Convert these coordinate sets into memory addresses */
 
-		DFEVar tile_offset_in_tiles = (tile_row * face_width_in_tiles) + tile_column; //In the current implementation one tile is one burst
+		DFEVar tile_offset_in_tiles = (tile_row * face_width_in_tiles) + tile_column;
         DFEVar face_offset_in_tiles = plane.cast(dfeFloat(8,24)) * tiles_per_face;
 
+      //  int tiles_per_word = constant.
 
-        DFEVar addr_burst = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
+        DFEVar addr_tiles = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
+        DFEVar addr_words = addr_tiles;
+
+        int bursts_per_word = Constants.map_word_size_in_bytes / Constants.burstSizeInBytes;
+
+        DFEVar addr_burst = addr_words * bursts_per_word;
         DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * Constants.tile_width_in_pixels));
 
         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
@@ -88,15 +94,13 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
         DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
 
-
-
         /* overwrite the commands if the plane value indicates we should be setting the null colour */
         DFEVar command_invalid = plane.eq(255);
 
         /* signal to send the null colour by setting the sample offset to > 96 pixels. set the cache valid so we dont waste a memory read. */
 
         cache_valid = command_invalid ? constant.var(true) : cache_valid;
-        addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel;
+        addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel; //1024 is a magic number that is larger than any number of pixels that will ever be in a tile
 
         /* do the bank offset */
 
@@ -107,7 +111,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar bank_bits = start_bank_num + control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
 
         //add the bank offset
-        addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
+        addr_burst = addr_burst.cast(dfeUInt(28));// | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
 
 
 		/*
@@ -123,13 +127,26 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		LMemCommandStream.makeKernelOutput("sample_command", constant.var(true), memoryCommand);
 		*/
 
+     //   DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
+        DFEVar dimm = constant.var(dfeUInt(1),0);
+
+        io.output("dimm", dfeUInt(1)).connect(dimm);
         io.output("cache_valid", dfeBool()).connect(cache_valid);
 
 		LMemCommandStream.makeKernelOutput(
-				"sample_command",
-				~cache_valid,
+				"sampleMap_cmd1",
+				~cache_valid & dimm.eq(0),
 				addr_burst.cast(dfeUInt(28)),
-				constant.var(dfeUInt(8),Constants.mapSampleBursts),
+				constant.var(dfeUInt(8),bursts_per_word),
+				constant.var(dfeUInt(7),1),
+				constant.var(dfeUInt(4),0),
+				constant.var(false));
+
+		LMemCommandStream.makeKernelOutput(
+				"sampleMap_cmd2",
+				~cache_valid & dimm.eq(1),
+				addr_burst.cast(dfeUInt(28)),
+				constant.var(dfeUInt(8),bursts_per_word),
 				constant.var(dfeUInt(7),1),
 				constant.var(dfeUInt(4),0),
 				constant.var(false));

@@ -16,6 +16,7 @@
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
+#define BURSTSIZE_BYTES 64
 
 class EnvironmentMap
 {
@@ -40,7 +41,7 @@ public:
 		m_map_size_in_bytes = 0;
 
 		bank_start_num = 0;
-		num_banks_used = 3;
+		num_banks_used = 1;
 		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 	}
@@ -64,7 +65,7 @@ public:
 
 		if(num_banks_used > 1)
 		{
-			unsigned long bank_size = (pow(2, bank_address_bits_offset)*384);
+			unsigned long bank_size = (pow(2, bank_address_bits_offset)*BURSTSIZE_BYTES);
 			if(bank_size <= (unsigned long)m_map_size_in_bytes)
 			{
 				printf("Warning: texture too large to fit in a single bank.");
@@ -77,23 +78,21 @@ public:
 
 			int64_t map_offset_in_bytes = 0;
 			int64_t bank_offset_in_bursts = bank_start_num + ((int64_t)i << bank_address_bits_offset);
-			int64_t bank_offset_in_bytes = bank_offset_in_bursts * 384;
+			int64_t bank_offset_in_bytes = bank_offset_in_bursts * BURSTSIZE_BYTES;
 			int64_t address = map_offset_in_bytes + bank_offset_in_bytes;
 
-			max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
+			max_actions_t* memact = max_actions_init(m_maxfile, "sampleMap_initialisation");
+
+			texture_size_bytes = 2048 * 2048 * 4 * 6 * 1.5;
+
 			max_set_param_uint64t(memact, "size", texture_size_bytes);
 			max_set_param_uint64t(memact, "address", address);
 
-			max_queue_input(memact,"environment_map_in",surface->pixels,texture_size_bytes);
+			max_queue_input(memact,"sampleMap_fromCPU",surface->pixels,texture_size_bytes);
 			actions[i] = memact;
 
 			max_run(m_engine, memact);
 		}
-	}
-
-	int GetMapSizeInBursts()
-	{
-		return ceil((float)m_map_size_in_bytes / 384.0f);
 	}
 
 	void WriteDebugValues(string filename)
@@ -111,9 +110,9 @@ public:
 			}
 		}
 
-		max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
+		max_actions_t* memact = max_actions_init(m_maxfile, "sampleMap_initialisation");
 		max_set_param_uint64t(memact, "size", texture_size_bytes);
-		max_queue_input(memact,"environment_map_in",pixels,texture_size_bytes);
+		max_queue_input(memact,"sampleMap_fromCPU",pixels,texture_size_bytes);
 
 		max_run(m_engine, memact);
 

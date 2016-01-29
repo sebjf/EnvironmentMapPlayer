@@ -9,12 +9,52 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.Counter;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public class RaySampleReaderKernel extends Kernel {
 
 	private static final DFEType dfefloat = dfeFloat(8, 24);
+
+	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type)
+	{
+		NonBlockingInput<T> input =
+			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+		T data = Reductions.streamHold(input.data, input.valid);
+
+		// should be enabled on every run
+
+		Counter validCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(input.valid));
+
+		io.scalarOutput(name + "_validCount", dfeUInt(32)).connect(validCounter.getCount());
+
+		return data;
+	}
+
+	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type, DFEVar enable)
+	{
+		NonBlockingInput<T> input =
+			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+		T data = Reductions.streamHold(input.data, input.valid);
+
+		Counter validCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(input.valid));
+		Counter enableCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(enable));
+
+		Counter wouldStallCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(enable & (~input.valid)));
+
+		io.scalarOutput(name + "_validCount", dfeUInt(32)).connect(validCounter.getCount());
+		io.scalarOutput(name + "_enableCount", dfeUInt(32)).connect(enableCounter.getCount());
+
+		io.scalarOutput(name + "_WouldStallCount", dfeUInt(32)).connect(wouldStallCounter.getCount());
+
+		return data;
+	}
 
 	protected RaySampleReaderKernel(KernelParameters parameters) {
 		super(parameters);
@@ -50,7 +90,8 @@ public class RaySampleReaderKernel extends Kernel {
 
         /* Read or do not read the memory accordingly */
 
-		DFEVar burst = io.input("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid);
+		DFEVar burst = io.input("rayParameterMap_fromMem_in", dfeRawBits(word_size_in_bits), ~cache_valid);
+    //    DFEVar burst = makeNonBlockingInput("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
 		/* Read the cache and extract the sample data */

@@ -18,10 +18,10 @@
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
-#define BURSTSIZE_BYTES 384
-#define BURSTCOUNT 		4
+#define BURSTSIZE_BYTES 64
+#define BURSTCOUNT 		6
 
-class SampleParameterMap
+class RayParameterMap
 {
 public:
 	struct __attribute__((__packed__)) SampleParameters_t
@@ -53,7 +53,7 @@ private:
     int bank_address_bits_offset;
 
 public:
-	SampleParameterMap(max_engine_t* engine, max_file_t* maxfile)
+	RayParameterMap(max_engine_t* engine, max_file_t* maxfile)
 	{
 		m_engine = engine;
 		m_maxfile = maxfile;
@@ -64,7 +64,7 @@ public:
 		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 
-		bank_start_num = 4;
+		bank_start_num = 0;
 		num_banks_used = 1;
 
 		m_SampleParameters = new SampleParameters_t *[m_width];
@@ -205,10 +205,14 @@ private:
 
 	void UpdateParameterMap()
 	{
-		int samples_per_word = (int)floor( (BURSTSIZE_BYTES * BURSTCOUNT) / sizeof(SampleParameters_t));
+		printf("writing ray parameter map...\n");
+
+		float sample_word_size_bytes = (BURSTSIZE_BYTES * BURSTCOUNT);
+
+		int samples_per_word = (int)floor( sample_word_size_bytes / sizeof(SampleParameters_t));
 		float total_samples = m_width * m_height;
 		float total_words = ceil(total_samples / samples_per_word);
-		m_sampleParameterDataSize = total_words * BURSTSIZE_BYTES * BURSTCOUNT;
+		m_sampleParameterDataSize = total_words * sample_word_size_bytes;
 
 		m_sampleParameterData = new char[m_sampleParameterDataSize];
 
@@ -219,10 +223,10 @@ private:
 			for(int x = 0; x < m_width; x++)
 			{
 				int address_in_samples = x + (y * m_width);
-				int address_in_bursts = floor((float)address_in_samples / (float)samples_per_word) * BURSTCOUNT;
+				int address_in_words = floor((float)address_in_samples / (float)samples_per_word);
 				int offset_in_samples = address_in_samples % samples_per_word;
 
-				int address_in_bytes = (address_in_bursts * BURSTSIZE_BYTES) + (offset_in_samples * sizeof(SampleParameters_t));
+				int address_in_bytes = (address_in_words * sample_word_size_bytes) + (offset_in_samples * sizeof(SampleParameters_t));
 
 				SampleParameters_t* parameters = (SampleParameters_t*)(m_sampleParameterData + address_in_bytes);
 				*parameters = m_SampleParameters[x][y];
@@ -235,14 +239,14 @@ private:
 
 			int64_t map_offset_in_bytes = GetOffsetInBytes();
 			int64_t bank_offset_in_bursts = bank_start_num + ((int64_t)i << bank_address_bits_offset);
-			int64_t bank_offset_in_bytes = bank_offset_in_bursts * 384;
+			int64_t bank_offset_in_bytes = bank_offset_in_bursts * BURSTSIZE_BYTES;
 			int64_t address = map_offset_in_bytes + bank_offset_in_bytes;
 
-			max_actions_t* memact = max_actions_init(m_maxfile, "memoryInitialisation");
+			max_actions_t* memact = max_actions_init(m_maxfile, "rayParameterMap_initialisation");
 			max_set_param_uint64t(memact, "size", m_sampleParameterDataSize);
 			max_set_param_uint64t(memact, "address", address);
 
-			max_queue_input(memact,"environment_map_in",m_sampleParameterData,m_sampleParameterDataSize);
+			max_queue_input(memact,"rayParameterMap_fromCPU",m_sampleParameterData,m_sampleParameterDataSize);
 			actions[i] = memact;
 
 			max_run(m_engine, memact);

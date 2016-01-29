@@ -12,7 +12,16 @@ public final class Constants {
 
 	public static int pixel_size_in_bytes 	= 4;
 
-	public static int burstSizeInBytes = 192;	// memory width - 384 for Maia, 192 for Isca
-	public static int mapSampleBursts  = 2;		// burstsize * burstcount should equal 3072 bits to match existing maps
+	public static int map_word_size_in_bytes= 384;
+
+	public static int tiles_per_word = 1;
+
+	public static int burstSizeInBytes 		= 64;	// memory width - 384 for Maia, 192 for Isca, 64 for Isca single dimm
+
+	public static int GetBurstsPerWord()
+	{
+		return map_word_size_in_bytes / burstSizeInBytes;
+	}
+
 
 }
