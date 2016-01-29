@@ -83,8 +83,6 @@ public:
 
 			max_actions_t* memact = max_actions_init(m_maxfile, "sampleMap_initialisation");
 
-			texture_size_bytes = 2048 * 2048 * 4 * 6 * 1.5;
-
 			max_set_param_uint64t(memact, "size", texture_size_bytes);
 			max_set_param_uint64t(memact, "address", address);
 

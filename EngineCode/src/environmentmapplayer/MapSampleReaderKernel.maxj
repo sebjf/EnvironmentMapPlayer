@@ -65,16 +65,10 @@ public class MapSampleReaderKernel extends Kernel {
 
 		DFEVar bgColour = io.scalarInput("backgroundColour", dfeUInt(32));
 
-		int bursts_per_word = Constants.map_word_size_in_bytes / Constants.burstSizeInBytes;
-
-		int	word_size_in_bytes = Constants.burstSizeInBytes * bursts_per_word;
+		int	word_size_in_bytes = Constants.burstSizeInBytes * Constants.GetBurstsPerWord();
 		int word_size_in_bits = word_size_in_bytes * 8;
-
 		int bits_per_pixel = Constants.pixel_size_in_bytes * 8;
-//		int pixels_per_sample = (int)Math.floor((float)map_sample_size_in_bytes/(float)Constants.pixel_size_in_bytes);
-		int pixels_per_word = Constants.tiles_per_word * Constants.tile_width_in_pixels * Constants.tile_width_in_pixels;
-
-
+		int pixels_per_word = Constants.GetTilesPerWord() * Constants.tile_width_in_pixels * Constants.tile_width_in_pixels;
 
 		DFEVar cache_valid = io.input("cache_valid", dfeBool());
 		DFEVar dimm = io.input("dimm", dfeUInt(1));

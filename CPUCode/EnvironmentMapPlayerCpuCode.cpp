@@ -91,8 +91,8 @@ int main(void)
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 11);
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 11);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 10);
 
 	/* Video signal parameters */
 

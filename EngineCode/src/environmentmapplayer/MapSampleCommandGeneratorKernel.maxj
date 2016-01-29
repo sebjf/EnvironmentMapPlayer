@@ -82,11 +82,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
       //  int tiles_per_word = constant.
 
         DFEVar addr_tiles = KernelMath.floor(tile_offset_in_tiles + face_offset_in_tiles + mip_offset_in_tiles);
-        DFEVar addr_words = addr_tiles;
-
-        int bursts_per_word = Constants.map_word_size_in_bytes / Constants.burstSizeInBytes;
-
-        DFEVar addr_burst = addr_words * bursts_per_word;
+        DFEVar addr_words = addr_tiles / Constants.GetTilesPerWord();
+        DFEVar addr_burst = addr_words * Constants.GetBurstsPerWord();
         DFEVar addr_pixel = KernelMath.floor(tile_u + (tile_v * Constants.tile_width_in_pixels));
 
         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
@@ -111,7 +108,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar bank_bits = start_bank_num + control.count.makeCounter(control.count.makeParams(32).withMax(num_banks_used).withEnable(~cache_valid)).getCount();
 
         //add the bank offset
-        addr_burst = addr_burst.cast(dfeUInt(28));// | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
+        addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
 
 
 		/*
@@ -127,8 +124,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		LMemCommandStream.makeKernelOutput("sample_command", constant.var(true), memoryCommand);
 		*/
 
-     //   DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
-        DFEVar dimm = constant.var(dfeUInt(1),0);
+        DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
+     //   DFEVar dimm = constant.var(dfeUInt(1),0);
 
         io.output("dimm", dfeUInt(1)).connect(dimm);
         io.output("cache_valid", dfeBool()).connect(cache_valid);
@@ -137,7 +134,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				"sampleMap_cmd1",
 				~cache_valid & dimm.eq(0),
 				addr_burst.cast(dfeUInt(28)),
-				constant.var(dfeUInt(8),bursts_per_word),
+				constant.var(dfeUInt(8),Constants.GetBurstsPerWord()),
 				constant.var(dfeUInt(7),1),
 				constant.var(dfeUInt(4),0),
 				constant.var(false));
@@ -146,7 +143,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				"sampleMap_cmd2",
 				~cache_valid & dimm.eq(1),
 				addr_burst.cast(dfeUInt(28)),
-				constant.var(dfeUInt(8),bursts_per_word),
+				constant.var(dfeUInt(8),Constants.GetBurstsPerWord()),
 				constant.var(dfeUInt(7),1),
 				constant.var(dfeUInt(4),0),
 				constant.var(false));
