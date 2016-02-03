@@ -38,7 +38,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		myDebugLevel.setHasStreamStatus(true);
 		debug.setDebugLevel(myDebugLevel);
 
-		config.setDefaultStreamClockFrequency(200);
+		config.setDefaultStreamClockFrequency(205);
 		config.setOnCardMemoryFrequency(800); //400 for maia
 
 		MemoryControllerConfig memoryConfig = new MemoryControllerConfig();
@@ -105,21 +105,23 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2, 64 * 2048);
 		DFELink sampleMapDimm1Stream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1);
 		DFELink sampleMapDimm2Stream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm1Stream, 2048 * 2048);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm2Stream, 2048 * 2048);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1Stream);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm2Stream);
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
-		int cache_valid_stream_buffer_size = 1 * 2048;
+		int cache_valid_stream_buffer_size = 1 * 4096;
 		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, cache_valid_stream_buffer_size);
 
 		DFELink dimm_stream = commandGeneratorKernel.getOutput("dimm");
 		mapSampleReaderKernel.getInput("dimm").connect(dimm_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * 2048);
+		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * 4096);
 
 		DFELink sample_offset_in_pixels_stream = commandGeneratorKernel.getOutput("sample_offset_in_pixels");
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
-		int sample_offset_in_pixels_stream_buffer_size = 32 * 2048;
+		int sample_offset_in_pixels_stream_buffer_size = 32 * 4096;
 		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, sample_offset_in_pixels_stream_buffer_size);
 
 		/* Create the kernel which will generate the timing data */
