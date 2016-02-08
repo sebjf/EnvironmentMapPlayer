@@ -1,5 +1,6 @@
 package environmentmapplayer;
 
+import maxpower.lmem.MultiDimensionalAddressGenerator;
 import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
@@ -12,7 +13,6 @@ import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.Fanout;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
-import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemCommandGroup.MemoryAccessPattern;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
 import com.maxeler.maxcompiler.v2.managers.engine_interfaces.CPUTypes;
@@ -74,7 +74,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		// Create memory initialisation interfaces
 		//---------------------------------------------------------------------------
-/*
+
 		DFELink rayParameterMap_toMem_cmd = MultiDimensionalAddressGenerator.getCommandStream(new MultiDimensionalAddressGenerator(makeKernelParameters("rayParameterMap_toMem_addrGen"), 1, 1), this);
 		rayParameterMapDimm.addStreamToLMem("rayParameterMap_toMem", rayParameterMap_toMem_cmd) <== addStreamFromCPU("rayParameterMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
 
@@ -85,14 +85,16 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		sampleDataFanout.getInput() <== addStreamFromCPU("sampleMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
 		sampleMapDimm1.addStreamToLMem("sampleMap_toDimm1", sampleMapDimm1_toMem_cmd) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_1");
 		sampleMapDimm2.addStreamToLMem("sampleMap_toDimm2", sampleMapDimm2_toMem_cmd) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_2");
-*/
+
 		//---------------------------------------------------------------------------
+/*
 		rayParameterMapDimm.addStreamToLMem("rayParameterMap_toMem", MemoryAccessPattern.LINEAR_1D) <== addStreamFromCPU("rayParameterMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
 
 		Fanout sampleDataFanout = fanout("sampleDataFanout");
 		sampleDataFanout.getInput() <== addStreamFromCPU("sampleMap_fromCPU", StreamMode.LOW_LATENCY_ENABLED);
 		sampleMapDimm1.addStreamToLMem("sampleMap_toDimm1", MemoryAccessPattern.LINEAR_1D) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_1");
 		sampleMapDimm2.addStreamToLMem("sampleMap_toDimm2", MemoryAccessPattern.LINEAR_1D) <== sampleDataFanout.addOutput("sampleMapDimm1_fromCPU_2");
+*/
 		//---------------------------------------------------------------------------
 
 		/* Connect the Ray Caster to the inputs from the CPU */
@@ -181,13 +183,14 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		InterfaceParam lmem_size = engine_interface.addParam("size", CPUTypes.INT64);
 		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
-/*
+
 		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "numRepeats", 0);
 		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "startAddress", lmem_address);
 		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
-*/
-		engine_interface.setLMemLinear("rayParameterMap_toMem", lmem_address, lmem_size);
 
+/*
+		engine_interface.setLMemLinear("rayParameterMap_toMem", lmem_address, lmem_size);
+*/
 
 		engine_interface.setStream("rayParameterMap_fromCPU", CPUTypes.UINT8, lmem_size);
 
@@ -204,17 +207,18 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
 
 		engine_interface.route("sampleDataFanout -> sampleMapDimm1_fromCPU_1, sampleDataFanout -> sampleMapDimm1_fromCPU_2");
-/*
+
 		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "numRepeats", 0);
 		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "startAddress", lmem_address);
 		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
 		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "numRepeats", 0);
 		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "startAddress", lmem_address);
 		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
-*/
+
+/*
 		engine_interface.setLMemLinear("sampleMap_toDimm1", lmem_address, lmem_size);
 		engine_interface.setLMemLinear("sampleMap_toDimm2", lmem_address, lmem_size);
-
+*/
 
 
 		engine_interface.setStream("sampleMap_fromCPU", CPUTypes.UINT8, lmem_size);
