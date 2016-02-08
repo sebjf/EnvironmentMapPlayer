@@ -1,0 +1,23 @@
+package environmentmapplayer;
+
+import maxpower.kernel.io.AspectChangeIO;
+
+import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
+import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
+
+public class AspectChangeKernel extends Kernel {
+
+	public AspectChangeKernel(KernelParameters parameters) {
+		super(parameters);
+
+		flush.disabled();
+
+		AspectChangeIO acio = new AspectChangeIO(this, 2048);
+		acio.output("word_out", io.input("word_in", dfeRawBits(256)));
+
+
+	}
+
+
+
+}

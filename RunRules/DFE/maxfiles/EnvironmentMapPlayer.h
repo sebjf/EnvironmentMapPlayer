@@ -313,18 +313,27 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_numBursts Input scalar parameter "rayParameterMap_toMem_addrGen.numBursts".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_numRepeats Input scalar parameter "rayParameterMap_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_startAddress Input scalar parameter "rayParameterMap_toMem_addrGen.startAddress".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm1_toMem_addrGen.numBursts".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm1_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm1_toMem_addrGen.startAddress".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_WouldStallCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_enableCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_validCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_WouldStallCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_enableCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_validCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_validCount".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [in] lmem_address_rayParameterMap_toMem Linear LMem control for "rayParameterMap_toMem" stream: base address, in bytes.
- * \param [in] lmem_arr_size_rayParameterMap_toMem Linear LMem control for "rayParameterMap_toMem" stream: array size, in bytes.
- * \param [in] lmem_address_sampleMap_toDimm1 Linear LMem control for "sampleMap_toDimm1" stream: base address, in bytes.
- * \param [in] lmem_arr_size_sampleMap_toDimm1 Linear LMem control for "sampleMap_toDimm1" stream: array size, in bytes.
- * \param [in] lmem_address_sampleMap_toDimm2 Linear LMem control for "sampleMap_toDimm2" stream: base address, in bytes.
- * \param [in] lmem_arr_size_sampleMap_toDimm2 Linear LMem control for "sampleMap_toDimm2" stream: array size, in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  */
 void EnvironmentMapPlayer(
@@ -345,18 +354,27 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numBursts,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numRepeats,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_startAddress,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numBursts,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numRepeats,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_startAddress,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_validCount,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	size_t lmem_address_rayParameterMap_toMem,
-	size_t lmem_arr_size_rayParameterMap_toMem,
-	size_t lmem_address_sampleMap_toDimm1,
-	size_t lmem_arr_size_sampleMap_toDimm1,
-	size_t lmem_address_sampleMap_toDimm2,
-	size_t lmem_arr_size_sampleMap_toDimm2,
 	const char * routing_string);
 
 /**
@@ -384,18 +402,27 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress".
  * \param [in] inscalar_RaySampleCommandGeneratorKernel_start_bank_num Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num".
  * \param [in] inscalar_RaySampleReaderKernel_sampleParameterMapAddress Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_numBursts Input scalar parameter "rayParameterMap_toMem_addrGen.numBursts".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_numRepeats Input scalar parameter "rayParameterMap_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_rayParameterMap_toMem_addrGen_startAddress Input scalar parameter "rayParameterMap_toMem_addrGen.startAddress".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm1_toMem_addrGen.numBursts".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm1_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_sampleMapDimm1_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm1_toMem_addrGen.startAddress".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats".
+ * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_WouldStallCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_enableCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_validCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_validCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_WouldStallCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_WouldStallCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_enableCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_enableCount".
+ * \param [out] outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_validCount Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_validCount".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [in] lmem_address_rayParameterMap_toMem Linear LMem control for "rayParameterMap_toMem" stream: base address, in bytes.
- * \param [in] lmem_arr_size_rayParameterMap_toMem Linear LMem control for "rayParameterMap_toMem" stream: array size, in bytes.
- * \param [in] lmem_address_sampleMap_toDimm1 Linear LMem control for "sampleMap_toDimm1" stream: base address, in bytes.
- * \param [in] lmem_arr_size_sampleMap_toDimm1 Linear LMem control for "sampleMap_toDimm1" stream: array size, in bytes.
- * \param [in] lmem_address_sampleMap_toDimm2 Linear LMem control for "sampleMap_toDimm2" stream: base address, in bytes.
- * \param [in] lmem_arr_size_sampleMap_toDimm2 Linear LMem control for "sampleMap_toDimm2" stream: array size, in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  * \return A handle on the execution status, or NULL in case of error.
  */
@@ -417,18 +444,27 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress,
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num,
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numBursts,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numRepeats,
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_startAddress,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numBursts,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numRepeats,
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_startAddress,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats,
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_validCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_WouldStallCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_enableCount,
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_validCount,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	size_t lmem_address_rayParameterMap_toMem,
-	size_t lmem_arr_size_rayParameterMap_toMem,
-	size_t lmem_address_sampleMap_toDimm1,
-	size_t lmem_arr_size_sampleMap_toDimm1,
-	size_t lmem_address_sampleMap_toDimm2,
-	size_t lmem_arr_size_sampleMap_toDimm2,
 	const char * routing_string);
 
 /**
@@ -453,18 +489,27 @@ typedef struct {
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.sampleParameterMapAddress". */
 	uint64_t inscalar_RaySampleCommandGeneratorKernel_start_bank_num; /**<  [in] Input scalar parameter "RaySampleCommandGeneratorKernel.start_bank_num". */
 	uint64_t inscalar_RaySampleReaderKernel_sampleParameterMapAddress; /**<  [in] Input scalar parameter "RaySampleReaderKernel.sampleParameterMapAddress". */
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numBursts; /**<  [in] Input scalar parameter "rayParameterMap_toMem_addrGen.numBursts". */
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_numRepeats; /**<  [in] Input scalar parameter "rayParameterMap_toMem_addrGen.numRepeats". */
+	uint64_t inscalar_rayParameterMap_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "rayParameterMap_toMem_addrGen.startAddress". */
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numBursts; /**<  [in] Input scalar parameter "sampleMapDimm1_toMem_addrGen.numBursts". */
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_numRepeats; /**<  [in] Input scalar parameter "sampleMapDimm1_toMem_addrGen.numRepeats". */
+	uint64_t inscalar_sampleMapDimm1_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm1_toMem_addrGen.startAddress". */
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts". */
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats". */
+	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_WouldStallCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_WouldStallCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_enableCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_enableCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm1_validCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm1_validCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_WouldStallCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_WouldStallCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_enableCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_enableCount". */
+	uint64_t *outscalar_MapSampleReaderKernel_sampleMap_fromDimm2_validCount; /**<  [out] Output scalar parameter "MapSampleReaderKernel.sampleMap_fromDimm2_validCount". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_rayParameterMap_fromCPU; /**<  [in] Stream "rayParameterMap_fromCPU". */
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */
 	size_t instream_size_sampleMap_fromCPU; /**<  [in] The size of the stream instream_sampleMap_fromCPU in bytes. */
-	size_t lmem_address_rayParameterMap_toMem; /**<  [in] Linear LMem control for "rayParameterMap_toMem" stream: base address, in bytes. */
-	size_t lmem_arr_size_rayParameterMap_toMem; /**<  [in] Linear LMem control for "rayParameterMap_toMem" stream: array size, in bytes. */
-	size_t lmem_address_sampleMap_toDimm1; /**<  [in] Linear LMem control for "sampleMap_toDimm1" stream: base address, in bytes. */
-	size_t lmem_arr_size_sampleMap_toDimm1; /**<  [in] Linear LMem control for "sampleMap_toDimm1" stream: array size, in bytes. */
-	size_t lmem_address_sampleMap_toDimm2; /**<  [in] Linear LMem control for "sampleMap_toDimm2" stream: base address, in bytes. */
-	size_t lmem_arr_size_sampleMap_toDimm2; /**<  [in] Linear LMem control for "sampleMap_toDimm2" stream: array size, in bytes. */
 	const char * routing_string; /**<  [in] A string containing comma-separated "from_name -> to_name" routing commands. */
 } EnvironmentMapPlayer_actions_t;
 

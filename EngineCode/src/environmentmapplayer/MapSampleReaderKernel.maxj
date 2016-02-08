@@ -78,19 +78,15 @@ public class MapSampleReaderKernel extends Kernel {
 		DFEVar burst = control.mux(dimm, sampleDimm1, sampleDimm2);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
+/*
+		DFEVar sampleDimm1 = makeNonBlockingInput("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));
+		DFEVar sampleDimm2 = makeNonBlockingInput("sampleMap_fromDimm2",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(1));
+		DFEVar burst = control.mux(dimm, sampleDimm1, sampleDimm2);
+		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
+*/
 		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels",dfeUInt(32));
 
-		/*
-		DFEVar cache_valid = makeNonBlockingInput("cache_valid", dfeBool());
 
-		DFEVar burst = makeNonBlockingInput("sampleMap_fromDimm1",dfeRawBits(map_sample_size_in_bits),~cache_valid);
-		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
-
-		DFEVar sample_offset_in_pixels = makeNonBlockingInput("sample_offset_in_pixels",dfeUInt(32));
-
-		Counter runCounter = control.count.makeCounter(control.count.makeParams(32));
-		io.scalarOutput("runCounter", dfeUInt(32)).connect(runCounter.getCount());
-		*/
 
 		sample_offset_in_pixels = clamp(sample_offset_in_pixels, 0, pixels_per_word);
 

@@ -67,10 +67,19 @@ int main(void)
 
 	/* ignore memory input on subsequent runs */
 
-	max_ignore_block(act,"sampleDataFanout");
-	max_ignore_lmem(act,"rayParameterMap_toMem");
 	max_ignore_lmem(act,"sampleMap_toDimm1");
 	max_ignore_lmem(act,"sampleMap_toDimm2");
+	max_ignore_lmem(act,"rayParameterMap_toMem");
+
+	max_ignore_block(act,"sampleDataFanout");
+
+//	max_ignore_kernel(act,"rayParameterMap_toMem_addrGen");
+//	max_ignore_kernel(act,"sampleMapDimm1_toMem_addrGen");
+//	max_ignore_kernel(act,"sampleMapDimm2_toMem_addrGen");
+
+//	max_set_uint64t(act,"rayParameterMap_toMem_addrGen","io_cmd_force_disabled",1);
+//	max_set_uint64t(act,"sampleMapDimm1_toMem_addrGen","io_cmd_force_disabled",1);
+//	max_set_uint64t(act,"sampleMapDimm2_toMem_addrGen","io_cmd_force_disabled",1);
 
 	/* Rendering parameters */
 
