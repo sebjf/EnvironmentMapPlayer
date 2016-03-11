@@ -31,4 +31,25 @@ public final class Constants {
 		return 1;
 	}
 
+	/* Graph properties */
+
+	// The packing factor for the memory samples (once de-multiplexed)
+	public static int burstPackingFactor = 3;
+
+	// The packing factor for the memory commands
+	public static int memoryPackingFactor = 4;
+
+	// The packing factor for the pixel commands
+	public static int pixelPackingFactor 	= 12;
+
+	//number of pixel sample commands queued up at a time. As these are generated at a higher rate than they are output, this number will always be queued.
+	//it should be large enough to overcome the latency and bandwidth bottleneck of the lmem. The optimal size is 13x the size of the map sample buffers.
+	public static int pixelCommandDepth = 4096;
+
+	public static int memoryCommandDepth = 4096;
+
+	public static int memorySampleDepth = 3548;
+
+	public static int pixelDepth = 2048;
+
 }

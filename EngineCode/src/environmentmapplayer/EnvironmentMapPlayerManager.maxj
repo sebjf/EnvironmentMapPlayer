@@ -4,14 +4,15 @@ import maxpower.lmem.MultiDimensionalAddressGenerator;
 import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
-import com.maxeler.maxcompiler.v2.kernelcompiler._KernelConfiguration;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
+import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
 import com.maxeler.maxcompiler.v2.managers.custom.CustomManager;
 import com.maxeler.maxcompiler.v2.managers.custom.DFELink;
 import com.maxeler.maxcompiler.v2.managers.custom._CustomManagers;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.Fanout;
 import com.maxeler.maxcompiler.v2.managers.custom.blocks.KernelBlock;
+import com.maxeler.maxcompiler.v2.managers.custom.blocks.StateMachineBlock;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.DebugLevel;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.LMemInterface;
 import com.maxeler.maxcompiler.v2.managers.custom.stdlib.MemoryControllerConfig;
@@ -30,7 +31,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		//disable trickling
 
-		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
+//		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setEnableSmartKernelControl(true);
+//		_KernelConfiguration.getPhotonKernelConfig(getCurrentKernelConfig()).setAdditionalInputPipelining(143);
 
 		// Configure the stream status debug blocks and the memory
 
@@ -39,12 +41,15 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		debug.setDebugLevel(myDebugLevel);
 
 		config.setDefaultStreamClockFrequency(220);
-		config.setOnCardMemoryFrequency(533); //400 for maia
+		config.setOnCardMemoryFrequency(800); //400 for maia
 
 		MemoryControllerConfig memoryConfig = new MemoryControllerConfig();
 		memoryConfig.setEnableParityMode(true, true, 72, false);
 		memoryConfig.setMAX4qMode(true);
-//		config.setMemoryControllerConfig(memoryConfig);
+		config.setMemoryControllerConfig(memoryConfig);
+
+//		ManagerClock memoryInterfaceClock = generateStreamClock("memoryInterfaceClock", 240);
+//		setMemoryStreamClock(memoryInterfaceClock);
 
 		// Set the display standard
 
@@ -63,14 +68,13 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
 
-		KernelBlock dimm1AspectChange = addKernel(new AspectChangeKernel(makeKernelParameters("Dimm1AspectChange")));
-		KernelBlock dimm2AspectChange = addKernel(new AspectChangeKernel(makeKernelParameters("Dimm2AspectChange")));
-
 		// Create the memory interfaces
 
 		LMemInterface rayParameterMapDimm = addLMemInterface("rayParameterMapDimm", 1);
 		LMemInterface sampleMapDimm1 = addLMemInterface("sampleMapDimm1", 1);
 		LMemInterface sampleMapDimm2 = addLMemInterface("sampleMapDimm2", 1);
+
+		mapSampleReaderKernel.setClock(generateStreamClock("mapSampleReaderClock", 165));
 
 		// Create memory initialisation interfaces
 		//---------------------------------------------------------------------------
@@ -118,36 +122,51 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
-		DFELink memorySampleCommandDimm1 = commandGeneratorKernel.getOutput("sampleMap_cmd1");
-		DFELink memorySampleCommandDimm2 = commandGeneratorKernel.getOutput("sampleMap_cmd2");
-		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1, 64 * 2048);
-		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2, 64 * 2048);
-		DFELink sampleMapDimm1NarrowStream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1);
-		DFELink sampleMapDimm2NarrowStream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2);
+		DFELink memorySampleCommandDimm1Narrow = commandGeneratorKernel.getOutput("sampleMap_cmd1");
+		DFELink memorySampleCommandDimm2Narrow = commandGeneratorKernel.getOutput("sampleMap_cmd2");
+
+		StateMachineBlock memorySampleCommandDimm1AspectChange = addStateMachine("MemSampleCmd1AspectChange", new AspectChangeStateMachine(this, 64, 64 * Constants.memoryPackingFactor));
+		StateMachineBlock memorySampleCommandDimm2AspectChange = addStateMachine("MemSampleCmd2AspectChange", new AspectChangeStateMachine(this, 64, 64 * Constants.memoryPackingFactor));
+
+		memorySampleCommandDimm1AspectChange.getInput("word_in").connect(memorySampleCommandDimm1Narrow);
+		memorySampleCommandDimm2AspectChange.getInput("word_in").connect(memorySampleCommandDimm2Narrow);
+
+		DFELink memorySampleCommandDimm1Wide = memorySampleCommandDimm1AspectChange.getOutput("word_out");
+		DFELink memorySampleCommandDimm2Wide = memorySampleCommandDimm2AspectChange.getOutput("word_out");
+
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1Wide, 64 * Constants.memoryPackingFactor * Constants.memoryCommandDepth );
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2Wide, 64 * Constants.memoryPackingFactor * Constants.memoryCommandDepth);
+
+		DFELink sampleMapDimm1NarrowStream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1Wide);
+		DFELink sampleMapDimm2NarrowStream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2Wide);
+
+		StateMachineBlock dimm1AspectChange = addStateMachine("Dimm1AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
+		StateMachineBlock dimm2AspectChange = addStateMachine("Dimm2AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
+
+//		dimm1AspectChange.setClock(memoryInterfaceClock);
+//		dimm2AspectChange.setClock(memoryInterfaceClock);
 
 		dimm1AspectChange.getInput("word_in").connect(sampleMapDimm1NarrowStream);
 		DFELink sampleMapDimm1WideStream = dimm1AspectChange.getOutput("word_out");
 		dimm2AspectChange.getInput("word_in").connect(sampleMapDimm2NarrowStream);
 		DFELink sampleMapDimm2WideStream = dimm2AspectChange.getOutput("word_out");
 
-		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm1WideStream, 2048 * 2048);
-		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm2WideStream, 2048 * 2048);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm1WideStream, 2048 * Constants.burstPackingFactor * Constants.memorySampleDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm2WideStream, 2048 * Constants.burstPackingFactor * Constants.memorySampleDepth);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1WideStream);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm2WideStream);
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
-		int cache_valid_stream_buffer_size = 1 * 4096;
-		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, cache_valid_stream_buffer_size);
+		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, 1 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
 
 		DFELink dimm_stream = commandGeneratorKernel.getOutput("dimm");
 		mapSampleReaderKernel.getInput("dimm").connect(dimm_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * 4096);
+		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
 
 		DFELink sample_offset_in_pixels_stream = commandGeneratorKernel.getOutput("sample_offset_in_pixels");
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
-		int sample_offset_in_pixels_stream_buffer_size = 32 * 4096;
-		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, sample_offset_in_pixels_stream_buffer_size);
+		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, 32 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
 
 		/* Create the kernel which will generate the timing data */
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
@@ -155,9 +174,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		/* connect up the kernel to the colour data */
 		DFELink video_colour_data_stream = mapSampleReaderKernel.getOutput("sample");
 		videoSignalKernel.getInput("rgb").connect(video_colour_data_stream);
-		int video_colour_data_stream_buffer_size = 24 * 2048;
-		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, video_colour_data_stream_buffer_size);
-
+		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, 24 * Constants.pixelDepth);
 
 		if(isTargetSimulation()){
 
@@ -253,7 +270,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		buildConfig.setMPPRCostTableSearchRange(1, 30);
 		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
-		buildConfig.setOptimizationGoal(OptimizationTechnique.AREA);
+		buildConfig.setBuildEffort(Effort.HIGH);
+		buildConfig.setOptimizationGoal(OptimizationTechnique.SPEED);
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -91,7 +91,6 @@ public class RaySampleReaderKernel extends Kernel {
         /* Read or do not read the memory accordingly */
 
 		DFEVar burst = io.input("rayParameterMap_fromMem_in", dfeRawBits(word_size_in_bits), ~cache_valid);
-    //    DFEVar burst = makeNonBlockingInput("sample_parameter_read_data", dfeRawBits(word_size_in_bits), ~cache_valid);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
 
 		/* Read the cache and extract the sample data */

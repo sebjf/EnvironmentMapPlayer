@@ -58,6 +58,7 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine, maxfile);
+	environmentMap.num_banks_used = 3;
 	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* Initialise the sample parameter map */
@@ -66,6 +67,11 @@ int main(void)
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 
 	/* ignore memory input on subsequent runs */
+
+//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sampleMap_cmd1_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sampleMap_cmd2_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_sampleMap_fromDimm1_force_disabled",1);
+//	max_set_uint64t(act,"MapSampleReaderKernel","io_sampleMap_fromDimm2_force_disabled",1);
 
 //	max_ignore_lmem(act,"sampleMap_toDimm1");
 //	max_ignore_lmem(act,"sampleMap_toDimm2");

@@ -1,9 +1,12 @@
 package environmentmapplayer;
 
+import maxpower.kernel.io.AspectChangeIO;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public class MapSampleCommandGeneratorKernel extends Kernel {
@@ -24,6 +27,12 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
 	protected final int bank_address_bits_count = 3;
 	protected final int bank_address_bits_offset = 25; //from the lsb
+
+	protected DFEVar makePackedOutput(String name, KernelType<DFEVar> type)
+	{
+		AspectChangeIO acio = new AspectChangeIO(this, type.getTotalBits() * Constants.pixelPackingFactor);
+		return acio.output(name, type);
+	}
 
 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
 		super(parameters);
@@ -87,8 +96,30 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
         /* Determine whether the sample can be read from the existing cache or if we need to retrieve a new tile */
 
-        DFEVar previous_addr_burst = stream.offset(addr_burst, -1);
-        DFEVar cache_valid = previous_addr_burst.eq(addr_burst);
+        // if the last pixel was reused, then the last address was ignored and the current cache is the one befor that
+        // use the addr_burst stream to work out what we set the cache to, and whether to reuse the pixel (rather than streamoffsets into the cache valid signal)
+        // in order to avoid cylic graphs
+
+        DFEVar addr_burst_0 = addr_burst;
+        DFEVar addr_burst_1 = stream.offset(addr_burst, -1);
+        DFEVar addr_burst_2 = stream.offset(addr_burst, -2);
+
+        // this will be the second cache invalidation in a row
+        DFEVar reuse_last_pixel = addr_burst_0.neq(addr_burst_1) & addr_burst_1.neq(addr_burst_2);
+
+        reuse_last_pixel.simWatch("reuse_last_pixel");
+
+        addr_burst.simWatch("addr_burst1");
+
+        addr_burst = reuse_last_pixel ? addr_burst_1 : addr_burst;
+
+        addr_burst.simWatch("addr_burst2");
+
+        // so reuse the last cache value
+        DFEVar cached_addr_burst = stream.offset(addr_burst, -1);
+        DFEVar cache_valid = cached_addr_burst.eq(addr_burst);
+
+        cached_addr_burst.simWatch("cached_addr_burst");
 
         /* overwrite the commands if the plane value indicates we should be setting the null colour */
         DFEVar command_invalid = plane.eq(255);
@@ -97,6 +128,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
         cache_valid = command_invalid ? constant.var(true) : cache_valid;
         addr_pixel = command_invalid ? constant.var(dfeFloat(8, 24), 1024) : addr_pixel; //1024 is a magic number that is larger than any number of pixels that will ever be in a tile
+
+        addr_pixel = reuse_last_pixel ? stream.offset(addr_pixel, -1) : addr_pixel;
 
         /* do the bank offset */
 
@@ -108,7 +141,6 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
         //add the bank offset
         addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset);
-
 
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
@@ -126,8 +158,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
      //   DFEVar dimm = constant.var(dfeUInt(1),0);
 
-        io.output("dimm", dfeUInt(1)).connect(dimm);
-        io.output("cache_valid", dfeBool()).connect(cache_valid);
+        makePackedOutput("dimm", dfeUInt(1)).connect(dimm);
+        makePackedOutput("cache_valid", dfeBool()).connect(cache_valid);
 
 		LMemCommandStream.makeKernelOutput(
 				"sampleMap_cmd1",
@@ -147,10 +179,9 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				constant.var(dfeUInt(4),0),
 				constant.var(false));
 
-		io.output("sample_offset_in_pixels", dfeUInt(32)) <== addr_pixel.cast(dfeUInt(32));
+		makePackedOutput("sample_offset_in_pixels", dfeUInt(32)) <== addr_pixel.cast(dfeUInt(32));
 
 	}
-
 
 
 }

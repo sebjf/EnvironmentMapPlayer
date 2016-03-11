@@ -1,0 +1,66 @@
+package environmentmapplayer;
+
+import com.maxeler.maxcompiler.v2.managers.DFEManager;
+import com.maxeler.maxcompiler.v2.statemachine.DFEsmStateValue;
+import com.maxeler.maxcompiler.v2.statemachine.manager.DFEsmPushInput;
+import com.maxeler.maxcompiler.v2.statemachine.manager.DFEsmPushOutput;
+import com.maxeler.maxcompiler.v2.statemachine.manager.ManagerStateMachine;
+import com.maxeler.maxcompiler.v2.utils.MathUtils;
+
+public class AspectChangeStateMachine extends ManagerStateMachine {
+
+	private final int inWidth;
+	private final int outWidth;
+	private final int factor;
+
+	DFEsmPushInput sInput;
+	DFEsmPushOutput sOutput;
+
+	DFEsmStateValue sShiftRegister;
+	DFEsmStateValue sShiftCounter;
+
+	AspectChangeStateMachine(DFEManager owner, int in, int out){
+		super(owner);
+
+		 inWidth = in;
+		 outWidth = out;
+		 factor = outWidth / inWidth;
+
+		 sInput = io.pushInput("word_in", dfeUInt(inWidth), 1);
+		 sOutput = io.pushOutput("word_out", dfeUInt(outWidth), 1);
+		 sShiftRegister = state.value(dfeUInt(outWidth - inWidth));
+		 sShiftCounter = state.value(dfeUInt(MathUtils.bitsToRepresent(factor)), 0);
+	}
+
+	@Override
+	protected void nextState() {
+
+		// If there is data available, shift the data and then add the new word
+		IF (sInput.valid) {
+			_SWITCH(sShiftCounter); {
+				for (int i = 0; i < (factor - 1); i++) {
+					_CASE(i); {
+						final int begin = inWidth * i;
+						final int end = begin + (inWidth - 1);
+						sShiftRegister.next[end:begin] <== sInput;
+					}
+				}
+			} _END_SWITCH();
+			sShiftCounter.next <== sShiftCounter + 1;
+
+			// If the word is complete and the sink has requested a read, outputFunction() will send the data, so reset
+			// ready for the next one
+			IF(sShiftCounter.eq(factor - 1)){
+				sShiftCounter.next <== 0;
+			}
+		}
+	}
+
+	@Override
+	protected void outputFunction() {
+		sInput.stall <== sOutput.stall;
+		sOutput.valid <== sShiftCounter.eq(factor - 1) & sInput.valid;
+		sOutput <== sInput # sShiftRegister;
+	}
+
+}
