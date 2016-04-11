@@ -48,9 +48,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		memoryConfig.setMAX4qMode(true);
 		config.setMemoryControllerConfig(memoryConfig);
 
-//		ManagerClock memoryInterfaceClock = generateStreamClock("memoryInterfaceClock", 240);
-//		setMemoryStreamClock(memoryInterfaceClock);
-
 		// Set the display standard
 
 		DisplayStandard displayStandard = DisplayStandard.make_RiftDK2();
@@ -74,7 +71,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		LMemInterface sampleMapDimm1 = addLMemInterface("sampleMapDimm1", 1);
 		LMemInterface sampleMapDimm2 = addLMemInterface("sampleMapDimm2", 1);
 
-		mapSampleReaderKernel.setClock(generateStreamClock("mapSampleReaderClock", 165));
+//		mapSampleReaderKernel.setClock(generateStreamClock("mapSampleReaderClock", 165));
 
 		// Create memory initialisation interfaces
 		//---------------------------------------------------------------------------
@@ -142,9 +139,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		StateMachineBlock dimm1AspectChange = addStateMachine("Dimm1AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
 		StateMachineBlock dimm2AspectChange = addStateMachine("Dimm2AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
-
-//		dimm1AspectChange.setClock(memoryInterfaceClock);
-//		dimm2AspectChange.setClock(memoryInterfaceClock);
 
 		dimm1AspectChange.getInput("word_in").connect(sampleMapDimm1NarrowStream);
 		DFELink sampleMapDimm1WideStream = dimm1AspectChange.getOutput("word_out");
