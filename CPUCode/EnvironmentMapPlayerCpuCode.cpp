@@ -33,7 +33,6 @@ bool run = true;
 void int_handler(int s){
 	(void)s;
    run = false;
-   exit(1);
 }
 
 int main(void)
@@ -59,12 +58,12 @@ int main(void)
 
 	EnvironmentMap environmentMap(engine, maxfile);
 	environmentMap.num_banks_used = 3;
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
+//	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* Initialise the sample parameter map */
 
 	RayParameterMap rayParameterMap(engine, maxfile);
-	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+//	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 
 	/* ignore memory input on subsequent runs */
 
@@ -114,7 +113,12 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
+
 	max_reset_engine(engine);
+
+	void* stalls = malloc(4 * 4096);
+	//max_ignore_stream(act, "profilerOutput");
+	//max_queue_output(act, "profilerOutput", stalls, 16);
 
 	printf("Running on DFE...\n");
 

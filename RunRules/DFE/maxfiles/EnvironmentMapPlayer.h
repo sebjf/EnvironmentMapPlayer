@@ -322,12 +322,17 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts".
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats".
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_SequentialStalls Output scalar parameter "videoDataStreamProfiler.data_in_SequentialStalls".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_Stalls Output scalar parameter "videoDataStreamProfiler.data_in_Stalls".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_Ticks Output scalar parameter "videoDataStreamProfiler.data_in_Ticks".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
+ * \param [out] outstream_profilerOutput Stream "profilerOutput".
+ * \param [in] outstream_size_profilerOutput The size of the stream outstream_profilerOutput in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  */
 void EnvironmentMapPlayer(
@@ -357,12 +362,17 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts,
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats,
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_SequentialStalls,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Stalls,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Ticks,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
+	void *outstream_profilerOutput,
+	size_t outstream_size_profilerOutput,
 	const char * routing_string);
 
 /**
@@ -399,12 +409,17 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numBursts Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts".
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_numRepeats Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats".
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_SequentialStalls Output scalar parameter "videoDataStreamProfiler.data_in_SequentialStalls".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_Stalls Output scalar parameter "videoDataStreamProfiler.data_in_Stalls".
+ * \param [out] outscalar_videoDataStreamProfiler_data_in_Ticks Output scalar parameter "videoDataStreamProfiler.data_in_Ticks".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
+ * \param [out] outstream_profilerOutput Stream "profilerOutput".
+ * \param [in] outstream_size_profilerOutput The size of the stream outstream_profilerOutput in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  * \return A handle on the execution status, or NULL in case of error.
  */
@@ -435,12 +450,17 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts,
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats,
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_SequentialStalls,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Stalls,
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Ticks,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
+	void *outstream_profilerOutput,
+	size_t outstream_size_profilerOutput,
 	const char * routing_string);
 
 /**
@@ -474,12 +494,17 @@ typedef struct {
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numBursts; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.numBursts". */
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_numRepeats; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.numRepeats". */
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress". */
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_SequentialStalls; /**<  [out] Output scalar parameter "videoDataStreamProfiler.data_in_SequentialStalls". */
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Stalls; /**<  [out] Output scalar parameter "videoDataStreamProfiler.data_in_Stalls". */
+	uint64_t *outscalar_videoDataStreamProfiler_data_in_Ticks; /**<  [out] Output scalar parameter "videoDataStreamProfiler.data_in_Ticks". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
 	const void *instream_rayParameterMap_fromCPU; /**<  [in] Stream "rayParameterMap_fromCPU". */
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */
 	size_t instream_size_sampleMap_fromCPU; /**<  [in] The size of the stream instream_sampleMap_fromCPU in bytes. */
+	void *outstream_profilerOutput; /**<  [out] Stream "profilerOutput". */
+	size_t outstream_size_profilerOutput; /**<  [in] The size of the stream outstream_profilerOutput in bytes. */
 	const char * routing_string; /**<  [in] A string containing comma-separated "from_name -> to_name" routing commands. */
 } EnvironmentMapPlayer_actions_t;
 

@@ -167,6 +167,14 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		/* connect up the kernel to the colour data */
 		DFELink video_colour_data_stream = mapSampleReaderKernel.getOutput("sample");
+
+		KernelBlock videoDataStreamProfiler = addKernel(new Profiler(makeKernelParameters("videoDataStreamProfiler"), 24));
+		videoDataStreamProfiler.getInput("data_in").connect(video_colour_data_stream);
+		video_colour_data_stream = videoDataStreamProfiler.getOutput("data_out");
+		DFELink profilerOutput = videoDataStreamProfiler.getOutput("profilerSequentialStallOutput");
+		_CustomManagers.setStreamBufferSpaceRequirement(profilerOutput, 32 * 4096);
+		addStreamToCPU("profilerOutput", StreamMode.LOW_LATENCY_ENABLED).connect(profilerOutput);
+
 		videoSignalKernel.getInput("rgb").connect(video_colour_data_stream);
 		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, 24 * Constants.pixelDepth);
 
