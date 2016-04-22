@@ -29,7 +29,10 @@ Mouse::Mouse(bool invert_y)
 
 Mouse::~Mouse()
 {
-	fclose(mouse);
+	if(mouse != NULL){
+		fclose(mouse);
+		mouse = NULL;
+	}
 }
 
 void Mouse::reset()

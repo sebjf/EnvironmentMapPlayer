@@ -166,17 +166,15 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
 		/* connect up the kernel to the colour data */
-		DFELink video_colour_data_stream = mapSampleReaderKernel.getOutput("sample");
 
-		KernelBlock videoDataStreamProfiler = addKernel(new Profiler(makeKernelParameters("videoDataStreamProfiler"), 24));
-		videoDataStreamProfiler.getInput("data_in").connect(video_colour_data_stream);
-		video_colour_data_stream = videoDataStreamProfiler.getOutput("data_out");
-		DFELink profilerOutput = videoDataStreamProfiler.getOutput("profilerSequentialStallOutput");
-		_CustomManagers.setStreamBufferSpaceRequirement(profilerOutput, 32 * 4096);
-		addStreamToCPU("profilerOutput", StreamMode.LOW_LATENCY_ENABLED).connect(profilerOutput);
+		DFELink videoDataStreamNarrow = mapSampleReaderKernel.getOutput("sample");
 
-		videoSignalKernel.getInput("rgb").connect(video_colour_data_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(video_colour_data_stream, 24 * Constants.pixelDepth);
+		StateMachineBlock videoDataAspectChange = addStateMachine("VideoDataAspectChange", new AspectChangeStateMachine(this, 24, 24 * Constants.videoDataPackingFactor));
+		videoDataAspectChange.getInput("word_in").connect(videoDataStreamNarrow);
+
+		DFELink videoDataStreamWide = videoDataAspectChange.getOutput("word_out");
+		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStreamWide, 24 * Constants.videoDataPackingFactor * Constants.pixelDepth);
+		videoSignalKernel.getInput("rgb").connect(videoDataStreamWide);
 
 		if(isTargetSimulation()){
 
@@ -269,7 +267,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	private void configBuild(EnvironmentMapPlayerEngineParameters params) {
 		BuildConfig buildConfig = getBuildConfig();
-		buildConfig.setMPPRCostTableSearchRange(1, 30);
+		buildConfig.setMPPRCostTableSearchRange(10, 40);
 		buildConfig.setMPPRParallelism(6);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
 		buildConfig.setBuildEffort(Effort.HIGH);

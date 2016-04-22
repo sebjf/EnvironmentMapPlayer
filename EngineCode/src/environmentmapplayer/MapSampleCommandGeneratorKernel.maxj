@@ -107,19 +107,11 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         // this will be the second cache invalidation in a row
         DFEVar reuse_last_pixel = addr_burst_0.neq(addr_burst_1) & addr_burst_1.neq(addr_burst_2);
 
-        reuse_last_pixel.simWatch("reuse_last_pixel");
-
-        addr_burst.simWatch("addr_burst1");
-
         addr_burst = reuse_last_pixel ? addr_burst_1 : addr_burst;
-
-        addr_burst.simWatch("addr_burst2");
 
         // so reuse the last cache value
         DFEVar cached_addr_burst = stream.offset(addr_burst, -1);
         DFEVar cache_valid = cached_addr_burst.eq(addr_burst);
-
-        cached_addr_burst.simWatch("cached_addr_burst");
 
         /* overwrite the commands if the plane value indicates we should be setting the null colour */
         DFEVar command_invalid = plane.eq(255);

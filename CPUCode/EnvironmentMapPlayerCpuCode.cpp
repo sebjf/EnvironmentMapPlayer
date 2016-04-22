@@ -20,7 +20,7 @@
 #include "ArduinoLED.hpp"
 #include "Stopwatch.hpp"
 
-//#define USEOCULUS
+#define USEOCULUS
 
 #ifdef USEOCULUS
 #include "Oculus.hpp"
@@ -58,12 +58,12 @@ int main(void)
 
 	EnvironmentMap environmentMap(engine, maxfile);
 	environmentMap.num_banks_used = 3;
-//	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* Initialise the sample parameter map */
 
 	RayParameterMap rayParameterMap(engine, maxfile);
-//	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 
 	/* ignore memory input on subsequent runs */
 
@@ -184,8 +184,6 @@ int main(void)
 			elevation += -d.x;
 		}
 
-#ifdef USEOCULUS
-
 		switch(keycode)
 		{
 		case KEY_S:
@@ -194,7 +192,12 @@ int main(void)
 		case KEY_R:
 			max_reset_engine(engine);
 			break;
+		case KEY_Q:
+			run = false;
+			break;
 		}
+
+#ifdef USEOCULUS
 
 		if(enablePlayback && startPlayback)
 		{
