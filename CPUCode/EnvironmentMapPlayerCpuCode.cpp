@@ -20,7 +20,7 @@
 #include "ArduinoLED.hpp"
 #include "Stopwatch.hpp"
 
-#define USEOCULUS
+//#define USEOCULUS
 
 #ifdef USEOCULUS
 #include "Oculus.hpp"
@@ -33,6 +33,7 @@ bool run = true;
 void int_handler(int s){
 	(void)s;
    run = false;
+   exit(1);
 }
 
 int main(void)
@@ -57,7 +58,9 @@ int main(void)
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine, maxfile);
-	environmentMap.num_banks_used = 3;
+	environmentMap.bank_address_bits_offset = 25;
+	environmentMap.num_banks_used = 8;
+	environmentMap.bank_start_num = 0;
 	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* Initialise the sample parameter map */
@@ -103,6 +106,7 @@ int main(void)
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","bank_address_bits_offset", environmentMap.bank_address_bits_offset);
 	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);

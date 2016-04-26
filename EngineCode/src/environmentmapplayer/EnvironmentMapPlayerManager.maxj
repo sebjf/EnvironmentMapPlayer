@@ -176,7 +176,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStreamWide, 24 * Constants.videoDataPackingFactor * Constants.pixelDepth);
 		videoSignalKernel.getInput("rgb").connect(videoDataStreamWide);
 
-		if(isTargetSimulation()){
+		//if(isTargetSimulation()){
+		if(true){
 
 			addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
@@ -226,17 +227,16 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		engine_interface.route("sampleDataFanout -> sampleMapDimm1_fromCPU_1, sampleDataFanout -> sampleMapDimm1_fromCPU_2");
 
 		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "numRepeats", 0);
-		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "startAddress", lmem_address);
+		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "startAddress", lmem_address / Constants.burstSizeInBytes);
 		engine_interface.setScalar("sampleMapDimm1_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
 		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "numRepeats", 0);
-		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "startAddress", lmem_address);
+		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "startAddress", lmem_address / Constants.burstSizeInBytes);
 		engine_interface.setScalar("sampleMapDimm2_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
 
 /*
 		engine_interface.setLMemLinear("sampleMap_toDimm1", lmem_address, lmem_size);
 		engine_interface.setLMemLinear("sampleMap_toDimm2", lmem_address, lmem_size);
 */
-
 
 		engine_interface.setStream("sampleMap_fromCPU", CPUTypes.UINT8, lmem_size);
 

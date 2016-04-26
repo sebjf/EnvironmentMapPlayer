@@ -26,12 +26,10 @@ private:
 
 	int m_map_size_in_bytes;
 
-    int bank_address_bits_count;
-    int bank_address_bits_offset;
-
 public:
 	int num_banks_used;
 	int bank_start_num;
+    int bank_address_bits_offset;
 
 public:
 	EnvironmentMap(max_engine_t* engine, max_file_t* maxfile)
@@ -42,7 +40,6 @@ public:
 
 		bank_start_num = 0;
 		num_banks_used = 1;
-		bank_address_bits_count = 3;
 		bank_address_bits_offset = 25;
 	}
 
@@ -57,29 +54,25 @@ public:
 		SDL_Surface* surface = SDL_CreateRGBSurface(0, img->w, img->h, 32, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
 		SDL_BlitSurface(img,NULL,surface,NULL);
 
-		printf("writing environment map...(%i times)\n", num_banks_used);
-
 		int texture_size_bytes = surface->w * surface->h * 4;
 
 		m_map_size_in_bytes = texture_size_bytes;
 
-		if(num_banks_used > 1)
+		printf("Texture Size: %i bytes\n", m_map_size_in_bytes);
+
+		unsigned long bank_size = (pow(2, bank_address_bits_offset)*BURSTSIZE_BYTES);
+		if(bank_size <= (unsigned long)m_map_size_in_bytes)
 		{
-			unsigned long bank_size = (pow(2, bank_address_bits_offset)*BURSTSIZE_BYTES);
-			if(bank_size <= (unsigned long)m_map_size_in_bytes)
-			{
-				printf("Warning: texture too large to fit in a single bank.");
-			}
+			printf("Warning: texture too large to fit in a single bank. (%lu bytes)\n", bank_size);
 		}
 
 		max_actions_t* actions[num_banks_used];
 
 		for(int i = 0; i < num_banks_used; i++){
 
-			int64_t map_offset_in_bytes = 0;
-			int64_t bank_offset_in_bursts = bank_start_num + ((int64_t)i << bank_address_bits_offset);
+			int64_t bank_offset_in_bursts = (((int64_t)bank_start_num + (int64_t)i) << bank_address_bits_offset);
 			int64_t bank_offset_in_bytes = bank_offset_in_bursts * BURSTSIZE_BYTES;
-			int64_t address = map_offset_in_bytes + bank_offset_in_bytes;
+			int64_t address = bank_offset_in_bytes;
 
 			max_actions_t* memact = max_actions_init(m_maxfile, "sampleMap_initialisation");
 
@@ -88,6 +81,8 @@ public:
 
 			max_queue_input(memact,"sampleMap_fromCPU",surface->pixels,texture_size_bytes);
 			actions[i] = memact;
+
+			printf("writing environment map...(%i times)(address: %i)\n", num_banks_used, address);
 
 			max_run(m_engine, memact);
 		}

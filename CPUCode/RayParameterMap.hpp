@@ -205,8 +205,6 @@ private:
 
 	void UpdateParameterMap()
 	{
-		printf("writing ray parameter map...\n");
-
 		float sample_word_size_bytes = (BURSTSIZE_BYTES * BURSTCOUNT);
 
 		int samples_per_word = (int)floor( sample_word_size_bytes / sizeof(SampleParameters_t));
@@ -248,6 +246,8 @@ private:
 
 			max_queue_input(memact,"rayParameterMap_fromCPU",m_sampleParameterData,m_sampleParameterDataSize);
 			actions[i] = memact;
+
+			printf("writing ray parameter map...\n");
 
 			max_run(m_engine, memact);
 		}
