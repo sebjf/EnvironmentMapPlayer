@@ -329,8 +329,6 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [out] outstream_displayDataOut Stream "displayDataOut".
- * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  */
 void EnvironmentMapPlayer(
@@ -367,8 +365,6 @@ void EnvironmentMapPlayer(
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	void *outstream_displayDataOut,
-	size_t outstream_size_displayDataOut,
 	const char * routing_string);
 
 /**
@@ -412,8 +408,6 @@ void EnvironmentMapPlayer(
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [out] outstream_displayDataOut Stream "displayDataOut".
- * \param [in] outstream_size_displayDataOut The size of the stream outstream_displayDataOut in bytes.
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  * \return A handle on the execution status, or NULL in case of error.
  */
@@ -451,8 +445,6 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	void *outstream_displayDataOut,
-	size_t outstream_size_displayDataOut,
 	const char * routing_string);
 
 /**
@@ -493,8 +485,6 @@ typedef struct {
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */
 	size_t instream_size_sampleMap_fromCPU; /**<  [in] The size of the stream instream_sampleMap_fromCPU in bytes. */
-	void *outstream_displayDataOut; /**<  [out] Stream "displayDataOut". */
-	size_t outstream_size_displayDataOut; /**<  [in] The size of the stream outstream_displayDataOut in bytes. */
 	const char * routing_string; /**<  [in] A string containing comma-separated "from_name -> to_name" routing commands. */
 } EnvironmentMapPlayer_actions_t;
 

@@ -176,8 +176,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStreamWide, 24 * Constants.videoDataPackingFactor * Constants.pixelDepth);
 		videoSignalKernel.getInput("rgb").connect(videoDataStreamWide);
 
-		//if(isTargetSimulation()){
-		if(true){
+		if(isTargetSimulation()){
+		//if(true){
 
 			addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 

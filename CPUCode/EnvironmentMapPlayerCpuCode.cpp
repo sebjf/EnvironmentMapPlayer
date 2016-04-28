@@ -67,6 +67,7 @@ int main(void)
 
 	RayParameterMap rayParameterMap(engine, maxfile);
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+//	rayParameterMap.InitialiseBasicMap();
 
 	/* ignore memory input on subsequent runs */
 
