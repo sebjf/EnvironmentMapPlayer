@@ -298,6 +298,7 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  * \brief Basic static function for the interface 'default'.
  * 
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_bank_address_bits_offset Input scalar parameter "MapSampleCommandGeneratorKernel.bank_address_bits_offset".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_cache_interval Input scalar parameter "MapSampleCommandGeneratorKernel.cache_interval".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
@@ -336,6 +337,7 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  */
 void EnvironmentMapPlayer(
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_bank_address_bits_offset,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_cache_interval,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
@@ -381,6 +383,7 @@ void EnvironmentMapPlayer(
  * 
  * 
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_bank_address_bits_offset Input scalar parameter "MapSampleCommandGeneratorKernel.bank_address_bits_offset".
+ * \param [in] inscalar_MapSampleCommandGeneratorKernel_cache_interval Input scalar parameter "MapSampleCommandGeneratorKernel.cache_interval".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_max_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_min_mip_level Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level".
  * \param [in] inscalar_MapSampleCommandGeneratorKernel_num_banks_used Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used".
@@ -420,6 +423,7 @@ void EnvironmentMapPlayer(
  */
 max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_bank_address_bits_offset,
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_cache_interval,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level,
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used,
@@ -462,6 +466,7 @@ max_run_t *EnvironmentMapPlayer_nonblock(
  */
 typedef struct { 
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_bank_address_bits_offset; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.bank_address_bits_offset". */
+	uint64_t inscalar_MapSampleCommandGeneratorKernel_cache_interval; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.cache_interval". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_max_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.max_mip_level". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_min_mip_level; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.min_mip_level". */
 	uint64_t inscalar_MapSampleCommandGeneratorKernel_num_banks_used; /**<  [in] Input scalar parameter "MapSampleCommandGeneratorKernel.num_banks_used". */

@@ -113,8 +113,8 @@ public:
 				m_SampleParameters[x][y].row = y;
 				m_SampleParameters[x][y].cam_scalar = -1;
 
-				if(x > m_width / 2){
-					m_SampleParameters[x][y].col -= (m_width/2);
+				if(y > m_height / 2){
+					m_SampleParameters[x][y].row -= (m_height/2);
 					m_SampleParameters[x][y].cam_scalar = 1;
 				}
 			}
@@ -205,7 +205,7 @@ private:
 
 	void UpdateParameterMap()
 	{
-		float sample_word_size_bytes = (BURSTSIZE_BYTES * BURSTCOUNT);
+		int sample_word_size_bytes = (BURSTSIZE_BYTES * BURSTCOUNT);
 
 		int samples_per_word = (int)floor( sample_word_size_bytes / sizeof(SampleParameters_t));
 		float total_samples = m_width * m_height;

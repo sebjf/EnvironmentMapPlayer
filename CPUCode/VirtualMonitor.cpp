@@ -144,6 +144,7 @@ VirtualMonitor::VirtualMonitor(max_file_t* maxfile)
 	file = NULL;
 	enable_raw_mode = false;
 	m_maxfile = maxfile;
+	enable_saving_frames = false;
 }
 
 VirtualMonitor::VirtualMonitor(int width, int height)
@@ -152,6 +153,7 @@ VirtualMonitor::VirtualMonitor(int width, int height)
 	file = NULL;
 	enable_raw_mode = false;
 	m_maxfile = NULL;
+	enable_saving_frames = false;
 }
 
 void VirtualMonitor::Connect(max_engine_t* engine)
@@ -240,6 +242,11 @@ void VirtualMonitor::Refresh(int pixels_to_update)
 				((uint32_t*)surface_data)[current_pixel] = 0xFF000000;
 			}
 
+			if(monitor.pixelsReceived == 0)
+			{
+				SaveCurrentFrame();
+			}
+
 			monitor.pixelsReceived++;
 		}
 
@@ -247,6 +254,10 @@ void VirtualMonitor::Refresh(int pixels_to_update)
 
 		slots_got += num_slots;
 		monitor.slotsReceived += num_slots;
+
+		if(num_slots <= 0){ //if there is no data the graph could be deadlocked, so just leave it for now and continue the next time refresh is called
+			break;
+		}
 	}
 
 	RedrawMonitorFromSource(monitor);
@@ -256,6 +267,24 @@ void VirtualMonitor::Refresh(int pixels_to_update)
 void VirtualMonitor::MirrorToFile(std::string filename)
 {
 	file = new std::ofstream(filename.c_str(), std::ofstream::out);
+}
+
+void VirtualMonitor::SaveFrames(std::string filenameformat) //must have one integer parameter
+{
+	frame_filename_format = filenameformat;
+	enable_saving_frames = true;
+	saved_frame_count = 0;
+}
+
+void VirtualMonitor::SaveCurrentFrame()
+{
+	if(enable_saving_frames)
+	{
+		char filename[256];
+		sprintf(filename, frame_filename_format.c_str(), saved_frame_count);
+		SDL_SaveBMP(monitor.source, filename);
+		saved_frame_count++;
+	}
 }
 
 VirtualMonitor::~VirtualMonitor()
@@ -269,24 +298,7 @@ VirtualMonitor::~VirtualMonitor()
 		SDL_Quit();
 	}
 
-	if(file != NULL){	/*
-	private static EngineInterface modeDefault() {
-		EngineInterface engine_interface = new EngineInterface();
-		CPUTypes   type = CPUTypes.INT32;
-		int        size = type.sizeInBytes();
-
-//		InterfaceParam  a    = engine_interface.addParam("A", CPUTypes.INT);
-		InterfaceParam  N    = engine_interface.addParam("N", CPUTypes.INT);
-
-//		engine_interface.setScalar(s_kernelName, "a", a);
-
-		engine_interface.setTicks(s_kernelName, N);
-		engine_interface.setStream("x",   type, N * size);
-		engine_interface.setStream("y",   type, N * size);
-		engine_interface.setStream("s", type, N * size);
-		return engine_interface;
-	}
-	*/
+	if(file != NULL){
 		file->close();
 		delete file;
 	}

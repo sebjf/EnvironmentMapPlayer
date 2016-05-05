@@ -99,6 +99,10 @@ public class MapSampleReaderKernel extends Kernel {
 		DFEVar cache_valid = makePackedInput("cache_valid", dfeBool());
 		DFEVar dimm = makePackedInput("dimm", dfeUInt(1));
 		DFEVar sample_offset_in_pixels = makePackedInput("sample_offset_in_pixels", dfeUInt(32));
+//        DFEVar cache_interval = io.scalarInput("cache_interval", dfeUInt(32));
+//        DFEVar cache_valid = ~control.count.makeCounter(control.count.makeParams(32).withMax(cache_interval).withWrapMode(WrapMode.COUNT_LT_MAX_THEN_WRAP)).getCount().eq(0);
+//        DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
+//        DFEVar sample_offset_in_pixels = constant.var(dfeUInt(32), 0);
 
 
 		DFEVar sampleDimm1 = io.input("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));

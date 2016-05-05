@@ -57,6 +57,7 @@ public:
 	~VirtualMonitor();
 
 	void MirrorToFile(std::string filename);
+	void SaveFrames(std::string filename);
 
 	void Connect(max_engine_t* engine);
 	void Refresh(int pixels_to_draw);
@@ -67,11 +68,16 @@ public:
 		enable_raw_mode = true;
 	}
 
+	void SaveCurrentFrame();
+
 private:
 	VirtualMonitorInfo monitor;
 	max_file_t* m_maxfile;
 	std::ofstream* file;
 	bool enable_raw_mode; //When set the flags are ignored and all colour data is drawn to the screen
+	std::string frame_filename_format;
+	bool enable_saving_frames;
+	int saved_frame_count;
 };
 
 #endif /* VIRTUALMONITOR_H_ */

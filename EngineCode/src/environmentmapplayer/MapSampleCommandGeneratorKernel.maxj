@@ -6,6 +6,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.WrapMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
@@ -110,6 +111,9 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         DFEVar cached_addr_burst = stream.offset(addr_burst, -1);
         DFEVar cache_valid = cached_addr_burst.eq(addr_burst);
 
+        DFEVar cache_interval = io.scalarInput("cache_interval", dfeUInt(32));
+        cache_valid = ~control.count.makeCounter(control.count.makeParams(32).withMax(cache_interval).withWrapMode(WrapMode.COUNT_LT_MAX_THEN_WRAP)).getCount().eq(0);
+
         /* overwrite the commands if the plane value indicates we should be setting the null colour */
         DFEVar command_invalid = plane.eq(255);
 
@@ -132,9 +136,6 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
         //add the bank offset
         addr_burst = addr_burst.cast(dfeUInt(28)) | bank_bits.cast(dfeUInt(28)).shiftLeft(bank_address_bits_offset.cast(dfeUInt(5)));
 
-        addr_burst.simWatch("addressBurst");
-        (~cache_valid).simWatch("enable");
-
 		/*
 		DFEStructType memoryCommand_t = LMemCommandStream.getLMemCommandDFEStructType();
 		DFEStruct memoryCommand = memoryCommand_t.newInstance(this);
@@ -149,7 +150,6 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		*/
 
         DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
-     //   DFEVar dimm = constant.var(dfeUInt(1),0);
 
         makePackedOutput("dimm", dfeUInt(1)).connect(dimm);
         makePackedOutput("cache_valid", dfeBool()).connect(cache_valid);

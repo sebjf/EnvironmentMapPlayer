@@ -36,6 +36,16 @@ void int_handler(int s){
    exit(1);
 }
 
+struct __attribute__((__packed__)) debugword
+{
+	u_int8_t plane;
+	u_int8_t miplevel;
+	float u;
+	float v;
+	u_int8_t padding[6];
+};
+
+
 int main(void)
 {
 
@@ -55,30 +65,31 @@ int main(void)
 
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
-	/* Initialise environment map */
-
-	EnvironmentMap environmentMap(engine, maxfile);
-	environmentMap.bank_address_bits_offset = 25;
-	environmentMap.num_banks_used = 8;
-	environmentMap.bank_start_num = 0;
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
-
 	/* Initialise the sample parameter map */
 
 	RayParameterMap rayParameterMap(engine, maxfile);
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
-//	rayParameterMap.InitialiseBasicMap();
+
+	/* Initialise environment map */
+
+	EnvironmentMap environmentMap(engine, maxfile);
+	environmentMap.bank_address_bits_offset = 25;
+	environmentMap.num_banks_used = 1;
+	environmentMap.bank_start_num = 0;
+	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
 
 	/* ignore memory input on subsequent runs */
 
-//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sampleMap_cmd1_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","io_sampleMap_cmd2_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_sampleMap_fromDimm1_force_disabled",1);
-//	max_set_uint64t(act,"MapSampleReaderKernel","io_sampleMap_fromDimm2_force_disabled",1);
+	max_set_uint64t(act,"rayParameterMap_toMem_addrGen","io_cmd_force_disabled",1);
 
-//	max_ignore_lmem(act,"sampleMap_toDimm1");
-//	max_ignore_lmem(act,"sampleMap_toDimm2");
-//	max_ignore_lmem(act,"rayParameterMap_toMem");
+	max_ignore_lmem(act,"sampleMap_toDimm1");
+	max_ignore_lmem(act,"sampleMap_toDimm2");
+	max_ignore_lmem(act,"rayParameterMap_toMem");
+
+	/* Debug Parameters */
+
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","cache_interval",6);
+
 
 	max_ignore_block(act,"sampleDataFanout");
 
@@ -86,15 +97,11 @@ int main(void)
 	max_ignore_kernel(act,"sampleMapDimm1_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm2_toMem_addrGen");
 
-	max_set_uint64t(act,"rayParameterMap_toMem_addrGen","io_cmd_force_disabled",1);
-	max_set_uint64t(act,"sampleMapDimm1_toMem_addrGen","io_cmd_force_disabled",1);
-	max_set_uint64t(act,"sampleMapDimm2_toMem_addrGen","io_cmd_force_disabled",1);
-
 	/* Rendering parameters */
 
-	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","num_banks_used", rayParameterMap.num_banks_used);
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","start_bank_num", rayParameterMap.bank_start_num);
+	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 
 	max_set_double(act, "RayCasterKernel", "ipd", 0.0f);
@@ -121,19 +128,16 @@ int main(void)
 
 	max_reset_engine(engine);
 
-	void* stalls = malloc(4 * 4096);
-	//max_ignore_stream(act, "profilerOutput");
-	//max_queue_output(act, "profilerOutput", stalls, 16);
 
 	printf("Running on DFE...\n");
 
 	max_run(engine, act);
 
-
 	//Get a continuous stream and write to the virtual display when simulating
 
 	VirtualMonitor monitor(maxfile);
 	monitor.Connect(engine);
+	monitor.SaveFrames("/home/sfriston/maxworkspace/EnvironmentMapPlayer/simulation_frame_%i.bmp");
 
 	/* Set up the input devices */
 

@@ -62,7 +62,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock rayCasterKernel = addKernel(new RayCasterKernel(makeKernelParameters("RayCasterKernel")));
 
 		KernelBlock commandGeneratorKernel = addKernel(new MapSampleCommandGeneratorKernel(makeKernelParameters("MapSampleCommandGeneratorKernel")));
-
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
 
 		// Create the memory interfaces
@@ -70,8 +69,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		LMemInterface rayParameterMapDimm = addLMemInterface("rayParameterMapDimm", 1);
 		LMemInterface sampleMapDimm1 = addLMemInterface("sampleMapDimm1", 1);
 		LMemInterface sampleMapDimm2 = addLMemInterface("sampleMapDimm2", 1);
-
-//		mapSampleReaderKernel.setClock(generateStreamClock("mapSampleReaderClock", 165));
 
 		// Create memory initialisation interfaces
 		//---------------------------------------------------------------------------
@@ -98,6 +95,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 */
 		//---------------------------------------------------------------------------
 
+		/* Connect the sample parameter command generator & reader kernels to memory */
+
+		raySampleReaderKernel.getInput("rayParameterMap_fromMem_in").connect(rayParameterMapDimm.addStreamFromLMem("rayParameterMap_fromMem", raySampleCommandGeneratorKernel.getOutput("rayParameterMap_fromMem_cmdStream")));
+
 		/* Connect the Ray Caster to the inputs from the CPU */
 
 		rayCasterKernel.getInput("cameraUpdates").connect(addStreamFromCPU("cameraUpdates",StreamMode.LOW_LATENCY_ENABLED));
@@ -106,16 +107,13 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		rayCasterKernel.getInput("sampleParameters").connect(raySampleReaderKernel.getOutput("sampleParameters"));
 
-		/* Connect the sample parameter command generator & reader kernels to memory */
-
-		raySampleReaderKernel.getInput("rayParameterMap_fromMem_in").connect(rayParameterMapDimm.addStreamFromLMem("rayParameterMap_fromMem", raySampleCommandGeneratorKernel.getOutput("rayParameterMap_fromMem_cmdStream")));
-
 		/* Connect the Ray Caster and Colour Sampling Kernels Together */
 
 		commandGeneratorKernel.getInput("plane").connect(rayCasterKernel.getOutput("plane"));
 		commandGeneratorKernel.getInput("miplevel").connect(rayCasterKernel.getOutput("miplevel"));
 		commandGeneratorKernel.getInput("u").connect(rayCasterKernel.getOutput("u"));
 		commandGeneratorKernel.getInput("v").connect(rayCasterKernel.getOutput("v"));
+
 
 		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
@@ -203,7 +201,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		InterfaceParam lmem_address = engine_interface.addParam("address", CPUTypes.INT64);
 
 		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "numRepeats", 0);
-		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "startAddress", lmem_address);
+		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "startAddress", lmem_address / Constants.burstSizeInBytes);
 		engine_interface.setScalar("rayParameterMap_toMem_addrGen", "numBursts", lmem_size / Constants.burstSizeInBytes);
 
 /*
