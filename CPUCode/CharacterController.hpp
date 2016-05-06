@@ -15,11 +15,18 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
+#include <iostream>
+#include <string>
 #include <boost/assign.hpp>
 
 #define X 0
 #define Y 1
 #define Z 2
+
+#define KEYBOARDEVENTFOLDER "/dev/input/by-id/"
+
+extern FILE *popen(const char* cmd, const char* type);
 
 class CharacterController
 {
@@ -31,6 +38,40 @@ public:
 		{
 			printf("Unable to open keyboard\n");
 		}
+
+		position = boost::assign::list_of(0)(0)(0);
+		dposition = boost::assign::list_of(0)(0)(0);
+
+		scale = 500;
+	}
+
+	CharacterController()
+	{
+		FILE *in;
+	    char buff[512];
+
+        if(!(in = popen("ls /dev/input/by-id | grep event-kbd", "r")))
+        {
+        	printf("Unable to open shell to find keyboard\n");
+	    }
+        else
+        {
+			if(fgets(buff, sizeof(buff), in)!=NULL)
+			{
+				std::string filename = string(KEYBOARDEVENTFOLDER) + string(buff);
+				replace(filename.begin(), filename.end(), '\n', '\0');
+				fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
+				if(fd < 0)
+				{
+					printf("Unable to open keyboard\n");
+				}
+			}
+			else
+			{
+				printf("Unable to open default keyboard\n");
+			}
+	        pclose(in);
+        }
 
 		position = boost::assign::list_of(0)(0)(0);
 		dposition = boost::assign::list_of(0)(0)(0);

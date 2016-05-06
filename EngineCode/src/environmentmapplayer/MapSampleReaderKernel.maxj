@@ -8,12 +8,6 @@ import maxpower.kernel.io.AspectChangeIO;
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.Count.Counter;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
-import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
@@ -33,57 +27,6 @@ public class MapSampleReaderKernel extends Kernel {
 		return acio.input(name, type);
 	}
 
-	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type)
-	{
-		NonBlockingInput<T> input =
-			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
-		T data = Reductions.streamHold(input.data, input.valid);
-
-		// should be enabled on every run
-
-		Counter validCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(input.valid));
-
-		io.scalarOutput(name + "_validCount", dfeUInt(32)).connect(validCounter.getCount());
-
-		return data;
-	}
-
-	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type, DFEVar enable)
-	{
-		NonBlockingInput<T> input =
-			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
-		T data = Reductions.streamHold(input.data, input.valid);
-
-		Counter validCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(input.valid));
-		Counter enableCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(enable));
-
-		Counter wouldStallCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(enable & (~input.valid)));
-
-		io.scalarOutput(name + "_validCount", dfeUInt(32)).connect(validCounter.getCount());
-		io.scalarOutput(name + "_enableCount", dfeUInt(32)).connect(enableCounter.getCount());
-
-		io.scalarOutput(name + "_WouldStallCount", dfeUInt(32)).connect(wouldStallCounter.getCount());
-
-		return data;
-	}
-
-	private <T extends KernelObject<T>> T makeInstrumentedNonBlockingInput(String name, KernelType<T> type, DFEVar enable)
-	{
-		NonBlockingInput<T> input =
-			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
-		T data = Reductions.streamHold(input.data, input.valid);
-
-		DFEVar stall = enable & (~input.valid);
-
-		Counter sequentialStallCounter = control.count.makeCounter(control.count.makeParams(32).withEnable(stall).withReset(input.valid));
-		DFEVar sequentialStallCount = sequentialStallCounter.getCount();
-
-		io.scalarOutput(name + "_SequentialStalls", dfeUInt(32)).connect(Reductions.streamMax(sequentialStallCount));
-
-		return data;
-	}
-
-
 	protected MapSampleReaderKernel(KernelParameters parameters) {
 		super(parameters);
 
@@ -99,23 +42,11 @@ public class MapSampleReaderKernel extends Kernel {
 		DFEVar cache_valid = makePackedInput("cache_valid", dfeBool());
 		DFEVar dimm = makePackedInput("dimm", dfeUInt(1));
 		DFEVar sample_offset_in_pixels = makePackedInput("sample_offset_in_pixels", dfeUInt(32));
-//        DFEVar cache_interval = io.scalarInput("cache_interval", dfeUInt(32));
-//        DFEVar cache_valid = ~control.count.makeCounter(control.count.makeParams(32).withMax(cache_interval).withWrapMode(WrapMode.COUNT_LT_MAX_THEN_WRAP)).getCount().eq(0);
-//        DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
-//        DFEVar sample_offset_in_pixels = constant.var(dfeUInt(32), 0);
-
 
 		DFEVar sampleDimm1 = io.input("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));
 		DFEVar sampleDimm2 = io.input("sampleMap_fromDimm2",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(1));
 		DFEVar burst = control.mux(dimm, sampleDimm1, sampleDimm2);
 		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
-
-/*
-		DFEVar sampleDimm1 = makeInstrumentedNonBlockingInput("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));
-		DFEVar sampleDimm2 = makeInstrumentedNonBlockingInput("sampleMap_fromDimm2",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(1));
-		DFEVar burst = control.mux(dimm, sampleDimm1, sampleDimm2);
-		DFEVar cached_burst = Reductions.streamHold(burst, ~cache_valid);
-*/
 
 		sample_offset_in_pixels = clamp(sample_offset_in_pixels, 0, pixels_per_word);
 

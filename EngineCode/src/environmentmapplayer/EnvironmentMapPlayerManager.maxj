@@ -175,7 +175,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		videoSignalKernel.getInput("rgb").connect(videoDataStreamWide);
 
 		if(isTargetSimulation()){
-		//if(true){
 
 			addStreamToCPU("displayDataOut",StreamMode.LOW_LATENCY_ENABLED).connect(videoSignalKernel.getOutput("displayDataOut"));
 
@@ -266,7 +265,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 	private void configBuild(EnvironmentMapPlayerEngineParameters params) {
 		BuildConfig buildConfig = getBuildConfig();
 		buildConfig.setMPPRCostTableSearchRange(10, 40);
-		buildConfig.setMPPRParallelism(6);
+		buildConfig.setMPPRParallelism(4);
 		buildConfig.setMPPRRetryNearMissesThreshold(500);
 		buildConfig.setBuildEffort(Effort.HIGH);
 		buildConfig.setOptimizationGoal(OptimizationTechnique.SPEED);

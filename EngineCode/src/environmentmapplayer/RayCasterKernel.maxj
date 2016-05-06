@@ -37,7 +37,6 @@ class RayCasterKernel extends Kernel {
 	private static final DFEType dfeuint = dfeInt(32);
 	private static final DFEType dfefloat = dfeFloat(8, 24);
 	private static final DFEVectorType<DFEVar> vector3 = new DFEVectorType<DFEVar>(dfeFloat(8,24),3);
-	private static final DFEVectorType<DFEVar> vector4 = new DFEVectorType<DFEVar>(dfeFloat(8,24),4);
 
 	private static final DFEStructType planeParams_t =
 		new DFEStructType(
@@ -59,14 +58,6 @@ class RayCasterKernel extends Kernel {
 				DFEStructType.sft("camera_lookat", vector3),
 				DFEStructType.sft("camera_up", vector3),
 				DFEStructType.sft("padding", dfeRawBits(224)));
-
-	public static final DFEStructType debugCommandWord_t =
-		new DFEStructType(
-				DFEStructType.sft("plane", dfeUInt(8)),
-				DFEStructType.sft("miplevel", dfeUInt(8)),
-				DFEStructType.sft("u", dfeFloat(8, 24)),
-				DFEStructType.sft("v", dfeFloat(8, 24)),
-				DFEStructType.sft("padding", dfeRawBits(48)));
 
 	private class Vector3
 	{
@@ -269,10 +260,6 @@ class RayCasterKernel extends Kernel {
 		/* Inputs from manager that request this kernel to draw a specific ray */
 
 		DFEStruct sampleParameters = io.input("sampleParameters", RaySampleCommandGeneratorKernel.SampleParameters_t);
-
-		sampleParameters["col"].simWatch("col");
-		sampleParameters["row"].simWatch("row");
-		sampleParameters["cam_scalar"].simWatch("cam_scalar");
 
 		/* Inputs from host defining how ray should be computed */
 

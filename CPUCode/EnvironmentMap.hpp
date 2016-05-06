@@ -82,7 +82,7 @@ public:
 			max_queue_input(memact,"sampleMap_fromCPU",surface->pixels,texture_size_bytes);
 			actions[i] = memact;
 
-			printf("writing environment map...(%i times)(address: %i)\n", num_banks_used, address);
+			printf("writing environment map...(%i times)(address: %li)\n", num_banks_used, address);
 
 			max_run(m_engine, memact);
 		}

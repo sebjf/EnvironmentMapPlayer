@@ -224,6 +224,11 @@ private:
 				int address_in_words = floor((float)address_in_samples / (float)samples_per_word);
 				int offset_in_samples = address_in_samples % samples_per_word;
 
+				if(address_in_words == 43690 && offset_in_samples == 29)
+				{
+					printf("hello");
+				}
+
 				int address_in_bytes = (address_in_words * sample_word_size_bytes) + (offset_in_samples * sizeof(SampleParameters_t));
 
 				SampleParameters_t* parameters = (SampleParameters_t*)(m_sampleParameterData + address_in_bytes);

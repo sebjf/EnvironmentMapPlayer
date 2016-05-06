@@ -11,8 +11,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar.Radix;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStruct;
 
 public class RaySampleReaderKernel extends Kernel {
 
@@ -26,8 +24,8 @@ public class RaySampleReaderKernel extends Kernel {
 		optimization.pushPipeliningFactor(0.25);
 
 		VideoCounter counters = new VideoCounter(this, VideoCounter.Scope.ActiveOnly);
-		DFEVar col = VideoCounter.displayStandard.H_Active - counters.x.cast(dfeInt(32));
-		DFEVar row = VideoCounter.displayStandard.V_Active - counters.y.cast(dfeInt(32));
+		DFEVar col = counters.x.cast(dfeInt(32));
+		DFEVar row = counters.y.cast(dfeInt(32));
 
 		/* Predict what command was last sent to the memory from the Ray Command Generator kernel upstream, and thus the offset into the data word
 		 * and whether the cache is valid */
@@ -63,15 +61,6 @@ public class RaySampleReaderKernel extends Kernel {
 			samples.add(cached_burst.slice(i * bits_per_sample, bits_per_sample));
 		}
 		DFEVar sample_content = control.mux(sample_offset_into_word_in_samples, samples);
-
-		sample_address_in_bursts.simWatch("word_addr_bursts");
-		sample_offset_into_word_in_samples.simWatch("offsetinsamples");
-		sample_content.cast(dfeUInt(bits_per_sample)).simWatch("word_data", Radix.HEXADECIMAL);
-		DFEStruct s = RaySampleCommandGeneratorKernel.SampleParameters_t.unpack(sample_content);
-		s["row"].simWatch("sample_row");
-		s["col"].simWatch("sample_col");
-		row.simWatch("row");
-		col.simWatch("col");
 
 		/* Output the sample data */
 

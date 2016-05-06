@@ -40,9 +40,9 @@ public final class Constants {
 	public static int memoryPackingFactor 	= 2;
 
 	// The packing factor for the pixel commands
-	public static int pixelPackingFactor 	= 12;
+	public static int pixelPackingFactor 	= 6;
 
-	public static int videoDataPackingFactor= 32;
+	public static int videoDataPackingFactor= 6;
 
 	//number of pixel sample commands queued up at a time. As these are generated at a higher rate than they are output, this number will always be queued.
 	//it should be large enough to overcome the latency and bandwidth bottleneck of the lmem. The optimal size is 13x the size of the map sample buffers.

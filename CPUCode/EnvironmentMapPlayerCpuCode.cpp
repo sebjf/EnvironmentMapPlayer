@@ -36,19 +36,8 @@ void int_handler(int s){
    exit(1);
 }
 
-struct __attribute__((__packed__)) debugword
-{
-	u_int8_t plane;
-	u_int8_t miplevel;
-	float u;
-	float v;
-	u_int8_t padding[6];
-};
-
-
 int main(void)
 {
-
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = int_handler;
 	sigemptyset(&sigIntHandler.sa_mask);
@@ -85,11 +74,6 @@ int main(void)
 	max_ignore_lmem(act,"sampleMap_toDimm1");
 	max_ignore_lmem(act,"sampleMap_toDimm2");
 	max_ignore_lmem(act,"rayParameterMap_toMem");
-
-	/* Debug Parameters */
-
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","cache_interval",6);
-
 
 	max_ignore_block(act,"sampleDataFanout");
 
@@ -145,7 +129,7 @@ int main(void)
 	int inclination = 0;
 	int elevation = 0;
 
-	CharacterController characterController(string("/dev/input/by-id/usb-Dell_Dell_USB_Keyboard-event-kbd").c_str());
+	CharacterController characterController;	//no parameters opens the default keyboard
 	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */

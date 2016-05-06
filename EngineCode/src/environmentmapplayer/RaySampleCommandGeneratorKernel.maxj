@@ -35,8 +35,8 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 		optimization.pushPipeliningFactor(0.25);
 
 		VideoCounter counters = new VideoCounter(this, VideoCounter.Scope.ActiveOnly);
-		DFEVar col = VideoCounter.displayStandard.H_Active - counters.x.cast(dfeInt(32));
-		DFEVar row = VideoCounter.displayStandard.V_Active - counters.y.cast(dfeInt(32));
+		DFEVar col = counters.x.cast(dfeInt(32));
+		DFEVar row = counters.y.cast(dfeInt(32));
 
 		DFEVar offset = io.scalarInput("sampleParameterMapAddress", dfeUInt(32));
 
