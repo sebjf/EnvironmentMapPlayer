@@ -3,12 +3,9 @@ package environmentmapplayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import maxpower.kernel.io.AspectChangeIO;
-
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
@@ -19,12 +16,6 @@ public class MapSampleReaderKernel extends Kernel {
 		v = v > max ? constant.var(max) : v;
 		v = v < min ? constant.var(min) : v;
 		return v;
-	}
-
-	private DFEVar makePackedInput(String name, DFEType type)
-	{
-		AspectChangeIO acio = new AspectChangeIO(this, type.getTotalBits() * Constants.pixelPackingFactor);
-		return acio.input(name, type);
 	}
 
 	protected MapSampleReaderKernel(KernelParameters parameters) {
@@ -39,9 +30,9 @@ public class MapSampleReaderKernel extends Kernel {
 		int bits_per_pixel = Constants.pixel_size_in_bytes * 8;
 		int pixels_per_word = (int)Math.floor(sample_word_size_in_bytes / Constants.pixel_size_in_bytes);
 
-		DFEVar cache_valid = makePackedInput("cache_valid", dfeBool());
-		DFEVar dimm = makePackedInput("dimm", dfeUInt(1));
-		DFEVar sample_offset_in_pixels = makePackedInput("sample_offset_in_pixels", dfeUInt(32));
+		DFEVar cache_valid = io.input("cache_valid", dfeBool());
+		DFEVar dimm = io.input("dimm", dfeUInt(1));
+		DFEVar sample_offset_in_pixels = io.input("sample_offset_in_pixels", dfeUInt(32));
 
 		DFEVar sampleDimm1 = io.input("sampleMap_fromDimm1",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(0));
 		DFEVar sampleDimm2 = io.input("sampleMap_fromDimm2",dfeRawBits(sample_word_size_in_bits),~cache_valid & dimm.eq(1));

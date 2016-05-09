@@ -1,12 +1,9 @@
 package environmentmapplayer;
 
-import maxpower.kernel.io.AspectChangeIO;
-
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.LMemCommandStream;
-import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 
 public class MapSampleCommandGeneratorKernel extends Kernel {
@@ -23,12 +20,6 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 		v = v > max ? max : v;
 		v = v < min ? min : v;
 		return v;
-	}
-
-	protected DFEVar makePackedOutput(String name, KernelType<DFEVar> type)
-	{
-		AspectChangeIO acio = new AspectChangeIO(this, type.getTotalBits() * Constants.pixelPackingFactor);
-		return acio.output(name, type);
 	}
 
 	protected MapSampleCommandGeneratorKernel(KernelParameters parameters) throws Exception {
@@ -132,8 +123,8 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 
         DFEVar dimm = control.count.makeCounter(control.count.makeParams(1).withEnable(~cache_valid)).getCount();
 
-        makePackedOutput("dimm", dfeUInt(1)).connect(dimm);
-        makePackedOutput("cache_valid", dfeBool()).connect(cache_valid);
+        io.output("dimm", dfeUInt(1)).connect(dimm);
+        io.output("cache_valid", dfeBool()).connect(cache_valid);
 
 		LMemCommandStream.makeKernelOutput(
 				"sampleMap_cmd1",
@@ -153,7 +144,7 @@ public class MapSampleCommandGeneratorKernel extends Kernel {
 				constant.var(dfeUInt(4),0),
 				constant.var(false));
 
-		makePackedOutput("sample_offset_in_pixels", dfeUInt(32)) <== addr_pixel.cast(dfeUInt(32));
+		io.output("sample_offset_in_pixels", dfeUInt(32)) <== addr_pixel.cast(dfeUInt(32));
 
 	}
 

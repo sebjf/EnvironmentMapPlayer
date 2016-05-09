@@ -1,4 +1,0 @@
-CLASSPATH=/home/sfriston/maxworkspace/EnvironmentMapPlayer/EngineCode/bin:/network-raid/opt/maxq/maxq-ctl.jar:/home/sfriston/maxworkspace/MaxVideo/bin
-MAXCOMPILERJCP=/home/sfriston/maxworkspace/Ticket6476_Max4DisplayModifications_sfriston/maxeda/bin
-target=DFE
-maxFileName=EnvironmentMapPlayer

@@ -45,33 +45,37 @@ public:
 		scale = 500;
 	}
 
-	CharacterController()
+	CharacterController(bool enable)
 	{
-		FILE *in;
-	    char buff[512];
+		fd = -1;
 
-        if(!(in = popen("ls /dev/input/by-id | grep event-kbd", "r")))
-        {
-        	printf("Unable to open shell to find keyboard\n");
-	    }
-        else
-        {
-			if(fgets(buff, sizeof(buff), in)!=NULL)
+		if(enable){
+			FILE *in;
+			char buff[512];
+
+			if(!(in = popen("ls /dev/input/by-id | grep event-kbd", "r")))
 			{
-				std::string filename = string(KEYBOARDEVENTFOLDER) + string(buff);
-				replace(filename.begin(), filename.end(), '\n', '\0');
-				fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
-				if(fd < 0)
-				{
-					printf("Unable to open keyboard\n");
-				}
+				printf("Unable to open shell to find keyboard\n");
 			}
 			else
 			{
-				printf("Unable to open default keyboard\n");
+				if(fgets(buff, sizeof(buff), in)!=NULL)
+				{
+					std::string filename = string(KEYBOARDEVENTFOLDER) + string(buff);
+					replace(filename.begin(), filename.end(), '\n', '\0');
+					fd = open(filename.c_str(), O_RDONLY | O_NONBLOCK);
+					if(fd < 0)
+					{
+						printf("Unable to open keyboard\n");
+					}
+				}
+				else
+				{
+					printf("Unable to open default keyboard\n");
+				}
+				pclose(in);
 			}
-	        pclose(in);
-        }
+		}
 
 		position = boost::assign::list_of(0)(0)(0);
 		dposition = boost::assign::list_of(0)(0)(0);

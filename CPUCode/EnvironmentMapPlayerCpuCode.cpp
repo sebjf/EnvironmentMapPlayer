@@ -33,7 +33,6 @@ bool run = true;
 void int_handler(int s){
 	(void)s;
    run = false;
-   exit(1);
 }
 
 int main(void)
@@ -52,12 +51,16 @@ int main(void)
 	max_file_t *maxfile = EnvironmentMapPlayer_init();
 	max_engine_t *engine = max_load(maxfile, "*");
 
+	bool isSimulation = max_get_constant_uint64t(maxfile,"IS_SIMULATION");
+
 	max_actions_t* act = max_actions_init(maxfile, NULL);
 
 	/* Initialise the sample parameter map */
 
 	RayParameterMap rayParameterMap(engine, maxfile);
+	if(!isSimulation){
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
+	}
 
 	/* Initialise environment map */
 
@@ -65,7 +68,10 @@ int main(void)
 	environmentMap.bank_address_bits_offset = 25;
 	environmentMap.num_banks_used = 1;
 	environmentMap.bank_start_num = 0;
+	if(!isSimulation){
+	environmentMap.num_banks_used = 4;
 	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
+	}
 
 	/* ignore memory input on subsequent runs */
 
@@ -88,7 +94,7 @@ int main(void)
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 
-	max_set_double(act, "RayCasterKernel", "ipd", 0.0f);
+	max_set_double(act, "RayCasterKernel", "ipd", 0.6f);
 
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(1.15f/1.0f));
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(1.235f/1.0f));
@@ -121,7 +127,6 @@ int main(void)
 
 	VirtualMonitor monitor(maxfile);
 	monitor.Connect(engine);
-	monitor.SaveFrames("/home/sfriston/maxworkspace/EnvironmentMapPlayer/simulation_frame_%i.bmp");
 
 	/* Set up the input devices */
 
@@ -129,7 +134,7 @@ int main(void)
 	int inclination = 0;
 	int elevation = 0;
 
-	CharacterController characterController;	//no parameters opens the default keyboard
+	CharacterController characterController(false);	//no parameters opens the default keyboard
 	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */

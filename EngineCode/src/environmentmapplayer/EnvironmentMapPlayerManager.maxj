@@ -117,62 +117,46 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		//increase the buffer between command generator and reader, for the cache valid/sample offsets, to maximise prediction
 
-		DFELink memorySampleCommandDimm1Narrow = commandGeneratorKernel.getOutput("sampleMap_cmd1");
-		DFELink memorySampleCommandDimm2Narrow = commandGeneratorKernel.getOutput("sampleMap_cmd2");
+		DFELink memorySampleCommandDimm1 = commandGeneratorKernel.getOutput("sampleMap_cmd1");
+		DFELink memorySampleCommandDimm2 = commandGeneratorKernel.getOutput("sampleMap_cmd2");
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1, 64 * Constants.memoryCommandDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2, 64 * Constants.memoryCommandDepth);
+		DFELink sampleMapDimm1NarrowStream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1);
+		DFELink sampleMapDimm2NarrowStream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2);
 
-		StateMachineBlock memorySampleCommandDimm1AspectChange = addStateMachine("MemSampleCmd1AspectChange", new AspectChangeStateMachine(this, 64, 64 * Constants.memoryPackingFactor));
-		StateMachineBlock memorySampleCommandDimm2AspectChange = addStateMachine("MemSampleCmd2AspectChange", new AspectChangeStateMachine(this, 64, 64 * Constants.memoryPackingFactor));
-
-		memorySampleCommandDimm1AspectChange.getInput("word_in").connect(memorySampleCommandDimm1Narrow);
-		memorySampleCommandDimm2AspectChange.getInput("word_in").connect(memorySampleCommandDimm2Narrow);
-
-		DFELink memorySampleCommandDimm1Wide = memorySampleCommandDimm1AspectChange.getOutput("word_out");
-		DFELink memorySampleCommandDimm2Wide = memorySampleCommandDimm2AspectChange.getOutput("word_out");
-
-		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm1Wide, 64 * Constants.memoryPackingFactor * Constants.memoryCommandDepth );
-		_CustomManagers.setStreamBufferSpaceRequirement(memorySampleCommandDimm2Wide, 64 * Constants.memoryPackingFactor * Constants.memoryCommandDepth);
-
-		DFELink sampleMapDimm1NarrowStream = sampleMapDimm1.addStreamFromLMem("sampleMap_fromDimm1", memorySampleCommandDimm1Wide);
-		DFELink sampleMapDimm2NarrowStream = sampleMapDimm2.addStreamFromLMem("sampleMap_fromDimm2", memorySampleCommandDimm2Wide);
-
-		StateMachineBlock dimm1AspectChange = addStateMachine("Dimm1AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
-		StateMachineBlock dimm2AspectChange = addStateMachine("Dimm2AspectChange", new AspectChangeStateMachine(this, 512, 2048 * Constants.burstPackingFactor));
+		StateMachineBlock dimm1AspectChange = addStateMachine("Dimm1AspectChange", new AspectChangeStateMachine(this, 512, 2048));
+		StateMachineBlock dimm2AspectChange = addStateMachine("Dimm2AspectChange", new AspectChangeStateMachine(this, 512, 2048));
 
 		dimm1AspectChange.getInput("word_in").connect(sampleMapDimm1NarrowStream);
 		DFELink sampleMapDimm1WideStream = dimm1AspectChange.getOutput("word_out");
 		dimm2AspectChange.getInput("word_in").connect(sampleMapDimm2NarrowStream);
 		DFELink sampleMapDimm2WideStream = dimm2AspectChange.getOutput("word_out");
 
-		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm1WideStream, 2048 * Constants.burstPackingFactor * Constants.memorySampleDepth);
-		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm2WideStream, 2048 * Constants.burstPackingFactor * Constants.memorySampleDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm1WideStream, 2048 * Constants.memorySampleDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(sampleMapDimm2WideStream, 2048 * Constants.memorySampleDepth);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm1").connect(sampleMapDimm1WideStream);
 		mapSampleReaderKernel.getInput("sampleMap_fromDimm2").connect(sampleMapDimm2WideStream);
 
 		DFELink cache_valid_stream = commandGeneratorKernel.getOutput("cache_valid");
 		mapSampleReaderKernel.getInput("cache_valid").connect(cache_valid_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, 1 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(cache_valid_stream, 1 * Constants.pixelCommandDepth);
 
 		DFELink dimm_stream = commandGeneratorKernel.getOutput("dimm");
 		mapSampleReaderKernel.getInput("dimm").connect(dimm_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(dimm_stream, 1 * Constants.pixelCommandDepth);
 
 		DFELink sample_offset_in_pixels_stream = commandGeneratorKernel.getOutput("sample_offset_in_pixels");
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
-		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, 32 * Constants.pixelPackingFactor * Constants.pixelCommandDepth);
+		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, 32 * Constants.pixelCommandDepth);
 
 		/* Create the kernel which will generate the timing data */
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
 		/* connect up the kernel to the colour data */
 
-		DFELink videoDataStreamNarrow = mapSampleReaderKernel.getOutput("sample");
-
-		StateMachineBlock videoDataAspectChange = addStateMachine("VideoDataAspectChange", new AspectChangeStateMachine(this, 24, 24 * Constants.videoDataPackingFactor));
-		videoDataAspectChange.getInput("word_in").connect(videoDataStreamNarrow);
-
-		DFELink videoDataStreamWide = videoDataAspectChange.getOutput("word_out");
-		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStreamWide, 24 * Constants.videoDataPackingFactor * Constants.pixelDepth);
-		videoSignalKernel.getInput("rgb").connect(videoDataStreamWide);
+		DFELink videoDataStream = mapSampleReaderKernel.getOutput("sample");
+		_CustomManagers.setStreamBufferSpaceRequirement(videoDataStream, 24 * Constants.pixelDepth);
+		videoSignalKernel.getInput("rgb").connect(videoDataStream);
 
 		if(isTargetSimulation()){
 
