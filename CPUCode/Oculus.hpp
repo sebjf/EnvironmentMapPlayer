@@ -11,6 +11,7 @@
 #include <OVR.h>
 #include <Kernel/OVR_Math.h>
 #include "Camera.hpp"
+#include "Types.hpp"
 
 using namespace OVR;
 
@@ -94,14 +95,14 @@ public:
 		return m_timeInSeconds;
 	}
 
-	Camera::vector3 GetCameraForward()
+	vector3 GetCameraForward()
 	{
-		return Camera::vector3(m_forward.x, m_forward.y, m_forward.z);
+		return vector3(m_forward.x, m_forward.y, m_forward.z);
 	}
 
-	Camera::vector3 GetCameraUp()
+	vector3 GetCameraUp()
 	{
-		return Camera::vector3(m_up.x, m_up.y, m_up.z);
+		return vector3(m_up.x, m_up.y, m_up.z);
 	}
 
 	void Reset()

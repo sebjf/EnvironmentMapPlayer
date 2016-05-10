@@ -12,6 +12,7 @@
 #include <vector>
 #include <boost/assign.hpp>
 #include <errno.h>
+#include "Types.hpp"
 
 #define DEG2RAD	0.0174532925
 
@@ -19,17 +20,6 @@ using namespace std;
 
 class Camera {
 public:
-
-	struct vector3
-	{
-		float x;
-		float y;
-		float z;
-
-		vector3(){}
-		vector3(float ix, float iy, float iz){ x = ix; y = iy; z = iz; }
-	};
-
 	struct CameraUpdate
 	{
 		vector3 camera_eye;
@@ -70,14 +60,14 @@ public:
 		inclination = DEG2RAD * inclination;
 		azimuth = DEG2RAD * azimuth;
 
-		camera_settings.camera_lookat = add(camera_settings.camera_eye, vector3((cos(inclination)*sin(azimuth)),(sin(inclination)),(cos(inclination)*cos(azimuth))));
+		camera_settings.camera_lookat = vector3::add(camera_settings.camera_eye, vector3((cos(inclination)*sin(azimuth)),(sin(inclination)),(cos(inclination)*cos(azimuth))));
 
 		update_camera_streams();
 	}
 
 	void set_ovr(vector3 forward, vector3 up)
 	{
-		camera_settings.camera_lookat = add(camera_settings.camera_eye, forward);
+		camera_settings.camera_lookat = vector3::add(camera_settings.camera_eye, forward);
 		camera_settings.camera_up = up;
 
 		update_camera_streams();
@@ -119,14 +109,7 @@ private:
 		}
 	}
 
-	vector3 add(vector3 a, vector3 b)
-	{
-		vector3 ans;
-		ans.x = (a.x + b.x);
-		ans.y = (a.y + b.y);
-		ans.z = (a.z + b.z);
-		return ans;
-	}
+
 
 	vector<float> add(vector<float> a, vector<float> b)
 	{
@@ -155,30 +138,7 @@ private:
 		return ans;
 	}
 
-	float norm(vector<float> v)
-	{
-		float sum = 0;
-		for(unsigned int i = 0; i < v.size(); i++)
-		{
-			sum += (v[i] * v[i]);
-		}
-		return sqrt(sum);
-	}
 
-	vector<float> cross(vector<float> a, vector<float> b)
-	{
-		vector<float> ans(3);
-
-		const int x = 0;
-		const int y = 1;
-		const int z = 2;
-
-		ans[0] = ((a[y]*b[z]) - (a[z]*b[y]));
-		ans[1] = ((a[z]*b[x]) - (a[x]*b[z]));
-		ans[2] = ((a[x]*b[y]) - (a[y]*b[x]));
-
-		return ans;
-	}
 
 };
 

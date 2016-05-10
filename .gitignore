@@ -67,3 +67,4 @@ RunRules/Simulation/*.png
 EngineCode/bin/
 *.dot
 lazarus_map.bmp
+*~

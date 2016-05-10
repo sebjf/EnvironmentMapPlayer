@@ -288,6 +288,133 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
 
 
 /*----------------------------------------------------------------------------*/
+/*------------------- Interface primitives_initialisation --------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+
+
+/**
+ * \brief Basic static function for the interface 'primitives_initialisation'.
+ * 
+ * \param [in] instream_primitivesStream The stream should be of size 384 bytes.
+ */
+void EnvironmentMapPlayer_primitives_initialisation(
+	const uint8_t *instream_primitivesStream);
+
+/**
+ * \brief Basic static non-blocking function for the interface 'primitives_initialisation'.
+ * 
+ * Schedule to run on an engine and return immediately.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ * 
+ * 
+ * \param [in] instream_primitivesStream The stream should be of size 384 bytes.
+ * \return A handle on the execution status, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_primitives_initialisation_nonblock(
+	const uint8_t *instream_primitivesStream);
+
+/**
+ * \brief Advanced static interface, structure for the engine interface 'primitives_initialisation'
+ * 
+ */
+typedef struct { 
+	const uint8_t *instream_primitivesStream; /**<  [in] The stream should be of size 384 bytes. */
+} EnvironmentMapPlayer_primitives_initialisation_actions_t;
+
+/**
+ * \brief Advanced static function for the interface 'primitives_initialisation'.
+ * 
+ * \param [in] engine The engine on which the actions will be executed.
+ * \param [in,out] interface_actions Actions to be executed.
+ */
+void EnvironmentMapPlayer_primitives_initialisation_run(
+	max_engine_t *engine,
+	EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions);
+
+/**
+ * \brief Advanced static non-blocking function for the interface 'primitives_initialisation'.
+ *
+ * Schedule the actions to run on the engine and return immediately.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ *
+ * 
+ * \param [in] engine The engine on which the actions will be executed.
+ * \param [in] interface_actions Actions to be executed.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_primitives_initialisation_run_nonblock(
+	max_engine_t *engine,
+	EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions);
+
+/**
+ * \brief Group run advanced static function for the interface 'primitives_initialisation'.
+ * 
+ * \param [in] group Group to use.
+ * \param [in,out] interface_actions Actions to run.
+ *
+ * Run the actions on the first device available in the group.
+ */
+void EnvironmentMapPlayer_primitives_initialisation_run_group(max_group_t *group, EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions);
+
+/**
+ * \brief Group run advanced static non-blocking function for the interface 'primitives_initialisation'.
+ * 
+ *
+ * Schedule the actions to run on the first device available in the group and return immediately.
+ * The status of the run must be checked with ::max_wait. 
+ * Note that use of ::max_nowait is prohibited with non-blocking running on groups:
+ * see the ::max_run_group_nonblock documentation for more explanation.
+ *
+ * \param [in] group Group to use.
+ * \param [in] interface_actions Actions to run.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_primitives_initialisation_run_group_nonblock(max_group_t *group, EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions);
+
+/**
+ * \brief Array run advanced static function for the interface 'primitives_initialisation'.
+ * 
+ * \param [in] engarray The array of devices to use.
+ * \param [in,out] interface_actions The array of actions to run.
+ *
+ * Run the array of actions on the array of engines.  The length of interface_actions
+ * must match the size of engarray.
+ */
+void EnvironmentMapPlayer_primitives_initialisation_run_array(max_engarray_t *engarray, EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions[]);
+
+/**
+ * \brief Array run advanced static non-blocking function for the interface 'primitives_initialisation'.
+ * 
+ *
+ * Schedule to run the array of actions on the array of engines, and return immediately.
+ * The length of interface_actions must match the size of engarray.
+ * The status of the run can be checked either by ::max_wait or ::max_nowait;
+ * note that one of these *must* be called, so that associated memory can be released.
+ *
+ * \param [in] engarray The array of devices to use.
+ * \param [in] interface_actions The array of actions to run.
+ * \return A handle on the execution status of the actions, or NULL in case of error.
+ */
+max_run_t *EnvironmentMapPlayer_primitives_initialisation_run_array_nonblock(max_engarray_t *engarray, EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions[]);
+
+/**
+ * \brief Converts a static-interface action struct into a dynamic-interface max_actions_t struct.
+ *
+ * Note that this is an internal utility function used by other functions in the static interface.
+ *
+ * \param [in] maxfile The maxfile to use.
+ * \param [in] interface_actions The interface-specific actions to run.
+ * \return The dynamic-interface actions to run, or NULL in case of error.
+ */
+max_actions_t* EnvironmentMapPlayer_primitives_initialisation_convert(max_file_t *maxfile, EnvironmentMapPlayer_primitives_initialisation_actions_t *interface_actions);
+
+
+
+/*----------------------------------------------------------------------------*/
 /*---------------------------- Interface default -----------------------------*/
 /*----------------------------------------------------------------------------*/
 
@@ -326,6 +453,8 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_primitivesStream Stream "primitivesStream".
+ * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
@@ -364,6 +493,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_primitivesStream,
+	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
@@ -409,6 +540,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_primitivesStream Stream "primitivesStream".
+ * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
@@ -448,6 +581,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_primitivesStream,
+	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
@@ -490,6 +625,8 @@ typedef struct {
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
+	const void *instream_primitivesStream; /**<  [in] Stream "primitivesStream". */
+	size_t instream_size_primitivesStream; /**<  [in] The size of the stream instream_primitivesStream in bytes. */
 	const void *instream_rayParameterMap_fromCPU; /**<  [in] Stream "rayParameterMap_fromCPU". */
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */

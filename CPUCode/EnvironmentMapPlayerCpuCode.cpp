@@ -13,6 +13,7 @@
 #include "Camera.hpp"
 #include "EnvironmentMap.hpp"
 #include "RayParameterMap.hpp"
+#include "Primitives.hpp"
 #include "VirtualMonitor.h"
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
@@ -58,7 +59,8 @@ int main(void)
 	/* Initialise the sample parameter map */
 
 	RayParameterMap rayParameterMap(engine, maxfile);
-	if(!isSimulation){
+	if(!isSimulation)
+	{
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 	}
 
@@ -86,6 +88,12 @@ int main(void)
 	max_ignore_kernel(act,"rayParameterMap_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm1_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm2_toMem_addrGen");
+
+	/* Geometry Parameters */
+
+	Primitives primitives(engine, maxfile);
+	primitives.SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
+	primitives.InitialisePrimitives();
 
 	/* Rendering parameters */
 

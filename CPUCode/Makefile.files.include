@@ -1,5 +1,5 @@
 #
 # This file is managed by MaxIDE. Do NOT change.
 #
-HEADERS:= ArduinoLED.hpp Camera.hpp CharacterController.hpp EnvironmentMap.hpp Logging.hpp Mouse.hpp Oculus.hpp RayParameterMap.hpp Stopwatch.hpp VirtualMonitor.h 
-SOURCES:= EnvironmentMapPlayerCpuCode.cpp Mouse.cpp VirtualMonitor.cpp 
+HEADERS:= ArduinoLED.hpp CSVParser/csvparser.h Camera.hpp CharacterController.hpp EnvironmentMap.hpp Logging.hpp Mouse.hpp Oculus.hpp Primitives.hpp RayParameterMap.hpp Stopwatch.hpp Types.hpp VirtualMonitor.h 
+SOURCES:= CSVParser/csvparser.c EnvironmentMapPlayerCpuCode.cpp Mouse.cpp VirtualMonitor.cpp 

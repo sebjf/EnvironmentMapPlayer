@@ -11,6 +11,7 @@ public final class Constants {
 	public static int num_faces				= 6;
 	public static int pixel_size_in_bytes 	= 4;
 	public static int map_tile_stride_bytes = 384; //the number of bytes between two tiles
+	public static int primitive_count 		= 6;
 
 	/* Platform Properties */
 

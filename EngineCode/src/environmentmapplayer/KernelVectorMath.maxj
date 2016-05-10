@@ -31,6 +31,15 @@ public class KernelVectorMath {
 		return new DFEVectorType<DFEVar>(a.getType().getContainedType(), n).newInstance(k);
 	}
 
+	public static DFEVector<DFEVar> makeVector(DFEVar v1, DFEVar v2, DFEVar v3)
+	{
+		KernelLib k = v1.getKernel();
+		DFEVector<DFEVar> v = new DFEVectorType<DFEVar>(v1.getType(), 3).newInstance(k);
+		v.connect(0,v1);
+		v.connect(1,v2);
+		v.connect(2,v3);
+		return v;
+	}
 
 	private static DFEVar makeConstant(DFEVector<DFEVar> a, double v)
 	{

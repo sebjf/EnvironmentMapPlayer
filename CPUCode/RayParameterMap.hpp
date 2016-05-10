@@ -93,8 +93,6 @@ public:
 			for(int x = 0; x < m_width; x++)
 			{
 				file.read((char*)&(m_SampleParameters[x][y]),sizeof(SampleParameters_t));
-
-			//	m_SampleParameters[x][y].row = - m_SampleParameters[x][y].row; //flip the distortion map around the Y axis
 			}
 		}
 

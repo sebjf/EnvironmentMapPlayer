@@ -64,6 +64,11 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		KernelBlock commandGeneratorKernel = addKernel(new MapSampleCommandGeneratorKernel(makeKernelParameters("MapSampleCommandGeneratorKernel")));
 		KernelBlock mapSampleReaderKernel = addKernel(new MapSampleReaderKernel(makeKernelParameters("MapSampleReaderKernel")));
 
+		/* Connect the Ray Caster to the inputs from the CPU */
+
+		rayCasterKernel.getInput("cameraUpdates").connect(addStreamFromCPU("cameraUpdates",StreamMode.LOW_LATENCY_ENABLED));
+		rayCasterKernel.getInput("primitivesStream").connect(addStreamFromCPU("primitivesStream", StreamMode.LOW_LATENCY_ENABLED));
+
 		// Create the memory interfaces
 
 		LMemInterface rayParameterMapDimm = addLMemInterface("rayParameterMapDimm", 1);
@@ -98,10 +103,6 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		/* Connect the sample parameter command generator & reader kernels to memory */
 
 		raySampleReaderKernel.getInput("rayParameterMap_fromMem_in").connect(rayParameterMapDimm.addStreamFromLMem("rayParameterMap_fromMem", raySampleCommandGeneratorKernel.getOutput("rayParameterMap_fromMem_cmdStream")));
-
-		/* Connect the Ray Caster to the inputs from the CPU */
-
-		rayCasterKernel.getInput("cameraUpdates").connect(addStreamFromCPU("cameraUpdates",StreamMode.LOW_LATENCY_ENABLED));
 
 		/* Insert the distortion/ray sample parameter kernel between the frame counters and the ray sampler inputs to modify the row and columns sampled within the camera ONB */
 
@@ -174,6 +175,17 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		configBuild(engineParameters);
 
+	}
+
+	private static EngineInterface primitives_initialisation()
+	{
+		EngineInterface engine_interface = new EngineInterface("primitives_initialisation");
+
+		engine_interface.setStream("primitivesStream", CPUTypes.UINT8, Constants.primitive_count * RayCasterKernel.planeParamsUpdate_t.getTotalBytes());
+
+		engine_interface.ignoreAll(Direction.IN_OUT);
+
+		return engine_interface;
 	}
 
 	private static EngineInterface rayParameterMap_initialisation()
@@ -260,6 +272,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 		manager.createSLiCinterface(rayParameterMap_initialisation());
 		manager.createSLiCinterface(sampleMap_initialisation());
+		manager.createSLiCinterface(primitives_initialisation());
 
 		manager.build();
 	}

@@ -4,15 +4,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
-import com.maxeler.maxcompiler.v2.kernelcompiler.KernelLib;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath.Range;
@@ -20,6 +15,7 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.memory.Memory;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelObject;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEType;
@@ -40,11 +36,23 @@ class RayCasterKernel extends Kernel {
 
 	private static final DFEStructType planeParams_t =
 		new DFEStructType(
+				DFEStructType.sft("enable", dfeBool()),
 				DFEStructType.sft("center", vector3),
 				DFEStructType.sft("normal", vector3),
-				DFEStructType.sft("face_offset", dfeuint),
+				DFEStructType.sft("face", dfeuint),
 				DFEStructType.sft("u_basis", vector3),
 				DFEStructType.sft("v_basis", vector3));
+
+	public static final DFEStructType planeParamsUpdate_t =
+		new DFEStructType(
+				DFEStructType.sft("index",	dfechar),
+				DFEStructType.sft("enable", dfechar),
+				DFEStructType.sft("center", vector3),
+				DFEStructType.sft("normal", vector3),
+				DFEStructType.sft("face", 	dfeuint),
+				DFEStructType.sft("u_basis", vector3),
+				DFEStructType.sft("v_basis", vector3),
+				DFEStructType.sft("padding", dfeRawBits(80)));
 
 	public static final DFEStructType planeIntersectionResults_t =
 		new DFEStructType(
@@ -58,35 +66,6 @@ class RayCasterKernel extends Kernel {
 				DFEStructType.sft("camera_lookat", vector3),
 				DFEStructType.sft("camera_up", vector3),
 				DFEStructType.sft("padding", dfeRawBits(224)));
-
-	private class Vector3
-	{
-		public float m_x;
-		public float m_y;
-		public float m_z;
-
-		public Vector3(float x, float y, float z)
-		{
-			m_x = x;
-			m_y = y;
-			m_z = z;
-		}
-
-		public List<Float> GetAsList()
-		{
-			return Arrays.asList(m_x, m_y, m_z);
-		}
-
-		public DFEVector<DFEVar> GetAsDFEVector()
-		{
-			return DFEVectorType.newInstance(Arrays.asList(constant.var(dfefloat, m_x), constant.var(dfefloat, m_y), constant.var(dfefloat, m_z)));
-		}
-
-		public float Length()
-		{
-			return (float) Math.sqrt(m_x*m_x + m_y*m_y + m_z*m_z) ;
-		}
-	}
 
 	private abstract class AlphaMap
 	{
@@ -132,116 +111,15 @@ class RayCasterKernel extends Kernel {
 		}
 	}
 
-	private class PlaneDefinition
+	public DFEVar distanceToPlane(DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d, DFEStruct plane) throws Exception
 	{
-		public String	m_name;
-		public Vector3 	m_center;
-		public Vector3	m_normal;
-		public int		m_face_offset;
-		public Vector3  m_uBasis;
-		public Vector3  m_vBasis;
+		//calculate intersection point distance
 
-		public boolean m_doBoundsTesting;
-		public AlphaMap m_alphaMap;
+		DFEVector<DFEVar> a = plane["center"];
+		DFEVector<DFEVar> n = plane["normal"];
+		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
 
-		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz, AlphaMap alphaMap ) throws IOException, URISyntaxException
-		{
-			m_name = name;
-			m_center = new Vector3(cx,cy,cz);
-			m_normal = new Vector3(nx,ny,nz);
-			m_face_offset = face;
-			m_uBasis = new Vector3(ux, uy, uz);
-			m_vBasis = new Vector3(vx, vy, vz);
-			m_alphaMap = alphaMap;
-			m_doBoundsTesting = false;
-		}
-
-		public PlaneDefinition(String name, float cx, float cy, float cz, float nx, float ny, float nz, int face, float ux, float uy, float uz, float vx, float vy, float vz) throws IOException, URISyntaxException
-		{
-			m_name = name;
-			m_center = new Vector3(cx,cy,cz);
-			m_normal = new Vector3(nx,ny,nz);
-			m_face_offset = face;
-			m_uBasis = new Vector3(ux, uy, uz);
-			m_vBasis = new Vector3(vx, vy, vz);
-			m_alphaMap = null;
-			m_doBoundsTesting = false;
-		}
-
-		public Bits getAsBits()
-		{
-			HashMap<String, Object> memoryMap = new HashMap<String,Object>();
-
-			memoryMap["center"] = m_center.GetAsList();
-			memoryMap["normal"] = m_normal.GetAsList();
-			memoryMap["face_offset"] = m_face_offset;
-			memoryMap["u_basis"] = m_uBasis.GetAsList();
-			memoryMap["v_basis"] = m_vBasis.GetAsList();
-
-			return planeParams_t.encodeConstant(memoryMap);
-		}
-
-		public DFEStruct doIntersectionTest(DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d, KernelLib kernel) throws Exception
-		{
-			DFEStruct results = planeIntersectionResults_t.newInstance(kernel);
-
-			//calculate intersection point distance
-
-			DFEVector<DFEVar> a = m_center.GetAsDFEVector();
-			DFEVector<DFEVar> n = m_normal.GetAsDFEVector();
-
-			DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
-
-			//ensure that the plane is in front of the user (t is positive)
-
-			DFEVar b_isInFront = (t > 0);
-
-			DFEVar b_isValid = b_isInFront;
-
-
-			if(m_alphaMap != null || m_doBoundsTesting){
-
-				//calculate intersection point
-
-				DFEVector<DFEVar> P = ray_o + (t * ray_d);
-
-				//find the uv coordinates of the intersection point
-
-				DFEVector<DFEVar> dV = P - a;
-
-				DFEVar u = KernelVectorMath.dot(dV, m_uBasis.GetAsDFEVector()) / (m_uBasis.Length() * m_uBasis.Length());
-				DFEVar v = KernelVectorMath.dot(dV, m_vBasis.GetAsDFEVector()) / (m_vBasis.Length() * m_vBasis.Length());
-
-				//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
-
-				//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
-				DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
-
-				b_isValid = b_isValid & b_isWithinBounds;
-
-				if (m_alphaMap != null)
-				{
-					b_isValid = b_isValid & m_alphaMap.isOpaque(u + 0.5, v + 0.5);
-				}
-
-			}
-
-			results["t"] = t;
-			results["valid"] = b_isValid;
-
-			return results;
-		}
-
-	}
-
-	private Bits[] getPlaneParamsMemContent(PlaneDefinition[] planes)
-	{
-		ArrayList<Bits> content_segments = new ArrayList<Bits>();
-		for (PlaneDefinition def : planes)
-		{
-			content_segments.add(def.getAsBits());
-		}
-		return content_segments.toArray(new Bits[content_segments.size()]);
+		return t;
 	}
 
 	private <T extends KernelObject<T>> T makeNonBlockingInput(String name, KernelType<T> type)
@@ -313,16 +191,24 @@ class RayCasterKernel extends Kernel {
 		DFEVector<DFEVar> r_o = camera_eye + (KernelVectorMath.multiply(camOffsetScalar.cast(dfefloat) * ipd, cam_u));
 		DFEVector<DFEVar> r_d = dn;
 
-		/* Define the planes */
+		/* This section will build registers, one for each intersection test, which can be updated via the CPU. It will also build one memory in which the
+		 * content of the registers is duplicated, so the parameters can be looked up once the pipelined tests are complete. */
 
-		PlaneDefinition[] plane_parameters_content = new PlaneDefinition[] {
-				new PlaneDefinition("negx", -150f, 0f, 0f, 1f, 0f, 0f,   0,    0f, 0f, 300f, 0f, -300f, 0f),
-				new PlaneDefinition("negy", 0f, -150f, 0f, 0f, 1f, 0f,   1,    0f, 0f, -300f, -300f, 0f, 0f),
-				new PlaneDefinition("negz", 0f, 0f, -150f, 0f, 0f, -1f,   2,    -300f, 0f, 0f, 0f, -300f, 0f),
-				new PlaneDefinition("posx", 150f, 0f, 0f, -1f, 0f, 0f,   3,    0f, 0f, -300f, 0f, -300f, 0f),
-				new PlaneDefinition("posz", 0f, 0f, 150f, 0f, 0f, 1f,   4,    300f, 0f, 0f, 0f, -300f, 0f),
-				new PlaneDefinition("posy", 0f, 150f, 0f, 0f, -1f, 0f,   5,    300f, 0f, 0f, 0f, 0f, 300f)
-		};
+		NonBlockingInput<DFEStruct> primitivesStream =
+			io.nonBlockingInput("primitivesStream", planeParamsUpdate_t, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+
+		DFEStruct primitiveUpdate = primitivesStream.data;
+
+		DFEStruct newPrimitive = planeParams_t.newInstance(this);
+		newPrimitive["enable"] = (DFEVar)primitiveUpdate["enable"] > 0;
+		newPrimitive["center"] = primitiveUpdate["center"];
+		newPrimitive["normal"] = primitiveUpdate["normal"];
+		newPrimitive["face"] 	= primitiveUpdate["face"];
+		newPrimitive["u_basis"] = primitiveUpdate["u_basis"];
+		newPrimitive["v_basis"] = primitiveUpdate["v_basis"];
+
+		Memory<DFEStruct> primitives = mem.alloc(planeParams_t, Constants.primitive_count);
+		primitives.write((DFEVar)primitiveUpdate["index"].cast(dfeUInt(MathUtils.bitsToAddress(Constants.primitive_count))), newPrimitive, primitivesStream.valid);
 
 		/* identify the plane the ray intersects */
 
@@ -335,31 +221,32 @@ class RayCasterKernel extends Kernel {
 		closestPlane["t"] = constant.var(dfefloat, 9999999999999.0f);
 		closestPlane["index"] = constant.var(dfechar, 255);
 
-		for (int i = 0; i < plane_parameters_content.length; i++)
+		for (int i = 0; i < Constants.primitive_count; i++)
 		{
 			/* Create a result for this comparison */
 
-			DFEStruct currentPlane = plane_parameters_content[i].doIntersectionTest(r_o, r_d, this);
-			currentPlane["index"] = constant.var(dfechar, i);
+			DFEStruct current = planeIntersectionResults_t.newInstance(this);
+
+			DFEStruct plane = primitives.read(constant.var(dfeUInt(MathUtils.bitsToAddress(Constants.primitive_count)), i));
+			current["t"] = distanceToPlane(r_o, r_d, plane);
+			current["index"] = constant.var(dfechar, i);
+			current["valid"] = (((DFEVar)current["t"]) > 0) & (DFEVar)plane["enable"];
 
 			/* If closer and the intersection is valid, replace the current plane identifier */
 
-			DFEVar cur_valid = currentPlane["valid"];
-			DFEVar cur_t = currentPlane["t"];
-			DFEVar clos_t = closestPlane["t"];
-			closestPlane = ((cur_t < clos_t) & cur_valid) ? currentPlane : closestPlane;
+			closestPlane = (((DFEVar)current["t"] < (DFEVar)closestPlane["t"]) & (DFEVar)current["valid"]) ? current : closestPlane;
 		}
 
 		DFEVar plane_index = closestPlane["index"];
 
 		/* Get the full set of parameters for the closest plane */
 
-		DFEStruct plane_parameters = mem.rom(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(plane_parameters_content.length))), planeParams_t, getPlaneParamsMemContent(plane_parameters_content));
+		DFEStruct plane = primitives.read(plane_index.cast(dfeUInt(MathUtils.bitsToAddress(Constants.primitive_count))));
 
 		/* calculate the intersection point */
 
-		DFEVector<DFEVar> a = plane_parameters["center"];
-		DFEVector<DFEVar> n = plane_parameters["normal"];
+		DFEVector<DFEVar> a = plane["center"];
+		DFEVector<DFEVar> n = plane["normal"];
 
 		boolean enableOneSide = false;
 		if(enableOneSide){
@@ -378,8 +265,8 @@ class RayCasterKernel extends Kernel {
 
 		DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
 
-		DFEVector<DFEVar> xc = plane_parameters["u_basis"];
-		DFEVector<DFEVar> yc = plane_parameters["v_basis"];
+		DFEVector<DFEVar> xc = plane["u_basis"];
+		DFEVector<DFEVar> yc = plane["v_basis"];
 
 		//dot product is the sum of element wise multiplication - this is equivalent to squaring the length.
 		DFEVar x = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
@@ -412,10 +299,13 @@ class RayCasterKernel extends Kernel {
 		/* Transmit the sampling parameters to the sampler */
 
 		/* if no intersection, or an intersection with the back side is selected, instruct the sampler to write the null colour to the screen */
-		DFEVar face_offset = (DFEVar) plane_parameters["face_offset"].cast(dfeUInt(8));
-		face_offset = plane_index.eq(255) ? constant.var(dfeUInt(8),255) : face_offset;
+		DFEVar face = (DFEVar) plane["face"].cast(dfeUInt(8));
+		face = plane_index.eq(255) ? constant.var(dfeUInt(8),255) : face;
 
-		io.output("plane", dfeUInt(8)).connect(face_offset);
+	//	face = (DFEVar)sampleParameters["col"] < 0 ? constant.var(dfeUInt(8),255) : face;
+	//	face = (DFEVar)sampleParameters["row"] < 0 ? constant.var(dfeUInt(8),255) : face;
+
+		io.output("plane", dfeUInt(8)).connect(face);
 		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));
 		io.output("u", dfeFloat(8, 24)).connect(u);
 		io.output("v", dfeFloat(8, 24)).connect(v);
