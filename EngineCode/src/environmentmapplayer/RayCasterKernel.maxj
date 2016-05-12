@@ -111,7 +111,7 @@ class RayCasterKernel extends Kernel {
 		}
 	}
 
-	public DFEVar distanceToPlane(DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d, DFEStruct plane) throws Exception
+	public DFEVar distanceToPlane(DFEVector<DFEVar> ray_o, DFEVector<DFEVar> ray_d, DFEStruct plane)
 	{
 		//calculate intersection point distance
 
@@ -130,7 +130,7 @@ class RayCasterKernel extends Kernel {
 		return data;
 	}
 
-	protected RayCasterKernel(KernelParameters parameters) throws Exception {
+	protected RayCasterKernel(KernelParameters parameters) {
 		super(parameters);
 
 		flush.disabled();
@@ -299,11 +299,15 @@ class RayCasterKernel extends Kernel {
 		/* Transmit the sampling parameters to the sampler */
 
 		/* if no intersection, or an intersection with the back side is selected, instruct the sampler to write the null colour to the screen */
+
+		//face == 255 is code for invalid pixel that should filter through to the sampler and result in the externally set bg colour being drawn
+		//for this pixel
+
 		DFEVar face = (DFEVar) plane["face"].cast(dfeUInt(8));
 		face = plane_index.eq(255) ? constant.var(dfeUInt(8),255) : face;
 
-	//	face = (DFEVar)sampleParameters["col"] < 0 ? constant.var(dfeUInt(8),255) : face;
-	//	face = (DFEVar)sampleParameters["row"] < 0 ? constant.var(dfeUInt(8),255) : face;
+		face = ((DFEVar) sampleParameters["col"]).eq(-0.5 * viewplane_hres) ? constant.var(dfeUInt(8),255) : face;
+		face = ((DFEVar) sampleParameters["row"]).eq(-0.5 * viewplane_vres) ? constant.var(dfeUInt(8),255) : face;
 
 		io.output("plane", dfeUInt(8)).connect(face);
 		io.output("miplevel", dfeUInt(8)).connect(miplevel.cast(dfeUInt(8)));

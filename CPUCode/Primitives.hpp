@@ -13,11 +13,17 @@
 #include <memory.h>
 #include "CSVParser/csvparser.h"
 
-#define PRIMITIVES_COUNT 6
+#define PRIMITIVES_COUNT 12
 
 class Primitives
 {
 public:
+	struct Map
+	{
+		string filename;
+		int index;
+	};
+
 	struct Primitive
 	{
 		vector3 center;
@@ -27,6 +33,8 @@ public:
 		float height;
 		int	  mapIndex;
 	};
+
+	std::vector<Map> maps;
 
 private:
 	struct __attribute__((__packed__)) planeParamsUpdate_t
@@ -48,7 +56,6 @@ private:
 	planeParamsUpdate_t* m_primitiveParameters;
 	int m_primitiveParametersSize;
 
-
 public:
 	Primitives(max_engine_t* engine, max_file_t* maxfile)
 	{
@@ -57,6 +64,8 @@ public:
 
 		m_primitiveParametersSize = sizeof(struct planeParamsUpdate_t) * PRIMITIVES_COUNT;
 		m_primitiveParameters = (planeParamsUpdate_t*)malloc(m_primitiveParametersSize);
+
+		memset(m_primitiveParameters, m_primitiveParametersSize, 0x0);
 	}
 
 	void SetPrimitive(int id, struct Primitive primitive)
@@ -109,6 +118,14 @@ public:
 
 			p.mapIndex = atoi(fields[12]);
 
+			if(strlen(fields[13]) > 0){
+				Map m;
+				string filename = string(fields[13]);
+				m.index = p.mapIndex;
+				m.filename = filename;
+				maps.push_back(m);
+			}
+
 			SetPrimitive(i++, p);
 
 			CsvParser_destroy_row(row);
@@ -121,7 +138,7 @@ public:
 	//for before the design begins to run
 	void InitialisePrimitives()
 	{
-		printf("Initialising primitives...");
+		printf("Initialising primitives...\n");
 
 		max_actions_t* act = max_actions_init(m_maxfile, "primitives_initialisation");
 		max_queue_input(act, "primitivesStream", m_primitiveParameters,m_primitiveParametersSize);

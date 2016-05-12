@@ -21,7 +21,7 @@
 #include "ArduinoLED.hpp"
 #include "Stopwatch.hpp"
 
-//#define USEOCULUS
+//gnc#define USEOCULUS
 
 #ifdef USEOCULUS
 #include "Oculus.hpp"
@@ -64,15 +64,31 @@ int main(void)
 	rayParameterMap.InitialiseMapFromFile(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/rayParameterMap.bin");
 	}
 
+	/* Geometry Parameters */
+
+	Primitives primitives(engine, maxfile);
+	primitives.SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
+	primitives.InitialisePrimitives();
+
 	/* Initialise environment map */
 
 	EnvironmentMap environmentMap(engine, maxfile);
 	environmentMap.bank_address_bits_offset = 25;
 	environmentMap.num_banks_used = 1;
 	environmentMap.bank_start_num = 0;
-	if(!isSimulation){
+
+	printf("Loading maps...\n");
+	environmentMap.SetNumMaps(primitives.maps.size());
+	for(uint i = 0; i < primitives.maps.size(); i++)
+	{
+		environmentMap.LoadMap(primitives.maps[i].filename, primitives.maps[i].index);
+	}
+	printf("Loaded maps.\n");
+
+	if(!isSimulation)
+	{
 	environmentMap.num_banks_used = 4;
-	environmentMap.LoadEnvironmentMap(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/lazarus_map.bmp");
+	environmentMap.WriteEnvironmentMaps();
 	}
 
 	/* ignore memory input on subsequent runs */
@@ -88,12 +104,6 @@ int main(void)
 	max_ignore_kernel(act,"rayParameterMap_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm1_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm2_toMem_addrGen");
-
-	/* Geometry Parameters */
-
-	Primitives primitives(engine, maxfile);
-	primitives.SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
-	primitives.InitialisePrimitives();
 
 	/* Rendering parameters */
 
@@ -113,10 +123,10 @@ int main(void)
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","num_banks_used", environmentMap.num_banks_used);
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","start_bank_num", environmentMap.bank_start_num);
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","bank_address_bits_offset", environmentMap.bank_address_bits_offset);
-	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0xF0F0F0);
+	max_set_uint64t(act,"MapSampleReaderKernel","backgroundColour", 0x0);
 
 	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","min_mip_level", 3);
-	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 10);
+	max_set_uint64t(act,"MapSampleCommandGeneratorKernel","max_mip_level", 11);
 
 	/* Video signal parameters */
 
@@ -170,9 +180,9 @@ int main(void)
 	if(enablePlayback){
 		logger.Load("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadMotionMaster.csv");
 	}
-#endif
 
 	double timeInSeconds = 0;
+#endif
 
 	while(run){
 

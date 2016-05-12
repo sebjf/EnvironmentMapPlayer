@@ -27,7 +27,7 @@ class RaySampleCommandGeneratorKernel extends Kernel {
 	protected final int bank_address_bits_count = 3;
 	protected final int bank_address_bits_offset = 25; //from the lsb
 
-	protected RaySampleCommandGeneratorKernel(KernelParameters parameters, DisplayStandard displayStandard) throws Exception {
+	protected RaySampleCommandGeneratorKernel(KernelParameters parameters, DisplayStandard displayStandard) {
 		super(parameters);
 
 		flush.disabled();

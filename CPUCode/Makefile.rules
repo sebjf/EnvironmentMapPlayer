@@ -50,11 +50,11 @@ OVRLIBS  = -L$(LIBOVRDEVELDIR)/Lib/Linux/Release/x86_64 \
         -lXinerama \
         -lXxf86vm \
 		-lXrandr \
-		-lusb-1.0
+		-lusb-1.0 
 
 CFLAGS    = -std=gnu99 $(O_FLAGS) -Wall -Wextra -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
 CXXFLAGS  = -Wall -Wextra $(O_FLAGS) -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
-LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lXrandr -lGL $(RUNRULE_LDFLAGS) $(OVRLIBS)
+LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lSDL_gfx -lXrandr -lGL $(RUNRULE_LDFLAGS) $(OVRLIBS)
 
 #   Add other user-defined extensions here, e.g. --
 #CFLAGS    += -I/my/header/files

@@ -297,7 +297,7 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
 /**
  * \brief Basic static function for the interface 'primitives_initialisation'.
  * 
- * \param [in] instream_primitivesStream The stream should be of size 384 bytes.
+ * \param [in] instream_primitivesStream The stream should be of size 768 bytes.
  */
 void EnvironmentMapPlayer_primitives_initialisation(
 	const uint8_t *instream_primitivesStream);
@@ -310,7 +310,7 @@ void EnvironmentMapPlayer_primitives_initialisation(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
- * \param [in] instream_primitivesStream The stream should be of size 384 bytes.
+ * \param [in] instream_primitivesStream The stream should be of size 768 bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_primitives_initialisation_nonblock(
@@ -321,7 +321,7 @@ max_run_t *EnvironmentMapPlayer_primitives_initialisation_nonblock(
  * 
  */
 typedef struct { 
-	const uint8_t *instream_primitivesStream; /**<  [in] The stream should be of size 384 bytes. */
+	const uint8_t *instream_primitivesStream; /**<  [in] The stream should be of size 768 bytes. */
 } EnvironmentMapPlayer_primitives_initialisation_actions_t;
 
 /**
