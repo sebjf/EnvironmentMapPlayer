@@ -77,7 +77,9 @@ int main(void)
 	environmentMap.num_banks_used = 1;
 	environmentMap.bank_start_num = 0;
 
-	printf("Loading maps...\n");
+	if(!isSimulation)
+	{
+	printf("Loading maps...");
 	environmentMap.SetNumMaps(primitives.maps.size());
 	for(uint i = 0; i < primitives.maps.size(); i++)
 	{
@@ -85,8 +87,6 @@ int main(void)
 	}
 	printf("Loaded maps.\n");
 
-	if(!isSimulation)
-	{
 	environmentMap.num_banks_used = 4;
 	environmentMap.WriteEnvironmentMaps();
 	}
