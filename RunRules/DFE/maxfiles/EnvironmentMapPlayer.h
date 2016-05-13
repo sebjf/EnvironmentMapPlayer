@@ -458,6 +458,8 @@ max_actions_t* EnvironmentMapPlayer_primitives_initialisation_convert(max_file_t
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot2 Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot3 Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)).
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  */
 void EnvironmentMapPlayer(
@@ -496,6 +498,8 @@ void EnvironmentMapPlayer(
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3,
 	const char * routing_string);
 
 /**
@@ -541,6 +545,8 @@ void EnvironmentMapPlayer(
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot2 Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot3 Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)).
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  * \return A handle on the execution status, or NULL in case of error.
  */
@@ -580,6 +586,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3,
 	const char * routing_string);
 
 /**
@@ -622,6 +630,8 @@ typedef struct {
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */
 	size_t instream_size_sampleMap_fromCPU; /**<  [in] The size of the stream instream_sampleMap_fromCPU in bytes. */
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)). */
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)). */
 	const char * routing_string; /**<  [in] A string containing comma-separated "from_name -> to_name" routing commands. */
 } EnvironmentMapPlayer_actions_t;
 

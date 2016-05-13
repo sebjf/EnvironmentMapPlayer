@@ -91,6 +91,9 @@ int main(void)
 	environmentMap.WriteEnvironmentMaps();
 	}
 
+	environmentMap.LoadAlphaMap(2, "/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+	environmentMap.LoadAlphaMap(3, "/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+
 	/* ignore memory input on subsequent runs */
 
 	max_set_uint64t(act,"rayParameterMap_toMem_addrGen","io_cmd_force_disabled",1);
@@ -104,6 +107,10 @@ int main(void)
 	max_ignore_kernel(act,"rayParameterMap_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm1_toMem_addrGen");
 	max_ignore_kernel(act,"sampleMapDimm2_toMem_addrGen");
+
+	/* Last map initialisation */
+
+	environmentMap.WriteAlphaMaps(act);
 
 	/* Rendering parameters */
 

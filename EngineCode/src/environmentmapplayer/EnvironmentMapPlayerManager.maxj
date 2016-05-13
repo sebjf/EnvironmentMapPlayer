@@ -177,11 +177,12 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	}
 
+
 	private static EngineInterface primitives_initialisation()
 	{
 		EngineInterface engine_interface = new EngineInterface("primitives_initialisation");
 
-		engine_interface.setStream("primitivesStream", CPUTypes.UINT8, Constants.primitive_count * RayCasterKernel.planeParamsUpdate_t.getTotalBytes());
+		engine_interface.setStream("primitivesStream", CPUTypes.UINT8, Constants.primitive_count * RayCasterKernel.primitivesUpdate_t.getTotalBytes());
 
 		engine_interface.ignoreAll(Direction.IN_OUT);
 

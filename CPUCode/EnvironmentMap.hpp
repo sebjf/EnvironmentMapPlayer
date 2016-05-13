@@ -14,6 +14,7 @@
 #include "SDL/SDL_rotozoom.h"
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
+#include <string.h>
 
 /*https://www.libsdl.org/projects/SDL_image/release-1.2.html*/
 
@@ -23,6 +24,10 @@
 #define MIP_MIN	3
 #define MIP_MAX 11
 #define TILE_SIZE 8
+
+#define ALPHA_MAP_DIMENSION 1024
+#define PIXELS_PER_WORD		64
+
 
 class EnvironmentMap
 {
@@ -45,6 +50,24 @@ private:
     int mipMapSizeInPixels[12];
     int mipMapWidthInTiles[12];
     int mipMapSizeInTiles[12];
+
+    struct AlphaMapParams
+    {
+    	uint64_t*	m_data;
+    	int  		m_index;
+    	int			m_numWords;
+
+    	AlphaMapParams(int index)
+    	{
+    		int dataLengthInBytes = ((ALPHA_MAP_DIMENSION * ALPHA_MAP_DIMENSION) / PIXELS_PER_WORD) * (PIXELS_PER_WORD / 8);
+    		m_data = (uint64_t*)malloc(dataLengthInBytes);
+    		memset(m_data, 0x0, dataLengthInBytes);
+    		m_index = index;
+    		m_numWords = (ALPHA_MAP_DIMENSION * ALPHA_MAP_DIMENSION) / PIXELS_PER_WORD;
+    	}
+    };
+
+    std::vector<AlphaMapParams*> m_alphaMaps;
 
 public:
 	EnvironmentMap(max_engine_t* engine, max_file_t* maxfile)
@@ -69,6 +92,9 @@ public:
 		bank_start_num = 0;
 		num_banks_used = 1;
 		bank_address_bits_offset = 25;
+
+		m_alphaMaps.push_back(new AlphaMapParams(2));
+		m_alphaMaps.push_back(new AlphaMapParams(3));
 	}
 
 private:
@@ -77,6 +103,8 @@ private:
 	{
 		return (int)((1 - pow(4, mipLevel + 1)) / (1 - 4));
 	}
+
+
 
 public:
 
@@ -99,6 +127,57 @@ public:
 		for(int i = MIP_MAX; i >= MIP_MIN; i--)
 		{
 			ProcessMap(map, index, i);
+		}
+	}
+
+	void LoadAlphaMap(int index, string filename)
+	{
+		SDL_Surface* map = IMG_Load(filename.c_str());
+
+		AlphaMapParams* alphamap = NULL;
+		for(uint i = 0; i < m_alphaMaps.size(); i++)
+		{
+			if(m_alphaMaps[i]->m_index == index){
+				alphamap = m_alphaMaps[i];
+				break;
+			}
+		}
+
+		if(alphamap == NULL)
+		{
+			printf("ERROR: Alpha map slot %i does not exist.\n", index);
+			return;
+		}
+
+		float scaleFactorX = ALPHA_MAP_DIMENSION / (float)map->w;
+		float scaleFactorY = ALPHA_MAP_DIMENSION / (float)map->h;
+
+		map = rotozoomSurfaceXY(map, 0, scaleFactorX, scaleFactorY, 1);
+
+		for(int y = 0; y < ALPHA_MAP_DIMENSION; y++)
+		{
+			for(int x = 0; x < ALPHA_MAP_DIMENSION; x++)
+			{
+				char* pixelsData = (char*)map->pixels;
+				char* pixelData = &pixelsData[((y * ALPHA_MAP_DIMENSION) + x) * map->format->BytesPerPixel];
+				uint32_t pixelValue = *((uint32_t*)pixelData);
+
+				uint8_t r,g,b;
+				SDL_GetRGB(pixelValue, map->format, &r, &g, &b);
+
+				int pixel = (y * ALPHA_MAP_DIMENSION) + x;
+				int word = floor(pixel / PIXELS_PER_WORD);
+				int offset = pixel - (word * PIXELS_PER_WORD);
+
+				int v = (r + g + b)/3;
+
+				uint64_t* worddata = &alphamap->m_data[word];
+				uint64_t worddataMask = (1UL << offset);
+
+				if(v > 128){
+					*(worddata) = (*worddata) | worddataMask;
+				}
+			}
 		}
 	}
 
@@ -170,6 +249,23 @@ public:
 			printf("writing environment map...(%i times)(address: %li)\n", num_banks_used, address);
 
 			max_run(m_engine, memact);
+		}
+	}
+
+	void WriteAlphaMaps(max_actions_t* memact)
+	{
+/*		uint64_t* values = (uint64_t*)malloc(16384 * sizeof(uint64_t));
+		memset((uint32_t*)values, 0xFFFFFFFF, 16384 * 8);
+		max_set_mem_range_uint64t(memact, "RayCasterKernel","alphaMapSlot2", 0, 16384, values);
+		max_set_mem_range_uint64t(memact, "RayCasterKernel","alphaMapSlot3", 0, 16384, values);*/
+
+		char slotName[128];
+		for(uint i = 0; i < m_alphaMaps.size(); i++)
+		{
+			AlphaMapParams* alphaMap = m_alphaMaps[i];
+
+			sprintf(slotName, "alphaMapSlot%i", alphaMap->m_index);
+			max_set_mem_range_uint64t(memact, "RayCasterKernel",slotName, 0, alphaMap->m_numWords, alphaMap->m_data);
 		}
 	}
 

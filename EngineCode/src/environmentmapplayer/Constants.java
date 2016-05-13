@@ -12,6 +12,8 @@ public final class Constants {
 	public static int map_tile_stride_bytes = 384; //the number of bytes between two tiles
 	public static int primitive_count 		= 12;
 
+	public static int alphaMapDimension		= 1024;
+
 	/* Platform Properties */
 
 	public static int burstSizeInBytes 		= 64;	// memory width - 384 for Maia, 192 for Isca, 64 for Isca single dimm

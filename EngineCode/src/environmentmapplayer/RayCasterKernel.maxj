@@ -1,12 +1,5 @@
 package environmentmapplayer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.imageio.ImageIO;
-
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.KernelMath;
@@ -24,7 +17,6 @@ import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStruct;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEStructType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVector;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.composite.DFEVectorType;
-import com.maxeler.maxcompiler.v2.utils.Bits;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
 class RayCasterKernel extends Kernel {
@@ -43,7 +35,7 @@ class RayCasterKernel extends Kernel {
 				DFEStructType.sft("u_basis", vector3),
 				DFEStructType.sft("v_basis", vector3));
 
-	public static final DFEStructType planeParamsUpdate_t =
+	public static final DFEStructType primitivesUpdate_t =
 		new DFEStructType(
 				DFEStructType.sft("index",	dfechar),
 				DFEStructType.sft("enable", dfechar),
@@ -56,7 +48,6 @@ class RayCasterKernel extends Kernel {
 
 	public static final DFEStructType planeIntersectionResults_t =
 		new DFEStructType(
-				DFEStructType.sft("valid", dfeBool()),
 				DFEStructType.sft("t", dfefloat),
 				DFEStructType.sft("index", dfechar));
 
@@ -72,42 +63,42 @@ class RayCasterKernel extends Kernel {
 		public abstract DFEVar isOpaque(DFEVar u, DFEVar v);
 	}
 
-	private class AlphaMapStatic extends AlphaMap
+	private class AlphaMapDynamic extends AlphaMap
 	{
-		public AlphaMapStatic(String filename) throws IOException, URISyntaxException
+		Memory<DFEVar> map;
+		int m_width;
+		int m_height;
+		int m_pixelsPerWord;
+		int m_words;
+		String m_name;
+
+		public AlphaMapDynamic(String name, int width, int height)
 		{
-			BufferedImage image = ImageIO.read(new File(getClass().getResource(filename).toURI()));
-
-			m_width = image.getWidth();
-			m_height = image.getHeight();
-
-			m_data = new Bits[(int) (m_width * m_height)];
-
-			for(int x = 0; x < m_width; x++)
-			{
-				for(int y = 0; y < m_height; y++)
-				{
-					int address = (int) ((y * m_width) + x);
-					Bits b = new Bits(1);
-					b.setBit(0, (image.getRGB(x, y) & 0x00FFFFFF) != 0); //Mask off alpha from ARGB type before checking if colour that defines alpha map is zero.
-					m_data[address] = b;
-				}
-			}
-
+			m_name = name;
+			m_width = width;
+			m_height = height;
+			m_pixelsPerWord = 64;
+			m_words = (m_width * m_height) / m_pixelsPerWord;
+			map = mem.alloc(dfeRawBits(m_pixelsPerWord), m_words);
+			map.mapToCPU(m_name);
 		}
-
-		float m_width;
-		float m_height;
-		Bits[] m_data;
 
 		@Override
 		public DFEVar isOpaque(DFEVar u, DFEVar v)
 		{
-			DFEVar y = (v * m_height).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
-			DFEVar x = (u * m_width).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
-			DFEVar address = ((y * (int)m_width) + x).cast(dfeUInt(MathUtils.bitsToAddress((long) (m_width * m_height))));
+			DFEVar y = (v * m_height).cast(dfeUInt(32));
+			DFEVar x = (u * m_width).cast(dfeUInt(32));
 
-			return mem.rom(address, dfeBool(), m_data);
+			DFEVar address = ((y * m_width) + x);
+
+			DFEVar word = KernelMath.floor(address.cast(dfefloat) / m_pixelsPerWord).cast(dfeUInt(32));
+			DFEVar offset = address - (word * m_pixelsPerWord);
+
+			DFEVar row = map.read(word.cast(dfeUInt(MathUtils.bitsToAddress(m_words))));
+
+			DFEVar pixel = row.shiftRight(offset.cast(dfeUInt(MathUtils.bitsToAddress(m_pixelsPerWord)))).slice(0, 1).cast(dfeBool());
+
+			return pixel;
 		}
 	}
 
@@ -195,12 +186,12 @@ class RayCasterKernel extends Kernel {
 		 * content of the registers is duplicated, so the parameters can be looked up once the pipelined tests are complete. */
 
 		NonBlockingInput<DFEStruct> primitivesStream =
-			io.nonBlockingInput("primitivesStream", planeParamsUpdate_t, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+			io.nonBlockingInput("primitivesStream", primitivesUpdate_t, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
 
 		DFEStruct primitiveUpdate = primitivesStream.data;
 
 		DFEStruct newPrimitive = planeParams_t.newInstance(this);
-		newPrimitive["enable"] = (DFEVar)primitiveUpdate["enable"] > 0;
+		newPrimitive["enable"] = ((DFEVar) primitiveUpdate["enable"]).eq(1);
 		newPrimitive["center"] = primitiveUpdate["center"];
 		newPrimitive["normal"] = primitiveUpdate["normal"];
 		newPrimitive["face"] 	= primitiveUpdate["face"];
@@ -217,7 +208,6 @@ class RayCasterKernel extends Kernel {
 		 * making it easier to meet timing. */
 
 		DFEStruct closestPlane = planeIntersectionResults_t.newInstance(this);
-		closestPlane["valid"] = constant.var(false);
 		closestPlane["t"] = constant.var(dfefloat, 9999999999999.0f);
 		closestPlane["index"] = constant.var(dfechar, 255);
 
@@ -230,11 +220,42 @@ class RayCasterKernel extends Kernel {
 			DFEStruct plane = primitives.read(constant.var(dfeUInt(MathUtils.bitsToAddress(Constants.primitive_count)), i));
 			current["t"] = distanceToPlane(r_o, r_d, plane);
 			current["index"] = constant.var(dfechar, i);
-			current["valid"] = (((DFEVar)current["t"]) > 0) & (DFEVar)plane["enable"];
+
+			DFEVar valid = (DFEVar)plane["enable"];
+			valid = valid & (((DFEVar)current["t"]) > 0);
+			valid = valid & ((DFEVar)current["t"] < (DFEVar)closestPlane["t"]);
+
+			//if this intersection test has alpha map support, then check it
+
+			if(i == 2 || i == 3)
+			{
+				DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, (DFEVar)current["t"]));
+
+				/* find the local coordinates on the plane */
+
+				DFEVector<DFEVar> a = plane["center"];
+
+				DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
+
+				DFEVector<DFEVar> xc = plane["u_basis"];
+				DFEVector<DFEVar> yc = plane["v_basis"];
+
+				//dot product is the sum of element wise multiplication - this is equivalent to squaring the length.
+				DFEVar x = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
+				DFEVar y = KernelVectorMath.dot(dV,yc) / KernelVectorMath.dot(yc, yc);
+
+				/* convert local coordinates to texture coordinates */
+
+				DFEVar u = (x) + 0.5;
+				DFEVar v = (y) + 0.5;
+
+				AlphaMapDynamic alphaMap = new AlphaMapDynamic("alphaMapSlot" + i, Constants.alphaMapDimension, Constants.alphaMapDimension);
+				valid = valid & alphaMap.isOpaque(u, v);
+			}
 
 			/* If closer and the intersection is valid, replace the current plane identifier */
 
-			closestPlane = (((DFEVar)current["t"] < (DFEVar)closestPlane["t"]) & (DFEVar)current["valid"]) ? current : closestPlane;
+			closestPlane = valid ? current : closestPlane;
 		}
 
 		DFEVar plane_index = closestPlane["index"];
