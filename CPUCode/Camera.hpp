@@ -10,7 +10,6 @@
 
 #include <math.h>
 #include <vector>
-#include <boost/assign.hpp>
 #include <errno.h>
 #include "Types.hpp"
 

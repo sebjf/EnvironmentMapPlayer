@@ -91,8 +91,8 @@ int main(void)
 	environmentMap.WriteEnvironmentMaps();
 	}
 
-	environmentMap.LoadAlphaMap(2, "/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
-	environmentMap.LoadAlphaMap(3, "/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+	environmentMap.LoadAlphaMap(2, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+	environmentMap.LoadAlphaMap(3, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
 
 	/* ignore memory input on subsequent runs */
 

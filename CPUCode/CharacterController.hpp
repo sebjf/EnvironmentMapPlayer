@@ -18,7 +18,6 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <boost/assign.hpp>
 
 #define X 0
 #define Y 1
@@ -39,8 +38,8 @@ public:
 			printf("Unable to open keyboard\n");
 		}
 
-		position = boost::assign::list_of(0)(0)(0);
-		dposition = boost::assign::list_of(0)(0)(0);
+		position.assign(3, 0);
+		dposition.assign(3, 0);
 
 		scale = 500;
 	}
@@ -77,8 +76,8 @@ public:
 			}
 		}
 
-		position = boost::assign::list_of(0)(0)(0);
-		dposition = boost::assign::list_of(0)(0)(0);
+		position.assign(3, 0);
+		dposition.assign(3, 0);
 
 		scale = 500;
 	}
