@@ -18,7 +18,6 @@
 #include "Mouse.hpp"
 #include "CharacterController.hpp"
 #include "Logging.hpp"
-#include "ArduinoLED.hpp"
 #include "Stopwatch.hpp"
 
 //gnc#define USEOCULUS
@@ -43,9 +42,6 @@ int main(void)
 	sigemptyset(&sigIntHandler.sa_mask);
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
-
-	/* set up arduino for sync indication */
-	ArduinoLED led(false);
 
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -179,18 +175,6 @@ int main(void)
 
 	printf("Press CTRL+C key to exit.\n");
 
-	bool enablePlayback = false;
-	bool startPlayback = false;
-	bool enableInteractive = !enablePlayback;
-
-#ifdef USEOCULUS
-	if(enablePlayback){
-		logger.Load("/home/sfriston/Dropbox/Investigations/Rendering Experiment/Head Tracking Logs/HeadMotionMaster.csv");
-	}
-
-	double timeInSeconds = 0;
-#endif
-
 	while(run){
 
 		monitor.Refresh();
@@ -198,9 +182,7 @@ int main(void)
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
 
-		if(enableInteractive){
-			camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
-		}
+		camera.set_eye(characterController.position[0],characterController.position[1],characterController.position[2]);
 
 		if(d.changed()){
 			inclination += -d.y;
@@ -209,9 +191,6 @@ int main(void)
 
 		switch(keycode)
 		{
-		case KEY_S:
-			startPlayback = true;
-			break;
 		case KEY_R:
 			max_reset_engine(engine);
 			break;
@@ -222,49 +201,7 @@ int main(void)
 
 #ifdef USEOCULUS
 
-		if(enablePlayback && startPlayback)
-		{
-			static bool isFirstRun = true;
-
-			//when we signal we are about to read the first head log, that should be point at which we start syncing the leds
-			if(isFirstRun)
-			{
-				isFirstRun = false;
-				stopwatch.Restart();
-				led.On();
-			}
-
-			timeInSeconds = stopwatch.getTimeInSeconds();
-
-			oculus.Update(logger.GetState(timeInSeconds));
-
-			static float lastFiveHundredMsSegment = 0;
-			float fiveHundredMsSegmentNum = floor(timeInSeconds / 0.5f);
-
-			if(fiveHundredMsSegmentNum != lastFiveHundredMsSegment)
-			{
-				lastFiveHundredMsSegment = fiveHundredMsSegmentNum;
-				led.Invert();
-			}
-
-			double logLength = logger.GetLastTime();
-			if(timeInSeconds >= logLength)
-			{
-				isFirstRun = true;
-				startPlayback = false;
-				lastFiveHundredMsSegment = 0;
-				led.Off();
-
-				printf("total time: %f\n", stopwatch.getTimeInSeconds());
-			}
-		}
-		else
-		{
-			oculus.Update();
-		}
-
-
-
+		oculus.Update();
 		camera.set_ovr(oculus.GetCameraForward(), oculus.GetCameraUp());
 
 #else
