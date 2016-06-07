@@ -19,6 +19,7 @@
 #include "CharacterController.hpp"
 #include "Logging.hpp"
 #include "Stopwatch.hpp"
+#include "RemoteInterface.hpp"
 
 //gnc#define USEOCULUS
 
@@ -170,13 +171,16 @@ int main(void)
 
 	Stopwatch stopwatch;
 
-	/* Begin the head tracking logging */
+	RemoteInterface veinterface;
+	veinterface->primitives = primitives;
 
 	printf("Press CTRL+C key to exit.\n");
 
 	while(run){
 
 		monitor.Refresh();
+
+		veinterface.Main_Update(9001);
 
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it

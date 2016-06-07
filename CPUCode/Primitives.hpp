@@ -169,7 +169,15 @@ public:
 		printf("Preparing low latency stream for primitive updates...\n");
 		primitivesSettingsStream->Connect(m_engine);
 		coefficientsStream->Connect(m_engine);
+	}
 
+	void SetPrimitiveCenter(int i, vector<float> position)
+	{
+		planeParamsUpdate_t* p = &(m_primitiveParameters[id]);
+		p->center.x = position(0);
+		p->center.y = position(1);
+		p->center.z = position(2);
+		primitivesSettingsStream->Send(*p);
 	}
 
 	void SetShade(float v)

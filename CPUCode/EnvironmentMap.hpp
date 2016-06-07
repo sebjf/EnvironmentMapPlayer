@@ -94,6 +94,7 @@ public:
 		bank_address_bits_offset = 25;
 
 		m_alphaMaps.push_back(new AlphaMapParams(0));
+		m_alphaMaps.push_back(new AlphaMapParams(1));
 	}
 
 private:
