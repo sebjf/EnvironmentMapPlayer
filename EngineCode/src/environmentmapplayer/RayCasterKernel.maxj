@@ -227,7 +227,7 @@ class RayCasterKernel extends Kernel {
 
 			//if this intersection test has alpha map support, then check it
 
-			if(i == 2 || i == 3)
+			if(i == 0)
 			{
 				DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, (DFEVar)current["t"]));
 

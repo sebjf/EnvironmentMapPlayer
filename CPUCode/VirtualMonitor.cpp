@@ -201,7 +201,7 @@ void VirtualMonitor::Refresh(int pixels_to_update)
 
 	while(slots_got < SLOTS_TO_READ){
 
-		int slots_to_get = monitor.SLOTS_PER_FRAME - slots_to_get;
+		int slots_to_get = monitor.SLOTS_PER_FRAME - slots_got;
 		slots_to_get = std::min(512,slots_to_get);
 
 		int num_slots = max_llstream_read(monitor.displayData_llstream, slots_to_get, &frame_data);

@@ -453,6 +453,8 @@ max_actions_t* EnvironmentMapPlayer_primitives_initialisation_convert(max_file_t
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_coefficients Stream "coefficients".
+ * \param [in] instream_size_coefficients The size of the stream instream_coefficients in bytes.
  * \param [in] instream_primitivesStream Stream "primitivesStream".
  * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
@@ -495,6 +497,8 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_coefficients,
+	size_t instream_size_coefficients,
 	const void *instream_primitivesStream,
 	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
@@ -544,6 +548,8 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_coefficients Stream "coefficients".
+ * \param [in] instream_size_coefficients The size of the stream instream_coefficients in bytes.
  * \param [in] instream_primitivesStream Stream "primitivesStream".
  * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
@@ -587,6 +593,8 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_coefficients,
+	size_t instream_size_coefficients,
 	const void *instream_primitivesStream,
 	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
@@ -633,6 +641,8 @@ typedef struct {
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
+	const void *instream_coefficients; /**<  [in] Stream "coefficients". */
+	size_t instream_size_coefficients; /**<  [in] The size of the stream instream_coefficients in bytes. */
 	const void *instream_primitivesStream; /**<  [in] Stream "primitivesStream". */
 	size_t instream_size_primitivesStream; /**<  [in] The size of the stream instream_primitivesStream in bytes. */
 	const void *instream_rayParameterMap_fromCPU; /**<  [in] Stream "rayParameterMap_fromCPU". */

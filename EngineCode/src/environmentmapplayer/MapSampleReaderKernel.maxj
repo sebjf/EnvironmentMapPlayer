@@ -3,9 +3,15 @@ package environmentmapplayer;
 import java.util.ArrayList;
 import java.util.List;
 
+import types.uRGB;
+
 import com.maxeler.maxcompiler.v2.kernelcompiler.Kernel;
 import com.maxeler.maxcompiler.v2.kernelcompiler.KernelParameters;
 import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.Reductions;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.DelimiterMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingInput;
+import com.maxeler.maxcompiler.v2.kernelcompiler.stdlib.core.IO.NonBlockingMode;
+import com.maxeler.maxcompiler.v2.kernelcompiler.types.KernelType;
 import com.maxeler.maxcompiler.v2.kernelcompiler.types.base.DFEVar;
 import com.maxeler.maxcompiler.v2.utils.MathUtils;
 
@@ -16,6 +22,14 @@ public class MapSampleReaderKernel extends Kernel {
 		v = v > max ? constant.var(max) : v;
 		v = v < min ? constant.var(min) : v;
 		return v;
+	}
+
+	private DFEVar makeNonBlockingInput(String name, KernelType<DFEVar> type)
+	{
+		NonBlockingInput<DFEVar> input =
+			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
+		DFEVar data = Reductions.streamHold(input.data, input.valid);
+		return data;
 	}
 
 	protected MapSampleReaderKernel(KernelParameters parameters) {
@@ -49,7 +63,10 @@ public class MapSampleReaderKernel extends Kernel {
 		samples.add(bgColour.cast(dfeRawBits(32)));
 		DFEVar sample_content = control.mux(sample_offset_in_pixels.cast(dfeUInt(MathUtils.bitsToAddress(samples.size()+1))), samples).slice(0,24).cast(dfeUInt(24));
 
-		io.output("sample", dfeUInt(24)) <== sample_content;
+		DFEVar coefficient = makeNonBlockingInput("coefficient", dfeFloat(8,24));
+		uRGB colour = new uRGB(sample_content).multiply(coefficient);
+
+		io.output("sample", dfeUInt(24)) <== colour.get().cast(dfeUInt(24));
 	}
 
 

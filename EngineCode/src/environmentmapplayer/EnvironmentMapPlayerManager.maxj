@@ -4,7 +4,6 @@ import maxpower.lmem.MultiDimensionalAddressGenerator;
 import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
-import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
@@ -151,6 +150,8 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		mapSampleReaderKernel.getInput("sample_offset_in_pixels").connect(sample_offset_in_pixels_stream);
 		_CustomManagers.setStreamBufferSpaceRequirement(sample_offset_in_pixels_stream, 32 * Constants.pixelCommandDepth);
 
+		mapSampleReaderKernel.getInput("coefficient").connect(addStreamFromCPU("coefficients",StreamMode.LOW_LATENCY_ENABLED));
+
 		/* Create the kernel which will generate the timing data */
 		KernelBlock videoSignalKernel = addKernel(new MaxVideoSignalKernel(makeKernelParameters("MaxVideoSignalKernel"), displayStandard));
 
@@ -178,10 +179,7 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	}
 
-	private DFELink getVideoStream(String name, float clock)
-	{
-		throw new MaxCompilerAPIError("This function should be removed when building for hardware.");
-	}
+
 
 
 	private static EngineInterface primitives_initialisation()

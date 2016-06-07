@@ -87,8 +87,7 @@ int main(void)
 	environmentMap.WriteEnvironmentMaps();
 	}
 
-	environmentMap.LoadAlphaMap(2, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
-	environmentMap.LoadAlphaMap(3, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+	environmentMap.LoadAlphaMap(0, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
 
 	/* ignore memory input on subsequent runs */
 
@@ -136,6 +135,11 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
+	float coefficients[4];
+	coefficients[3] = 0.2f;
+
+	max_queue_input(act, "coefficients", coefficients, 16);
+
 
 	max_reset_engine(engine);
 
@@ -156,7 +160,6 @@ int main(void)
 	int elevation = 0;
 
 	CharacterController characterController(false);	//no parameters opens the default keyboard
-	characterController.set_position(0, 0, 0);
 
 	/* Specify camera properties */
 

@@ -9,6 +9,7 @@
 #define PRIMITIVES_HPP_
 
 #include "Types.hpp"
+#include "LowLatencyStream.hpp"
 #include <vector>
 #include <memory.h>
 #include "CSVParser/csvparser.h"
@@ -56,6 +57,8 @@ private:
 	planeParamsUpdate_t* m_primitiveParameters;
 	int m_primitiveParametersSize;
 
+	LowLatencyStream<planeParamsUpdate_t>* primitivesSettingsStream;
+
 public:
 	Primitives(max_engine_t* engine, max_file_t* maxfile)
 	{
@@ -66,6 +69,8 @@ public:
 		m_primitiveParameters = (planeParamsUpdate_t*)malloc(m_primitiveParametersSize);
 
 		memset(m_primitiveParameters, m_primitiveParametersSize, 0x0);
+
+		primitivesSettingsStream = new LowLatencyStream<planeParamsUpdate_t>("primitivesStream", maxfile);
 	}
 
 	void SetPrimitive(int id, struct Primitive primitive)
@@ -148,10 +153,15 @@ public:
 		sleep(1);
 	}
 
+	//for after the design begins to run
 	void connect()
 	{
-//		printf("Preparing low latency stream for primitive updates...\n");
+		printf("Preparing low latency stream for primitive updates...\n");
+		primitivesSettingsStream->Connect(m_engine);
 	}
+
+	//void SetShade(float v)
+
 };
 
 #endif /* PRIMITIVES_HPP_ */
