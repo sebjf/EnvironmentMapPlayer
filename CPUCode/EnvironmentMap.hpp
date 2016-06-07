@@ -93,8 +93,7 @@ public:
 		num_banks_used = 1;
 		bank_address_bits_offset = 25;
 
-		m_alphaMaps.push_back(new AlphaMapParams(2));
-		m_alphaMaps.push_back(new AlphaMapParams(3));
+		m_alphaMaps.push_back(new AlphaMapParams(0));
 	}
 
 private:

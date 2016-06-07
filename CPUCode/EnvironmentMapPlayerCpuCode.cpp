@@ -65,8 +65,9 @@ int main(void)
 	Primitives primitives(engine, maxfile);
 	primitives.SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
 	primitives.InitialisePrimitives();
+	primitives.connect();
 
-	/* Initialise environment map */
+	/* Initialise Maps */
 
 	EnvironmentMap environmentMap(engine, maxfile);
 	environmentMap.bank_address_bits_offset = 25;
@@ -114,7 +115,7 @@ int main(void)
 	max_set_uint64t(act,"RaySampleCommandGeneratorKernel","sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 	max_set_uint64t(act,"RaySampleReaderKernel", "sampleParameterMapAddress", rayParameterMap.GetOffsetInBursts());
 
-	max_set_double(act, "RayCasterKernel", "ipd", 0.6f);
+	max_set_double( act,"RayCasterKernel", "ipd", 0.6f);
 
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_h", tan(1.15f/1.0f));
 	max_set_double( act,"RayCasterKernel", "viewplane_pixelsize_v", tan(1.235f/1.0f));
@@ -135,18 +136,13 @@ int main(void)
 	max_set_uint64t(act,"MaxVideoSignalKernel","HSyncPolarity",1);
 	max_set_uint64t(act,"MaxVideoSignalKernel","VSyncPolarity",1);
 
-	float coefficients[4];
-	coefficients[3] = 0.2f;
-
-	max_queue_input(act, "coefficients", coefficients, 16);
-
-
 	max_reset_engine(engine);
-
 
 	printf("Running on DFE...\n");
 
 	max_run(engine, act);
+
+	primitives.SetShade(1.0f);
 
 	//Get a continuous stream and write to the virtual display when simulating
 

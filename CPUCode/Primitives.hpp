@@ -14,7 +14,7 @@
 #include <memory.h>
 #include "CSVParser/csvparser.h"
 
-#define PRIMITIVES_COUNT 16
+#define PRIMITIVES_COUNT 18
 
 class Primitives
 {
@@ -57,7 +57,16 @@ private:
 	planeParamsUpdate_t* m_primitiveParameters;
 	int m_primitiveParametersSize;
 
+	struct __attribute__((__packed__)) coefficients_t
+	{
+		float	padding[3];
+		float 	coefficient;
+	};
+
+	coefficients_t coefficients;
+
 	LowLatencyStream<planeParamsUpdate_t>* primitivesSettingsStream;
+	LowLatencyStream<coefficients_t>* coefficientsStream;
 
 public:
 	Primitives(max_engine_t* engine, max_file_t* maxfile)
@@ -71,6 +80,7 @@ public:
 		memset(m_primitiveParameters, m_primitiveParametersSize, 0x0);
 
 		primitivesSettingsStream = new LowLatencyStream<planeParamsUpdate_t>("primitivesStream", maxfile);
+		coefficientsStream = new LowLatencyStream<coefficients_t>("coefficients", maxfile);
 	}
 
 	void SetPrimitive(int id, struct Primitive primitive)
@@ -158,9 +168,15 @@ public:
 	{
 		printf("Preparing low latency stream for primitive updates...\n");
 		primitivesSettingsStream->Connect(m_engine);
+		coefficientsStream->Connect(m_engine);
+
 	}
 
-	//void SetShade(float v)
+	void SetShade(float v)
+	{
+		coefficients.coefficient = v;
+		coefficientsStream->Send(coefficients);
+	}
 
 };
 
