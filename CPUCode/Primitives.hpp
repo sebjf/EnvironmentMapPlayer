@@ -171,12 +171,12 @@ public:
 		coefficientsStream->Connect(m_engine);
 	}
 
-	void SetPrimitiveCenter(int i, vector<float> position)
+	void SetPrimitiveCenter(int id, vector<float> position)
 	{
 		planeParamsUpdate_t* p = &(m_primitiveParameters[id]);
-		p->center.x = position(0);
-		p->center.y = position(1);
-		p->center.z = position(2);
+		p->center.x = position.at(0);
+		p->center.y = position.at(1);
+		p->center.z = position.at(2);
 		primitivesSettingsStream->Send(*p);
 	}
 

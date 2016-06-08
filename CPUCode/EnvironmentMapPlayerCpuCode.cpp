@@ -44,6 +44,9 @@ int main(void)
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
+	RemoteInterface veinterface(9001);
+	veinterface.Start();
+
 	/* Initialize the maxfile to get an actions with which to configure the renderer */
 
 	max_file_t *maxfile = EnvironmentMapPlayer_init();
@@ -171,8 +174,7 @@ int main(void)
 
 	Stopwatch stopwatch;
 
-	RemoteInterface veinterface;
-	veinterface->primitives = primitives;
+	veinterface.primitives = &primitives;
 
 	printf("Press CTRL+C key to exit.\n");
 
@@ -180,7 +182,7 @@ int main(void)
 
 		monitor.Refresh();
 
-		veinterface.Main_Update(9001);
+		veinterface.Main_Update();
 
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it

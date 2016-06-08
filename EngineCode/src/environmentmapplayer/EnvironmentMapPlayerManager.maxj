@@ -4,6 +4,7 @@ import maxpower.lmem.MultiDimensionalAddressGenerator;
 import maxvideo.MaxVideoSignalKernel;
 import maxvideo.VideoCounter;
 
+import com.maxeler.maxcompiler.v2.errors.MaxCompilerAPIError;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.Effort;
 import com.maxeler.maxcompiler.v2.managers.BuildConfig.OptimizationTechnique;
@@ -179,7 +180,10 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 
 	}
 
-
+	public DFELink getVideoStream(String name, float clock)
+	{
+		throw new MaxCompilerAPIError("Remove this shim before building in hardware");
+	}
 
 
 	private static EngineInterface primitives_initialisation()

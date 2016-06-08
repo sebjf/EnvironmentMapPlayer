@@ -9,6 +9,7 @@
 #define LOWLATENCYSTREAM_H_
 
 #include "MaxSLiCInterface.h"
+#include <string>
 
 /* Packet based low latency stream (with packet type T) */
 
@@ -16,7 +17,7 @@ template <typename T>
 class LowLatencyStream {
 
 	max_file_t* m_maxfile;
-	char* m_name;
+	const char* m_name;
 	max_llstream_t* m_llstream;
 
 	int slot_size;
@@ -25,10 +26,10 @@ class LowLatencyStream {
 	bool connected;
 
 public:
-	LowLatencyStream(char* name, max_file_t* maxfile)
+	LowLatencyStream(string name, max_file_t* maxfile)
 	{
 		m_maxfile = maxfile;
-		m_name = name;
+		m_name = name.c_str();
 
 		slot_size = sizeof(T);
 

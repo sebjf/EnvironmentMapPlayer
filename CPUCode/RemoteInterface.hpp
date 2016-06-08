@@ -24,6 +24,16 @@ public:
 	RemoteInterface(int port)
 	{
 		portno = port;
+
+		updateCoefficient = false;
+		updatePrimitiveLocation = false;
+
+		primitive_index = 0;
+	}
+
+	~RemoteInterface()
+	{
+
 	}
 
 	Primitives* primitives;
@@ -35,7 +45,10 @@ private:
 public:
 	void Start()
 	{
-		int result = pthread_create(&serverThread, NULL, &ListenThread, NULL);
+		ListenThreadArgs* args = new ListenThreadArgs();
+		args->interface = this;
+
+		int result = pthread_create(&serverThread, NULL, &ListenThread, args);
 		if(result != 0)
 		{
 			printf("Could not start server thread.");
@@ -45,70 +58,106 @@ public:
 private:
 	int portno;
 
-	void ListenThread(void* arg)
+	class ListenThreadArgs
 	{
-		int sockfd, n;
+	public:
+		RemoteInterface* interface;
+	};
+
+	static void* ListenThread(void* arg)
+	{
+		ListenThreadArgs* args = (ListenThreadArgs*)arg;
+
+		int sockfd;
 		struct sockaddr_in serv_addr;
 
 		sockfd = socket(AF_INET, SOCK_STREAM, 0);
 		if (sockfd < 0)
 		{
-			printf("ERROR opening socket");
-		  	return;
+			printf("ERROR opening socket\n");
+		  	return NULL;
 		}
 
 		bzero((char *) &serv_addr, sizeof(serv_addr));
 		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(portno);
+		serv_addr.sin_port = htons(args->interface->portno);
 		serv_addr.sin_addr.s_addr = INADDR_ANY;
 
 		if (bind(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
 		{
-			printf("ERROR binding socket");
-			return;
+			printf("ERROR binding socket\n");
+			return NULL;
 		}
 
 		listen(sockfd,5);
 
 		while(1){
-			int clilen = sizeof(cli_addr);
 			struct sockaddr_in cli_addr;
+			__socklen_t clilen = sizeof(cli_addr);
 			int newsockfd = accept(sockfd, (struct sockaddr*)&cli_addr, &clilen);
 			if (newsockfd < 0)
 			{
-				printf("ERROR accepting connection to socket");
-				return;
+				printf("ERROR accepting connection to socket\n");
+				return NULL;
 			}
 
-			pthread_t tid;
-			pthread_create(&tid, NULL, &ServerThread, (void*)newsockfd);
+			printf("Remote admin connected.\n");
 
-			clientThreads.push_back(tid);
+			ServerThreadArgs* server_args = new ServerThreadArgs();
+			server_args->interface = args->interface;
+			server_args->newsockfd = newsockfd;
+
+			pthread_t tid;
+			pthread_create(&tid, NULL, &ServerThread, server_args);
+
+			args->interface->clientThreads.push_back(tid);
 		}
+
+		delete arg;
+
+		return NULL;
 	}
 
-	void ServerThread(void* arg)
+	class ServerThreadArgs
 	{
-		int sockfd = (int)arg;
+	public:
+		RemoteInterface* interface;
+		int newsockfd;
+	};
+
+	static void* ServerThread(void* arg)
+	{
+		ServerThreadArgs* args = (ServerThreadArgs*)arg;
+
+		int sockfd = args->newsockfd;
+
+		char buffer[256];
+		int n;
 
 		while(1)
 		{
 			bzero(buffer,256);
-			n = read(newsockfd,buffer,255);
-			if (n < 0) error("ERROR reading from socket");
+			n = read(sockfd,buffer,255);
+			int err = errno;
+			if (n < 0) {
+				printf("ERROR reading from socket\n");
+			}
+			if(n == 0)
+			{
+				printf("Remote admin disconnected.\n");
+				break; //socket is closed
+			}
 			printf("Here is the message: %s",buffer);
 		}
-	}
 
+		delete arg;
 
-	~RemoteInterface()
-	{
-
+		return NULL;
 	}
 
 	/* Blank the display by multiplying all pixels with a low constant */
 
-	bool updateCoefficient = false;
+	bool updateCoefficient;
 	float coefficient;
 
 	void Local_SetBlank(float v)
@@ -127,9 +176,9 @@ private:
 	bool updatePrimitiveLocation;
 	vector<float> primitiveLocation;
 
-	int primitive_index = 0;
+	int primitive_index;
 
-	void Local_SetPrimitiveLocation(int i, float x, float y, float z)
+	void Local_SetPrimitiveLocation(float x, float y, float z)
 	{
 		while(updatePrimitiveLocation){
 		};
