@@ -16,7 +16,17 @@
 #include <netinet/in.h>
 
 
-
+enum Commands : char {
+	CMD_STARTLOGGING = 1,
+	CMD_STOPLOGGING = 2,
+	CMD_DOWNLOADLOG = 3,
+	CMD_CLEARLOG = 4,
+	CMD_PARTICIPANTID = 5,
+	CMD_TRIALID = 6,
+	CMD_HMDVISIBILITY = 7,
+	CMD_SETTARGET = 8,
+	CMD_REQUESTSTATUS = 9,
+};
 
 class RemoteInterface
 {
@@ -25,7 +35,7 @@ public:
 	{
 		portno = port;
 
-		updateCoefficient = false;
+		setShade = false;
 		updatePrimitiveLocation = false;
 
 		primitive_index = 0;
@@ -53,10 +63,36 @@ public:
 		{
 			printf("Could not start server thread.");
 		}
+
+		bzero(&currentStatus, sizeof(struct StatusPacket));
 	}
 
 private:
 	int portno;
+
+	struct __attribute__((__packed__)) CommandPacket
+	{
+		Commands command;
+		float param1;
+		float param2;
+		float param3;
+	};
+
+	struct __attribute__((__packed__)) StatusPacket
+	{
+		float hmdState;
+		float phasespaceState;
+		float recordCount;
+		float participantId;
+		float trialID;
+		float latency;
+		float logging;
+		float headx;
+		float heady;
+		float headz;
+	};
+
+	struct StatusPacket currentStatus;
 
 	class ListenThreadArgs
 	{
@@ -113,8 +149,7 @@ private:
 			args->interface->clientThreads.push_back(tid);
 		}
 
-		delete arg;
-
+		delete args;
 		return NULL;
 	}
 
@@ -131,43 +166,82 @@ private:
 
 		int sockfd = args->newsockfd;
 
-		char buffer[256];
+		CommandPacket packet;
+
+		char* buffer = (char*)&packet;
 		int n;
+		int toread = sizeof(struct CommandPacket);
 
 		while(1)
 		{
-			bzero(buffer,256);
-			n = read(sockfd,buffer,255);
-			int err = errno;
-			if (n < 0) {
-				printf("ERROR reading from socket\n");
-			}
-			if(n == 0)
+			int readn = 0;
+			do{
+				n = read(sockfd,&buffer[readn],toread);
+				readn += n;
+
+				if (n < 0) {
+					printf("ERROR reading from socket\n");
+				}
+				if(n == 0)
+				{
+					printf("Remote admin disconnected.\n");
+
+					//socket is closed
+					delete args;
+					return NULL;
+				}
+
+			}while(readn < toread);
+
+
+			switch(packet.command)
 			{
-				printf("Remote admin disconnected.\n");
-				break; //socket is closed
+			case CMD_STARTLOGGING:
+				break;
+			case CMD_STOPLOGGING:
+				break;
+			case CMD_DOWNLOADLOG:
+				break;
+			case CMD_CLEARLOG:
+				break;
+			case CMD_PARTICIPANTID:
+				break;
+			case CMD_TRIALID:
+				break;
+			case CMD_HMDVISIBILITY:
+				args->interface->SetShade(packet.param1);
+				break;
+			case CMD_SETTARGET:
+				break;
+			case CMD_REQUESTSTATUS:
+				write(sockfd, &args->interface->currentStatus, sizeof(struct StatusPacket));
+				break;
 			}
-			printf("Here is the message: %s",buffer);
 		}
 
-		delete arg;
-
+		delete args;
 		return NULL;
 	}
 
+	/* Local flags for thread synchronization */
+
+	bool setShade;
+
+
+	/* Other variables for communicating between threads (will be locked by flags above) */
+
+	float shade;
+
 	/* Blank the display by multiplying all pixels with a low constant */
 
-	bool updateCoefficient;
-	float coefficient;
-
-	void Local_SetBlank(float v)
+	void SetShade(float v)
 	{
 		//wait for the last update to be processed
-		while(updateCoefficient){
+		while(setShade){
 		};
 
-		coefficient = v;
-		updateCoefficient = true;
+		shade = v;
+		setShade = true;
 	}
 
 
@@ -196,9 +270,10 @@ public:
 	void Main_Update()
 	{
 		// blank display
-		if(updateCoefficient)
+		if(setShade)
 		{
-			primitives->SetShade(coefficient);
+			primitives->SetShade(shade);
+			setShade = false;
 		}
 
 		//set primitive location
@@ -206,6 +281,9 @@ public:
 		{
 			primitives->SetPrimitiveCenter(primitive_index, primitiveLocation);
 		}
+
+		currentStatus.hmdState = primitives->GetShade();
+		currentStatus.latency++;
 	}
 
 };

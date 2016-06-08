@@ -186,6 +186,11 @@ public:
 		coefficientsStream->Send(coefficients);
 	}
 
+	float GetShade()
+	{
+		return coefficients.coefficient;
+	}
+
 };
 
 #endif /* PRIMITIVES_HPP_ */
