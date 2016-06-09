@@ -60,7 +60,6 @@ public:
 		OVR::Vector3<float> up = OVR::Vector3<float>(0,1,0);
 		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,-1);  //our world is reversed, relative to the GPU world where the original transforms came from
 		m_orientation = orientation;
-		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,-1),3.14f);
 		m_up      = ( m_orientation).Rotate(up);
 		m_forward = ( m_orientation).Rotate(forward);
 

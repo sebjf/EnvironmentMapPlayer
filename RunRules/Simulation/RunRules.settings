@@ -31,7 +31,7 @@
 <customDefinitions/>
 </cpuCode>
 <simulator>
-<deleteDRAM enabled="false"/>
+<deleteDRAM enabled="true"/>
 <maxDRAMSize enabled="false"/>
 <DRAMFile enabled="false"/>
 <socketName>EnvironmentMap</socketName>

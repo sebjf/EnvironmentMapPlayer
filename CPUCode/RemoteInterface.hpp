@@ -8,7 +8,9 @@
 #ifndef REMOTEINTERFACE_HPP_
 #define REMOTEINTERFACE_HPP_
 
-#include "Primitives.hpp"
+#include "VirtualEnvironment.hpp"
+#include "Logging.hpp"
+#include "PhaseSpaceTracker.hpp"
 #include <pthread.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -37,6 +39,9 @@ public:
 
 		setShade = false;
 		updatePrimitiveLocation = false;
+		clearLog = false;
+		requestLog = false;
+		logDataCopied = false;
 
 		primitive_index = 0;
 	}
@@ -46,7 +51,9 @@ public:
 
 	}
 
-	Primitives* primitives;
+	VirtualEnvironment* ve;
+	Logging* log;
+	PhaseSpaceTracker* tracker;
 
 private:
 	pthread_t serverThread;
@@ -90,6 +97,9 @@ private:
 		float headx;
 		float heady;
 		float headz;
+		float heada;
+		float headb;
+		float headc;
 	};
 
 	struct StatusPacket currentStatus;
@@ -179,10 +189,7 @@ private:
 				n = read(sockfd,&buffer[readn],toread);
 				readn += n;
 
-				if (n < 0) {
-					printf("ERROR reading from socket\n");
-				}
-				if(n == 0)
+				if(n <= 0)
 				{
 					printf("Remote admin disconnected.\n");
 
@@ -197,21 +204,28 @@ private:
 			switch(packet.command)
 			{
 			case CMD_STARTLOGGING:
+				args->interface->log->SetEnable(true);	//booleans can be set safely from other threads
 				break;
 			case CMD_STOPLOGGING:
+				args->interface->log->SetEnable(false);
 				break;
 			case CMD_DOWNLOADLOG:
+				args->interface->Local_WriteLogData(sockfd);
 				break;
 			case CMD_CLEARLOG:
+				args->interface->clearLog = true;
 				break;
 			case CMD_PARTICIPANTID:
+				args->interface->log->SetParticipantId((int)packet.param1);
 				break;
 			case CMD_TRIALID:
+				args->interface->log->SetTrialId((int)packet.param1);
 				break;
 			case CMD_HMDVISIBILITY:
 				args->interface->SetShade(packet.param1);
 				break;
 			case CMD_SETTARGET:
+
 				break;
 			case CMD_REQUESTSTATUS:
 				write(sockfd, &args->interface->currentStatus, sizeof(struct StatusPacket));
@@ -226,6 +240,14 @@ private:
 	/* Local flags for thread synchronization */
 
 	bool setShade;
+
+	bool clearLog;
+	bool requestLog;
+	bool logDataCopied;
+
+	char* logData;
+	int logDataLength;
+	int logDataRecordCount;
 
 
 	/* Other variables for communicating between threads (will be locked by flags above) */
@@ -265,25 +287,97 @@ private:
 		updatePrimitiveLocation = true;
 	}
 
+	void Local_WriteLogData(int socket)
+	{
+		//if another client has requested the log data, wait. Neither requestLog or logDataCopied should be true when *this* instance of the call is made.
+		while(requestLog || logDataCopied)
+		{
+		};
+
+		//requestLog is low, so main thread has finished copying it. logDataCopied is also low, so the other cilent has finished sending it to its administrator and freed the memory.
+
+		requestLog = true;
+
+		// now we have requested the data, wait until the main thread has copied it to a staging area
+
+		while(!logDataCopied)
+		{
+		};
+
+		// transmit the data to the host
+
+		write(socket, &logDataRecordCount, sizeof(int));
+		write(socket, logData, logDataLength);
+
+		//the data has been queued and so we can free the staging memory and let other clients proceed
+
+		free(logData);
+		logDataLength = -1;
+		logDataRecordCount = -1;
+
+		logDataCopied = false;
+	}
+
 	/* Called from the main low latency thread */
 public:
-	void Main_Update()
+	void Update()
 	{
 		// blank display
 		if(setShade)
 		{
-			primitives->SetShade(shade);
+			ve->SetShade(shade);
 			setShade = false;
 		}
 
 		//set primitive location
 		if(updatePrimitiveLocation)
 		{
-			primitives->SetPrimitiveCenter(primitive_index, primitiveLocation);
+		//	ve->SetPrimitiveCenter(primitive_index, primitiveLocation);
+			updatePrimitiveLocation = false;
 		}
 
-		currentStatus.hmdState = primitives->GetShade();
+		if(clearLog)
+		{
+			log->Clear();
+			clearLog = false;
+		}
+
+		if(requestLog)
+		{
+			// copy log data
+			char* src;
+			int length;
+			log->GetLogPtr(&src, &length);
+
+			logData = (char*)malloc(length);
+			memccpy(logData, src, 1, length);
+			logDataLength = length;
+			logDataRecordCount = log->GetRecordCount();
+
+			log->ReleaseLogPtr();
+
+			logDataCopied = true;
+			requestLog = false;
+		}
+
+		currentStatus.hmdState = ve->GetShade();
+		currentStatus.phasespaceState = tracker->isConnected();
+		currentStatus.recordCount = log->GetRecordCount();
+		currentStatus.participantId = log->GetParticipantId();
+		currentStatus.trialID = log->GetTrialId();
+		currentStatus.logging = log->GetState();
 		currentStatus.latency++;
+
+		vector<float> head = tracker->GetHeadPosition();
+		currentStatus.headx = head[0];
+		currentStatus.heady = head[1];
+		currentStatus.headz = head[2];
+
+		vector<float> lookat = tracker->GetHeadLookat();
+		currentStatus.heada = lookat[0];
+		currentStatus.headb = lookat[1];
+		currentStatus.headc = lookat[2];
+
 	}
 
 };

@@ -16,149 +16,129 @@
 #include <istream>
 #include <fstream>
 #include <string>
-#include <OVR.h>
-#include <OVR_CAPI.h>
 #include "Camera.hpp"
-#include "Oculus.hpp"
 
 using namespace std;
-using namespace OVR;
 
 class Logging
 {
 public:
 
-	struct Record
+	struct __attribute__((__packed__)) Record
 	{
-		double timestamp;
-		float x;
-		float y;
-		float z;
-		float w;
-		float yaw;
-		float pitch;
-		float roll;
+		float timestamp;
+		float headposition[3];
+		float headlookat[3];
+		float leftfootposition[3];
+		float rightfootposition[3];
+		float participantid;
+		float trialid;
 	};
 
-	Logging(ovrHmd hmd)
+	Logging()
 	{
-		m_HMD = hmd;
-		m_locked = false;
+		enable = false;
+		locked = false;
+		participantid = -1;
+		trialid = -1;
 	}
 
-	void Update()
+	void SetEnable(bool b)
 	{
-		if(m_locked)
-		{
-			return;
-		}
-
-		ovrSensorState state = ovrHmd_GetSensorState(m_HMD, 0.0);
-
-		static double lasttime = 0;
-
-		if(state.Recorded.TimeInSeconds == lasttime)
-		{
-			return;
-		}
-
-		lasttime = state.Recorded.TimeInSeconds;
-
-		Record r;
-		r.timestamp = state.Recorded.TimeInSeconds;
-		r.x = state.Recorded.Pose.Orientation.x;
-		r.y = state.Recorded.Pose.Orientation.y;
-		r.z = state.Recorded.Pose.Orientation.z;
-		r.w = state.Recorded.Pose.Orientation.w;
-
-		((OVR::Quatf)state.Recorded.Pose.Orientation).GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&(r.yaw), &(r.pitch), &(r.roll));
-
-		log.push_back(r);
+		enable = b;
 	}
 
-	OVR::Quatf GetState(double timeInSeconds)
+	void SetParticipantId(int id)
 	{
-		for(unsigned int i = 0; i < log.size(); i++)
+		participantid = id;
+	}
+
+	void SetTrialId(int id)
+	{
+		trialid = id;
+	}
+
+	Record GetRecord(double timeInSeconds)
+	{
+		vector<Logging::Record>::reverse_iterator rit = log.rbegin();
+		for(; rit != log.rend(); ++rit)
 		{
-			double offset = log[i].timestamp - log.front().timestamp;
-			if(offset > timeInSeconds)
+			if((*rit).timestamp <= timeInSeconds)
 			{
-				Record r = log[i-1];
-				return OVR::Quatf(r.x,r.y,r.z,r.w);
+				return (*rit);
 			}
 		}
 
-		return OVR::Quatf(log.back().x,log.back().y,log.back().z,log.back().w);
+		return *(log.begin());
 	}
 
-	double GetLastTime()
+	void Update(vector<float> head, vector<float> lookat, vector<float> lfoot, vector<float> rfoot)
 	{
-		return log.back().timestamp - log.front().timestamp;
-	}
-
-	void Reset()
-	{
-		if(m_locked)
-		{
-			return;
-		}
-
-		log = std::vector<Logging::Record>();
-	}
-
-	void Save()
-	{
-		if(m_locked)
-		{
-			return;
-		}
-
-		std::ofstream file;
-		file.open("C:\\HeadLogs\\Log.csv",std::ios::trunc);
-
-		for(unsigned int i = 0; i < log.size(); i++)
-		{
-			Record r = log[i];
-			file << std::fixed << r.timestamp << "," << r.x << "," << r.y << "," << r.z << "," << r.w << "," << r.roll << "," << r.pitch << "," << r.yaw <<  "\n";
-		}
-
-		file.close();
-		Reset();
-	}
-
-	void Load(std::string filename)
-	{
-		Reset();
-		ifstream file;
-		file.open(filename.c_str(),ios::in);
-		string item;
-		while(file.good())
+		if(enable && !locked)
 		{
 			Record r;
-			std::getline(file, item, ','); r.timestamp = strtod(item.c_str(), NULL);
 
-			if(item.length() <= 0)
-				break;
+			memccpy(r.headposition, head.data(), sizeof(float), 3);
+			memccpy(r.headlookat, lookat.data(), sizeof(float), 3);
+			memccpy(r.leftfootposition, lfoot.data(), sizeof(float), 3);
+			memccpy(r.rightfootposition, rfoot.data(), sizeof(float), 3);
 
-			std::getline(file, item, ','); r.x = strtod(item.c_str(), NULL);
-			std::getline(file, item, ','); r.y = strtod(item.c_str(), NULL);
-			std::getline(file, item, ','); r.z = strtod(item.c_str(), NULL);
-			std::getline(file, item, ','); r.w = strtod(item.c_str(), NULL);
-			std::getline(file, item, ','); r.yaw = strtod(item.c_str(), NULL);
-			std::getline(file, item, ','); r.pitch = strtod(item.c_str(), NULL);
-			std::getline(file, item); r.roll = strtod(item.c_str(), NULL);
+			r.participantid = participantid;
+			r.trialid = trialid;
+
 			log.push_back(r);
 		}
-		m_locked = true;
-		file.close();
 	}
 
-	std::vector<Logging::Record> log;
-	bool m_locked;
+	void Clear()
+	{
+		if(!locked)
+		{
+			log.clear();
+		}
+	}
+
+	/* Warning this is an expensive call and should not be called when a participant is active! */
+	void GetLogPtr(char** data, int* length)
+	{
+		*data = (char*)log.data();
+		*length = log.size() * sizeof(struct Logging::Record);
+		locked = true;
+	}
+
+	void ReleaseLogPtr()
+	{
+		locked = false;
+	}
+
+	int GetParticipantId()
+	{
+		return participantid;
+	}
+
+	int GetTrialId()
+	{
+		return trialid;
+	}
+
+	int GetRecordCount()
+	{
+		return log.size();
+	}
+
+	bool GetState()
+	{
+		return enable & !locked;
+	}
 
 private:
-	ovrHmd m_HMD;
 
+	std::vector<Logging::Record> log;
+	bool enable;
+	bool locked;
+
+	int participantid;
+	int trialid;
 };
 
 #endif /* LOGGING_H_ */

@@ -1,5 +1,5 @@
 #
 # This file is managed by MaxIDE. Do NOT change.
 #
-HEADERS:= CSVParser/csvparser.h Camera.hpp CharacterController.hpp EnvironmentMap.hpp Logging.hpp LowLatencyStream.hpp Mouse.hpp Oculus.hpp Primitives.hpp RayParameterMap.hpp RemoteInterface.hpp Stopwatch.hpp Types.hpp VirtualMonitor.h 
+HEADERS:= CSVParser/csvparser.h Camera.hpp CharacterController.hpp EnvironmentMap.hpp Logging.hpp LowLatencyStream.hpp Mouse.hpp Oculus.hpp PhaseSpace/buffer.h PhaseSpace/c3d_file.h PhaseSpace/interp.h PhaseSpace/net_utils.h PhaseSpace/owl.h PhaseSpace/owl_ctx.h PhaseSpace/owl_images.h PhaseSpace/owl_math.h PhaseSpace/owl_peaks.h PhaseSpace/owl_planes.h PhaseSpace/owl_protocol.h PhaseSpace/owl_rpd.h PhaseSpace/owl_scan.h PhaseSpace/timer.h PhaseSpace/utils.h PhaseSpaceTracker.hpp Primitives.hpp RayParameterMap.hpp RemoteInterface.hpp Stopwatch.hpp Types.hpp VirtualEnvironment.hpp VirtualMonitor.h 
 SOURCES:= CSVParser/csvparser.c EnvironmentMapPlayerCpuCode.cpp Mouse.cpp VirtualMonitor.cpp 

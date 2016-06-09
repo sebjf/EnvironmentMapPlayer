@@ -17,7 +17,7 @@ template <typename T>
 class LowLatencyStream {
 
 	max_file_t* m_maxfile;
-	const char* m_name;
+	string m_name;
 	max_llstream_t* m_llstream;
 
 	int slot_size;
@@ -29,7 +29,7 @@ public:
 	LowLatencyStream(string name, max_file_t* maxfile)
 	{
 		m_maxfile = maxfile;
-		m_name = name.c_str();
+		m_name = name;
 
 		slot_size = sizeof(T);
 
@@ -45,9 +45,9 @@ public:
 	{
 		if(m_maxfile != NULL)
 		{
-			if(!max_has_handle_stream(m_maxfile, m_name))
+			if(!max_has_handle_stream(m_maxfile, m_name.c_str()))
 			{
-				printf("Maxfile does not have stream %s\n", m_name);
+				printf("Maxfile does not have stream %s\n", m_name.c_str());
 				return;
 			}
 		}
@@ -56,7 +56,7 @@ public:
 
 		void* stream_buffer;
 		posix_memalign(&stream_buffer, 4096, buffer_size);
-		m_llstream = max_llstream_setup(engine, m_name, num_slots, slot_size, stream_buffer);
+		m_llstream = max_llstream_setup(engine, m_name.c_str(), num_slots, slot_size, stream_buffer);
 
 		connected = true;
 	}

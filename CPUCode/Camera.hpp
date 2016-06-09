@@ -47,6 +47,13 @@ public:
 		}
 	}
 
+	void set_eye(vector<float> v)
+	{
+		camera_settings.camera_eye.x = v[0];
+		camera_settings.camera_eye.y = v[1];
+		camera_settings.camera_eye.z = v[2];
+	}
+
 	void set_eye(float x, float y, float z)
 	{
 		camera_settings.camera_eye.x = x;
@@ -60,6 +67,15 @@ public:
 		azimuth = DEG2RAD * azimuth;
 
 		camera_settings.camera_lookat = vector3::add(camera_settings.camera_eye, vector3((cos(inclination)*sin(azimuth)),(sin(inclination)),(cos(inclination)*cos(azimuth))));
+
+		update_camera_streams();
+	}
+
+	void set_lookat(vector<float> v)
+	{
+		camera_settings.camera_lookat.x = v[0];
+		camera_settings.camera_lookat.y = v[1];
+		camera_settings.camera_lookat.z = v[2];
 
 		update_camera_streams();
 	}
