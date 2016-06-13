@@ -296,7 +296,7 @@ max_actions_t* EnvironmentMapPlayer_sampleMap_initialisation_convert(max_file_t 
 /**
  * \brief Basic static function for the interface 'primitives_initialisation'.
  * 
- * \param [in] instream_primitivesStream The stream should be of size 1024 bytes.
+ * \param [in] instream_primitivesStream The stream should be of size 1152 bytes.
  */
 void EnvironmentMapPlayer_primitives_initialisation(
 	const uint8_t *instream_primitivesStream);
@@ -309,7 +309,7 @@ void EnvironmentMapPlayer_primitives_initialisation(
  * note that one of these *must* be called, so that associated memory can be released.
  * 
  * 
- * \param [in] instream_primitivesStream The stream should be of size 1024 bytes.
+ * \param [in] instream_primitivesStream The stream should be of size 1152 bytes.
  * \return A handle on the execution status, or NULL in case of error.
  */
 max_run_t *EnvironmentMapPlayer_primitives_initialisation_nonblock(
@@ -320,7 +320,7 @@ max_run_t *EnvironmentMapPlayer_primitives_initialisation_nonblock(
  * 
  */
 typedef struct { 
-	const uint8_t *instream_primitivesStream; /**<  [in] The stream should be of size 1024 bytes. */
+	const uint8_t *instream_primitivesStream; /**<  [in] The stream should be of size 1152 bytes. */
 } EnvironmentMapPlayer_primitives_initialisation_actions_t;
 
 /**
@@ -452,14 +452,16 @@ max_actions_t* EnvironmentMapPlayer_primitives_initialisation_convert(max_file_t
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_coefficients Stream "coefficients".
+ * \param [in] instream_size_coefficients The size of the stream instream_coefficients in bytes.
  * \param [in] instream_primitivesStream Stream "primitivesStream".
  * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [in] inmem_RayCasterKernel_alphaMapSlot2 Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)).
- * \param [in] inmem_RayCasterKernel_alphaMapSlot3 Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot0 Mapped ROM inmem_RayCasterKernel_alphaMapSlot0, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot1 Mapped ROM inmem_RayCasterKernel_alphaMapSlot1, should be of size (16384 * sizeof(uint64_t)).
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  */
 void EnvironmentMapPlayer(
@@ -492,14 +494,16 @@ void EnvironmentMapPlayer(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_coefficients,
+	size_t instream_size_coefficients,
 	const void *instream_primitivesStream,
 	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2,
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot0,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot1,
 	const char * routing_string);
 
 /**
@@ -539,14 +543,16 @@ void EnvironmentMapPlayer(
  * \param [in] inscalar_sampleMapDimm2_toMem_addrGen_startAddress Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress".
  * \param [in] instream_cameraUpdates Stream "cameraUpdates".
  * \param [in] instream_size_cameraUpdates The size of the stream instream_cameraUpdates in bytes.
+ * \param [in] instream_coefficients Stream "coefficients".
+ * \param [in] instream_size_coefficients The size of the stream instream_coefficients in bytes.
  * \param [in] instream_primitivesStream Stream "primitivesStream".
  * \param [in] instream_size_primitivesStream The size of the stream instream_primitivesStream in bytes.
  * \param [in] instream_rayParameterMap_fromCPU Stream "rayParameterMap_fromCPU".
  * \param [in] instream_size_rayParameterMap_fromCPU The size of the stream instream_rayParameterMap_fromCPU in bytes.
  * \param [in] instream_sampleMap_fromCPU Stream "sampleMap_fromCPU".
  * \param [in] instream_size_sampleMap_fromCPU The size of the stream instream_sampleMap_fromCPU in bytes.
- * \param [in] inmem_RayCasterKernel_alphaMapSlot2 Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)).
- * \param [in] inmem_RayCasterKernel_alphaMapSlot3 Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot0 Mapped ROM inmem_RayCasterKernel_alphaMapSlot0, should be of size (16384 * sizeof(uint64_t)).
+ * \param [in] inmem_RayCasterKernel_alphaMapSlot1 Mapped ROM inmem_RayCasterKernel_alphaMapSlot1, should be of size (16384 * sizeof(uint64_t)).
  * \param [in] routing_string A string containing comma-separated "from_name -> to_name" routing commands.
  * \return A handle on the execution status, or NULL in case of error.
  */
@@ -580,14 +586,16 @@ max_run_t *EnvironmentMapPlayer_nonblock(
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress,
 	const void *instream_cameraUpdates,
 	size_t instream_size_cameraUpdates,
+	const void *instream_coefficients,
+	size_t instream_size_coefficients,
 	const void *instream_primitivesStream,
 	size_t instream_size_primitivesStream,
 	const void *instream_rayParameterMap_fromCPU,
 	size_t instream_size_rayParameterMap_fromCPU,
 	const void *instream_sampleMap_fromCPU,
 	size_t instream_size_sampleMap_fromCPU,
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2,
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot0,
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot1,
 	const char * routing_string);
 
 /**
@@ -624,14 +632,16 @@ typedef struct {
 	uint64_t inscalar_sampleMapDimm2_toMem_addrGen_startAddress; /**<  [in] Input scalar parameter "sampleMapDimm2_toMem_addrGen.startAddress". */
 	const void *instream_cameraUpdates; /**<  [in] Stream "cameraUpdates". */
 	size_t instream_size_cameraUpdates; /**<  [in] The size of the stream instream_cameraUpdates in bytes. */
+	const void *instream_coefficients; /**<  [in] Stream "coefficients". */
+	size_t instream_size_coefficients; /**<  [in] The size of the stream instream_coefficients in bytes. */
 	const void *instream_primitivesStream; /**<  [in] Stream "primitivesStream". */
 	size_t instream_size_primitivesStream; /**<  [in] The size of the stream instream_primitivesStream in bytes. */
 	const void *instream_rayParameterMap_fromCPU; /**<  [in] Stream "rayParameterMap_fromCPU". */
 	size_t instream_size_rayParameterMap_fromCPU; /**<  [in] The size of the stream instream_rayParameterMap_fromCPU in bytes. */
 	const void *instream_sampleMap_fromCPU; /**<  [in] Stream "sampleMap_fromCPU". */
 	size_t instream_size_sampleMap_fromCPU; /**<  [in] The size of the stream instream_sampleMap_fromCPU in bytes. */
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot2; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot2, should be of size (16384 * sizeof(uint64_t)). */
-	const uint64_t *inmem_RayCasterKernel_alphaMapSlot3; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot3, should be of size (16384 * sizeof(uint64_t)). */
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot0; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot0, should be of size (16384 * sizeof(uint64_t)). */
+	const uint64_t *inmem_RayCasterKernel_alphaMapSlot1; /**<  [in] Mapped ROM inmem_RayCasterKernel_alphaMapSlot1, should be of size (16384 * sizeof(uint64_t)). */
 	const char * routing_string; /**<  [in] A string containing comma-separated "from_name -> to_name" routing commands. */
 } EnvironmentMapPlayer_actions_t;
 
