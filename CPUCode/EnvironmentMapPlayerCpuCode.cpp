@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <linux/input.h>
+#include <pthread.h>
 
 #include "MaxSLiCInterface.h"
 
@@ -45,6 +46,13 @@ int main(void)
 	sigemptyset(&sigIntHandler.sa_mask);
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
+
+	//make current thread realtime
+
+	sched_param priority;
+	priority.__sched_priority = sched_get_priority_max(SCHED_FIFO);
+	pthread_setschedparam(pthread_self(), SCHED_FIFO, &priority);
+
 
 	Watchdog watchdog(0.020f);
 

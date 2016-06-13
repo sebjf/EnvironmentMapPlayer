@@ -182,6 +182,11 @@ public:
 		return primitives->GetGeometry();
 	}
 
+	void SetPrimitiveCenter(int id, vector<float> c)
+	{
+		primitives->SetPrimitiveCenter(id, c);
+	}
+
 };
 
 

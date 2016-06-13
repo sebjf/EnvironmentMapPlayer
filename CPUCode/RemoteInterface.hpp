@@ -42,7 +42,7 @@ public:
 		portno = port;
 
 		setShade = false;
-		updatePrimitiveLocation = false;
+		setPrimitiveLocation = false;
 		clearLog = false;
 		requestLog = false;
 		logDataCopied = false;
@@ -81,7 +81,7 @@ public:
 		bzero(&currentStatus, sizeof(struct StatusPacket));
 	}
 
-	float latency; // the latency set by the admin, the one variable that veinterface will actually maintain itself
+	volatile float latency; // the latency set by the admin, the one variable that veinterface will actually maintain itself
 
 private:
 	int portno;
@@ -236,7 +236,7 @@ private:
 				args->interface->SetShade(packet.param1);
 				break;
 			case CMD_SETTARGET:
-
+				args->interface->Local_SetPrimitiveLocation(packet.param1, packet.param2, packet.param3);
 				break;
 			case CMD_REQUESTSTATUS:
 				write(sockfd, &args->interface->currentStatus, sizeof(struct StatusPacket));
@@ -259,11 +259,13 @@ private:
 
 	/* Local flags for thread synchronization */
 
-	bool setShade;
+	// this is NOT the right way to do this, but we cant have anything that could surrender the main thread (mutexes) and simple atomics are only in c++11.
 
-	bool clearLog;
-	bool requestLog;
-	bool logDataCopied;
+	volatile sig_atomic_t setShade;
+
+	volatile sig_atomic_t clearLog;
+	volatile sig_atomic_t requestLog;
+	volatile sig_atomic_t logDataCopied;
 
 	char* logData;
 	int logDataLength;
@@ -272,7 +274,7 @@ private:
 
 	/* Other variables for communicating between threads (will be locked by flags above) */
 
-	float shade;
+	volatile float shade;
 
 	/* Blank the display by multiplying all pixels with a low constant */
 
@@ -289,14 +291,14 @@ private:
 
 	/* Updates the location of a nominated primitive */
 
-	bool updatePrimitiveLocation;
+	volatile bool setPrimitiveLocation;
 	vector<float> primitiveLocation;
 
 	int primitive_index;
 
 	void Local_SetPrimitiveLocation(float x, float y, float z)
 	{
-		while(updatePrimitiveLocation){
+		while(setPrimitiveLocation){
 		};
 
 		primitiveLocation.clear();
@@ -304,7 +306,7 @@ private:
 		primitiveLocation.push_back(y);
 		primitiveLocation.push_back(z);
 
-		updatePrimitiveLocation = true;
+		setPrimitiveLocation = true;
 	}
 
 	void Local_WritePrimitives(int socket)
@@ -314,7 +316,7 @@ private:
 		int size = primitives.size();
 		write(socket, &size, sizeof(int));
 
-		for(int i = 0; i < primitives.size(); i++)
+		for(unsigned int i = 0; i < primitives.size(); i++)
 		{
 			write(socket, &primitives[i], sizeof(struct Primitives::LoadedPrimitive));
 		}
@@ -325,7 +327,8 @@ private:
 		//if another client has requested the log data, wait. Neither requestLog or logDataCopied should be true when *this* instance of the call is made.
 		while(requestLog || logDataCopied)
 		{
-		};
+			(void)0;
+		}
 
 		//requestLog is low, so main thread has finished copying it. logDataCopied is also low, so the other cilent has finished sending it to its administrator and freed the memory.
 
@@ -335,7 +338,8 @@ private:
 
 		while(!logDataCopied)
 		{
-		};
+			(void)0;
+		}
 
 		// transmit the data to the host
 
@@ -366,10 +370,10 @@ public:
 		}
 
 		//set primitive location
-		if(updatePrimitiveLocation)
+		if(setPrimitiveLocation)
 		{
-		//	ve->SetPrimitiveCenter(primitive_index, primitiveLocation);
-			updatePrimitiveLocation = false;
+			ve->SetPrimitiveCenter(primitive_index, primitiveLocation);
+			setPrimitiveLocation = false;
 		}
 
 		if(clearLog)

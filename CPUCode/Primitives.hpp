@@ -203,7 +203,7 @@ public:
 	vector<LoadedPrimitive> GetGeometry()
 	{
 		vector<LoadedPrimitive> primitives;
-		for(int i = 0; i < PRIMITIVES_COUNT; i++)
+		for(unsigned int i = 0; i < PRIMITIVES_COUNT; i++)
 		{
 			planeParamsUpdate_t plane = m_primitiveParameters[i];
 			if(plane.enable)
