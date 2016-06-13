@@ -17,6 +17,8 @@
 #include <fstream>
 #include <string>
 #include "Camera.hpp"
+#include "ts_util.h"
+#include <time.h>
 
 using namespace std;
 
@@ -41,6 +43,7 @@ public:
 		locked = false;
 		participantid = -1;
 		trialid = -1;
+		clock_gettime(CLOCK_REALTIME, &startTime);
 	}
 
 	void SetEnable(bool b)
@@ -56,6 +59,13 @@ public:
 	void SetTrialId(int id)
 	{
 		trialid = id;
+	}
+
+	float GetCurrentTimeInSeconds()
+	{
+		timespec currentTime;
+		clock_gettime(CLOCK_REALTIME, &currentTime);
+		return tsFloat(tsSubtract(currentTime, startTime));
 	}
 
 	Record GetRecord(double timeInSeconds)
@@ -86,6 +96,8 @@ public:
 			r.participantid = participantid;
 			r.trialid = trialid;
 
+			r.timestamp = GetCurrentTimeInSeconds();
+
 			log.push_back(r);
 		}
 	}
@@ -95,6 +107,7 @@ public:
 		if(!locked)
 		{
 			log.clear();
+			clock_gettime(CLOCK_REALTIME, &startTime);
 		}
 	}
 
@@ -139,6 +152,8 @@ private:
 
 	int participantid;
 	int trialid;
+
+	timespec startTime;
 };
 
 #endif /* LOGGING_H_ */

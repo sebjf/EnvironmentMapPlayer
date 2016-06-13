@@ -61,6 +61,13 @@ public:
 		camera_settings.camera_eye.z = z;
 	}
 
+	void set_eye(float* v)
+	{
+		camera_settings.camera_eye.x = v[0];
+		camera_settings.camera_eye.y = v[1];
+		camera_settings.camera_eye.z = v[2];
+	}
+
 	void set_lookat(float inclination, float azimuth)
 	{
 		inclination = DEG2RAD * inclination;
@@ -72,6 +79,15 @@ public:
 	}
 
 	void set_lookat(vector<float> v)
+	{
+		camera_settings.camera_lookat.x = v[0];
+		camera_settings.camera_lookat.y = v[1];
+		camera_settings.camera_lookat.z = v[2];
+
+		update_camera_streams();
+	}
+
+	void set_lookat(float* v)
 	{
 		camera_settings.camera_lookat.x = v[0];
 		camera_settings.camera_lookat.y = v[1];

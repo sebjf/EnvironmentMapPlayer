@@ -11,6 +11,7 @@
 #include "VirtualEnvironment.hpp"
 #include "Logging.hpp"
 #include "PhaseSpaceTracker.hpp"
+#include "Watchdog.hpp"
 #include <pthread.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -28,6 +29,8 @@ enum Commands : char {
 	CMD_HMDVISIBILITY = 7,
 	CMD_SETTARGET = 8,
 	CMD_REQUESTSTATUS = 9,
+	CMD_SETLATENCY = 10,
+	CMD_CLEARCOPIEDLOG = 11,
 };
 
 class RemoteInterface
@@ -44,6 +47,8 @@ public:
 		logDataCopied = false;
 
 		primitive_index = 0;
+
+		latency = 0;
 	}
 
 	~RemoteInterface()
@@ -54,6 +59,7 @@ public:
 	VirtualEnvironment* ve;
 	Logging* log;
 	PhaseSpaceTracker* tracker;
+	Watchdog* watchdog;
 
 private:
 	pthread_t serverThread;
@@ -73,6 +79,8 @@ public:
 
 		bzero(&currentStatus, sizeof(struct StatusPacket));
 	}
+
+	float latency; // the latency set by the admin, the one variable that veinterface will actually maintain itself
 
 private:
 	int portno;
@@ -100,6 +108,8 @@ private:
 		float heada;
 		float headb;
 		float headc;
+		float watchdogerror;
+		float currentTime;
 	};
 
 	struct StatusPacket currentStatus;
@@ -230,6 +240,12 @@ private:
 			case CMD_REQUESTSTATUS:
 				write(sockfd, &args->interface->currentStatus, sizeof(struct StatusPacket));
 				break;
+			case CMD_SETLATENCY:
+				args->interface->latency = packet.param1; //floats can probably be set safely from other threads, but even if they cant the user should not be able to see when its done so.
+				break;
+			case CMD_CLEARCOPIEDLOG:
+				args->interface->logDataCopied = false;
+				break;
 			}
 		}
 
@@ -309,7 +325,10 @@ private:
 		write(socket, &logDataRecordCount, sizeof(int));
 		write(socket, logData, logDataLength);
 
-		//the data has been queued and so we can free the staging memory and let other clients proceed
+		//wait until the data has been recieved before freeing
+
+		char buf;
+		read(socket,&buf,1);
 
 		free(logData);
 		logDataLength = -1;
@@ -350,7 +369,7 @@ public:
 			log->GetLogPtr(&src, &length);
 
 			logData = (char*)malloc(length);
-			memccpy(logData, src, 1, length);
+			memcpy(logData, src, length);
 			logDataLength = length;
 			logDataRecordCount = log->GetRecordCount();
 
@@ -366,7 +385,7 @@ public:
 		currentStatus.participantId = log->GetParticipantId();
 		currentStatus.trialID = log->GetTrialId();
 		currentStatus.logging = log->GetState();
-		currentStatus.latency++;
+		currentStatus.latency = latency;
 
 		vector<float> head = tracker->GetHeadPosition();
 		currentStatus.headx = head[0];
@@ -378,6 +397,10 @@ public:
 		currentStatus.headb = lookat[1];
 		currentStatus.headc = lookat[2];
 
+		currentStatus.watchdogerror = watchdog->GetError();
+		watchdog->ClearError();
+
+		currentStatus.currentTime = log->GetCurrentTimeInSeconds();
 	}
 
 };

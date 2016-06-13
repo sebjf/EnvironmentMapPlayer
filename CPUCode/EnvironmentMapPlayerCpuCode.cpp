@@ -21,6 +21,7 @@
 #include "RemoteInterface.hpp"
 #include "PhaseSpaceTracker.hpp"
 #include "VirtualEnvironment.hpp"
+#include "Watchdog.hpp"
 
 //gnc#define USEOCULUS
 
@@ -45,6 +46,8 @@ int main(void)
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
+	Watchdog watchdog(0.020f);
+
 	VirtualEnvironment ve;
 
 	PhaseSpaceTracker tracker("128.16.8.253");
@@ -56,6 +59,7 @@ int main(void)
 	veinterface.ve = &ve;
 	veinterface.log = &log;
 	veinterface.tracker = &tracker;
+	veinterface.watchdog = &watchdog;
 	veinterface.Start();
 
 	ve.Initialise();
@@ -73,25 +77,33 @@ int main(void)
 
 	CharacterController characterController(false);	//no parameters opens the default keyboard
 
-
-	Stopwatch stopwatch;
-
-
 	ve.Start();
 
 	printf("Press CTRL+C key to exit.\n");
 
 	while(run){
 
+		watchdog.Update();
+
 		monitor.Refresh();
 
 		veinterface.Update();
 		tracker.Update();
 
-		ve.getCamera()->set_eye(tracker.GetHeadPosition());
-		ve.getCamera()->set_lookat(tracker.GetHeadLookat());
-
 		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), tracker.GetLeftFoot(), tracker.GetRightFoot());
+
+		if(log.GetRecordCount() > 0){
+			// if we are logging, return the head position based on the latency
+			Logging::Record record = log.GetRecord(log.GetCurrentTimeInSeconds() - veinterface.latency);
+			ve.getCamera()->set_eye(record.headposition);
+			ve.getCamera()->set_lookat(record.headlookat);
+		}
+		else
+		{
+			// if we are not logging, pass the data right through
+			ve.getCamera()->set_eye(tracker.GetHeadPosition());
+			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
+		}
 
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
