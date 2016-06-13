@@ -177,6 +177,11 @@ public:
 		return camera;
 	}
 
+	vector<Primitives::LoadedPrimitive> GetPrimitives()
+	{
+		return primitives->GetGeometry();
+	}
+
 };
 
 

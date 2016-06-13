@@ -35,6 +35,15 @@ public:
 		int	  mapIndex;
 	};
 
+	struct __attribute__((__packed__)) LoadedPrimitive
+	{
+		float	center[3];
+		float	u[3]; //right
+		float 	v[3]; //up
+		float	index;
+		float	map;
+	};
+
 	std::vector<Map> maps;
 
 private:
@@ -189,6 +198,26 @@ public:
 	float GetShade()
 	{
 		return coefficients.coefficient;
+	}
+
+	vector<LoadedPrimitive> GetGeometry()
+	{
+		vector<LoadedPrimitive> primitives;
+		for(int i = 0; i < PRIMITIVES_COUNT; i++)
+		{
+			planeParamsUpdate_t plane = m_primitiveParameters[i];
+			if(plane.enable)
+			{
+				LoadedPrimitive p;
+				memcpy(p.center, &plane.center, sizeof(struct vector3));
+				memcpy(p.u, &plane.u_basis, sizeof(struct vector3));
+				memcpy(p.v, &plane.v_basis, sizeof(struct vector3));
+				p.map = plane.face;
+
+				primitives.push_back(p);
+			}
+		}
+		return primitives;
 	}
 
 };

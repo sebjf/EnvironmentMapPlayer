@@ -31,6 +31,7 @@ enum Commands : char {
 	CMD_REQUESTSTATUS = 9,
 	CMD_SETLATENCY = 10,
 	CMD_CLEARCOPIEDLOG = 11,
+	CMD_REQUESTGEOMETRY = 12,
 };
 
 class RemoteInterface
@@ -246,6 +247,9 @@ private:
 			case CMD_CLEARCOPIEDLOG:
 				args->interface->logDataCopied = false;
 				break;
+			case CMD_REQUESTGEOMETRY:
+				args->interface->Local_WritePrimitives(sockfd);
+				break;
 			}
 		}
 
@@ -301,6 +305,19 @@ private:
 		primitiveLocation.push_back(z);
 
 		updatePrimitiveLocation = true;
+	}
+
+	void Local_WritePrimitives(int socket)
+	{
+		vector<Primitives::LoadedPrimitive> primitives = ve->GetPrimitives();
+
+		int size = primitives.size();
+		write(socket, &size, sizeof(int));
+
+		for(int i = 0; i < primitives.size(); i++)
+		{
+			write(socket, &primitives[i], sizeof(struct Primitives::LoadedPrimitive));
+		}
 	}
 
 	void Local_WriteLogData(int socket)
