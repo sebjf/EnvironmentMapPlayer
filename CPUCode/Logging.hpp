@@ -35,6 +35,7 @@ public:
 		float rightfootposition[3];
 		float participantid;
 		float trialid;
+		float flag;
 	};
 
 	Logging()
@@ -43,6 +44,7 @@ public:
 		locked = false;
 		participantid = -1;
 		trialid = -1;
+		flag = -1;
 		clock_gettime(CLOCK_REALTIME, &startTime);
 	}
 
@@ -59,6 +61,11 @@ public:
 	void SetTrialId(int id)
 	{
 		trialid = id;
+	}
+
+	void SetFlag(float f)
+	{
+		flag = f;
 	}
 
 	float GetCurrentTimeInSeconds()
@@ -95,6 +102,7 @@ public:
 
 			r.participantid = participantid;
 			r.trialid = trialid;
+			r.flag = flag;
 
 			r.timestamp = GetCurrentTimeInSeconds();
 
@@ -152,6 +160,7 @@ private:
 
 	int participantid;
 	int trialid;
+	float flag;
 
 	timespec startTime;
 };

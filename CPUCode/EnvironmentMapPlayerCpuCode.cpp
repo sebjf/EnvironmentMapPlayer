@@ -59,7 +59,7 @@ int main(void)
 	VirtualEnvironment ve;
 
 	PhaseSpaceTracker tracker("128.16.8.253");
-	tracker.Connect();
+	//tracker.Connect();
 
 	Logging log;
 

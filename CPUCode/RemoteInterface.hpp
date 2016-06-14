@@ -32,6 +32,7 @@ enum Commands : char {
 	CMD_SETLATENCY = 10,
 	CMD_CLEARCOPIEDLOG = 11,
 	CMD_REQUESTGEOMETRY = 12,
+	CMD_SETFLAG = 13,
 };
 
 class RemoteInterface
@@ -41,11 +42,16 @@ public:
 	{
 		portno = port;
 
-		setShade = false;
 		setPrimitiveLocation = false;
 		clearLog = false;
 		requestLog = false;
 		logDataCopied = false;
+
+		participantid = -1;
+		trialid = -1;
+		flag = -1;
+		currentShade = -1.0f;
+		shade = 1.0f;
 
 		primitive_index = 0;
 
@@ -197,7 +203,7 @@ private:
 		{
 			int readn = 0;
 			do{
-				n = read(sockfd,&buffer[readn],toread);
+				n = read(sockfd,&buffer[readn],toread-readn);
 				readn += n;
 
 				if(n <= 0)
@@ -215,10 +221,10 @@ private:
 			switch(packet.command)
 			{
 			case CMD_STARTLOGGING:
-				args->interface->log->SetEnable(true);	//booleans can be set safely from other threads
+				args->interface->startLogging = true;
 				break;
 			case CMD_STOPLOGGING:
-				args->interface->log->SetEnable(false);
+				args->interface->stopLogging = true;
 				break;
 			case CMD_DOWNLOADLOG:
 				args->interface->Local_WriteLogData(sockfd);
@@ -227,13 +233,13 @@ private:
 				args->interface->clearLog = true;
 				break;
 			case CMD_PARTICIPANTID:
-				args->interface->log->SetParticipantId((int)packet.param1);
+				args->interface->participantid = (int)packet.param1;
 				break;
 			case CMD_TRIALID:
-				args->interface->log->SetTrialId((int)packet.param1);
+				args->interface->trialid = (int)packet.param1;
 				break;
 			case CMD_HMDVISIBILITY:
-				args->interface->SetShade(packet.param1);
+				args->interface->shade = packet.param1;
 				break;
 			case CMD_SETTARGET:
 				args->interface->Local_SetPrimitiveLocation(packet.param1, packet.param2, packet.param3);
@@ -250,6 +256,9 @@ private:
 			case CMD_REQUESTGEOMETRY:
 				args->interface->Local_WritePrimitives(sockfd);
 				break;
+			case CMD_SETFLAG:
+				args->interface->flag = packet.param1;
+				break;
 			}
 		}
 
@@ -261,38 +270,31 @@ private:
 
 	// this is NOT the right way to do this, but we cant have anything that could surrender the main thread (mutexes) and simple atomics are only in c++11.
 
-	volatile sig_atomic_t setShade;
+	volatile sig_atomic_t startLogging;
+	volatile sig_atomic_t stopLogging;
+
+	volatile float shade;
+
+	float currentShade;
 
 	volatile sig_atomic_t clearLog;
 	volatile sig_atomic_t requestLog;
 	volatile sig_atomic_t logDataCopied;
 
 	char* logData;
-	int logDataLength;
-	int logDataRecordCount;
-
-
-	/* Other variables for communicating between threads (will be locked by flags above) */
-
-	volatile float shade;
-
-	/* Blank the display by multiplying all pixels with a low constant */
-
-	void SetShade(float v)
-	{
-		//wait for the last update to be processed
-		while(setShade){
-		};
-
-		shade = v;
-		setShade = true;
-	}
-
-
-	/* Updates the location of a nominated primitive */
+	volatile int logDataLength;
+	volatile int logDataRecordCount;
 
 	volatile bool setPrimitiveLocation;
-	vector<float> primitiveLocation;
+	volatile float primitiveLocationX;
+	volatile float primitiveLocationY;
+	volatile float primitiveLocationZ;
+
+	volatile int participantid;
+	volatile int trialid;
+	volatile float flag;
+
+	/* Updates the location of a nominated primitive */
 
 	int primitive_index;
 
@@ -301,10 +303,9 @@ private:
 		while(setPrimitiveLocation){
 		};
 
-		primitiveLocation.clear();
-		primitiveLocation.push_back(x);
-		primitiveLocation.push_back(y);
-		primitiveLocation.push_back(z);
+		primitiveLocationX = x;
+		primitiveLocationY = y;
+		primitiveLocationZ = z;
 
 		setPrimitiveLocation = true;
 	}
@@ -343,7 +344,9 @@ private:
 
 		// transmit the data to the host
 
-		write(socket, &logDataRecordCount, sizeof(int));
+		int _logDataRecordCount = logDataRecordCount;
+
+		write(socket, &_logDataRecordCount, sizeof(int));
 		write(socket, logData, logDataLength);
 
 		//wait until the data has been recieved before freeing
@@ -362,16 +365,39 @@ private:
 public:
 	void Update()
 	{
-		// blank display
-		if(setShade)
+		if(startLogging)
 		{
-			ve->SetShade(shade);
-			setShade = false;
+			log->SetEnable(true);
+			startLogging = false;
+		}
+
+		if(stopLogging)
+		{
+			log->SetEnable(false);
+			stopLogging = false;
+		}
+
+		log->SetParticipantId(participantid);
+		log->SetTrialId(trialid);
+		log->SetFlag(flag);
+
+		// blank display
+		if(shade != currentShade)
+		{
+			currentShade = shade;
+			ve->SetShade(currentShade);
 		}
 
 		//set primitive location
 		if(setPrimitiveLocation)
 		{
+			vector<float> primitiveLocation;
+			float x = primitiveLocationX;
+			float y = primitiveLocationY;
+			float z = primitiveLocationZ;
+			primitiveLocation.push_back(x);
+			primitiveLocation.push_back(y);
+			primitiveLocation.push_back(z);
 			ve->SetPrimitiveCenter(primitive_index, primitiveLocation);
 			setPrimitiveLocation = false;
 		}
