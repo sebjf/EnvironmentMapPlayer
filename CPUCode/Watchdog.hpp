@@ -18,6 +18,7 @@ public:
 	{
 		threshold = warningThreshold;
 		checking = false;
+		lastPeriod = 0.0f;
 		clock_gettime(CLOCK_REALTIME, &lastTime);
 	}
 
@@ -30,13 +31,19 @@ public:
 
 		if(checking)
 		{
-			if(tsFloat(d) > threshold)
+			float lastPeriod = tsFloat(d);
+			if(lastPeriod > threshold)
 			{
 				error = true;
 			}
 		}
 
 		checking = true;
+	}
+
+	float GetPeriod()
+	{
+		return lastPeriod;
 	}
 
 	bool GetError()
@@ -57,6 +64,7 @@ private:
 	timespec lastTime;
 	timespec currentTime;
 
+	volatile float lastPeriod;
 };
 
 #endif /* WATCHDOG_HPP_ */

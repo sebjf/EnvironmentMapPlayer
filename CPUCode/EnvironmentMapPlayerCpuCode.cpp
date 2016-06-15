@@ -54,7 +54,7 @@ int main(void)
 	pthread_setschedparam(pthread_self(), SCHED_FIFO, &priority);
 
 
-	Watchdog watchdog(0.020f);
+	Watchdog watchdog(0.001f);
 
 	VirtualEnvironment ve;
 

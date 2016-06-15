@@ -45,6 +45,8 @@ public:
 		participantid = -1;
 		trialid = -1;
 		flag = -1;
+		sampleRate = 0.002f;
+		memset(&lastR,0,sizeof(struct Record));
 		clock_gettime(CLOCK_REALTIME, &startTime);
 	}
 
@@ -106,7 +108,12 @@ public:
 
 			r.timestamp = GetCurrentTimeInSeconds();
 
-			log.push_back(r);
+			// log at a rate of 1KHz
+			if(r.timestamp - lastR.timestamp > sampleRate)
+			{
+				lastR = r;
+				log.push_back(r);
+			}
 		}
 	}
 
@@ -158,9 +165,13 @@ private:
 	bool enable;
 	bool locked;
 
+	volatile float sampleRate;
+
 	int participantid;
 	int trialid;
 	float flag;
+
+	Record lastR;
 
 	timespec startTime;
 };

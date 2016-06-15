@@ -116,6 +116,7 @@ private:
 		float headb;
 		float headc;
 		float watchdogerror;
+		float watchdogperiod;
 		float currentTime;
 	};
 
@@ -446,6 +447,7 @@ public:
 
 		currentStatus.watchdogerror = watchdog->GetError();
 		watchdog->ClearError();
+		currentStatus.watchdogperiod = watchdog->GetPeriod();
 
 		currentStatus.currentTime = log->GetCurrentTimeInSeconds();
 	}
