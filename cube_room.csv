@@ -1,9 +1,9 @@
-negx,150,0,0,1,0,0,0,-1,0,300,300,0,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/negx.jpg
-posy,0,150,0,0,1,0,0,0,-1,300,300,5,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/posy.jpg
-negz,0,0,150,0,0,1,0,-1,0,300,300,2,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/negz.jpg
-posx,-150,0,0,-1,0,0,0,-1,0,300,300,3,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/posx.jpg
-negy,0,-150,0,0,-1,0,0,0,1,300,300,1,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/negy.jpg
-posz,0,0,-150,0,0,-1,0,-1,0,300,300,4,/home/demo/maxworkspace/EnvironmentMapPlayer/maps/posz.jpg
+negx,150,0,0,1,0,0,0,-1,0,300,300,0,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/negx.jpg
+posy,0,150,0,0,1,0,0,0,-1,300,300,5,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/posy.jpg
+negz,0,0,150,0,0,1,0,-1,0,300,300,2,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/negz.jpg
+posx,-150,0,0,-1,0,0,0,-1,0,300,300,3,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/posx.jpg
+negy,0,-150,0,0,-1,0,0,0,1,300,300,1,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/negy.jpg
+posz,0,0,-150,0,0,-1,0,-1,0,300,300,4,/home/sfriston/maxworkspace/EnvironmentMapPlayer/maps/posz.jpg
 posz,0,0,-250,0,0,-1,0,-1,0,300,300,4,
 posz,0,0,-250,0,0,-1,0,-1,0,300,300,4,
 posz,0,0,-250,0,0,-1,0,-1,0,300,300,4,

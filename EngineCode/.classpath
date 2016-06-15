@@ -5,6 +5,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/maxpower"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MaxVideo"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/maxeda"/>
-	<classpathentry kind="lib" path="/network-raid/opt/maxq/maxq-ctl.jar"/>
+	<classpathentry kind="lib" path="/opt/maxcompiler/lib/MaxCompiler.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/opt/maxcompiler/docs/MaxCompiler-API/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -65,8 +65,9 @@ public:
 
 		primitives = new Primitives(engine, maxfile);
 		primitives->SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
-		primitives->InitialisePrimitives();
+		//
 		primitives->connect();
+
 
 		/* Initialise Maps */
 
@@ -149,6 +150,7 @@ public:
 
 		max_run(engine, act);
 
+		primitives->InitialisePrimitives();
 		primitives->SetShade(1.0f);
 	}
 

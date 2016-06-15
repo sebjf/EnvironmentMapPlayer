@@ -38,7 +38,7 @@ else
  O_FLAGS = -g -O0
 endif
 
-LIBOVRDEVELDIR = /home/demo/workspace/OculusSDK_0.3.2_CentOS/LibOVR
+LIBOVRDEVELDIR = /home/sfriston/workspace/OculusSDK_0.3.2_CentOS/LibOVR
 
 OVRINCS  = -I$(LIBOVRDEVELDIR)/Include -I$(LIBOVRDEVELDIR)/Src
 OVRLIBS  = -L$(LIBOVRDEVELDIR)/Lib/Linux/Release/x86_64 \
@@ -54,7 +54,7 @@ OVRLIBS  = -L$(LIBOVRDEVELDIR)/Lib/Linux/Release/x86_64 \
 
 CFLAGS    = -std=gnu99 $(O_FLAGS) -Wall -Wextra -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
 CXXFLAGS  = -Wall -Wextra $(O_FLAGS) -I$(RUNRULE_DIR)/include $(shell slic-config --cflags) $(RUNRULE_CFLAGS) $(OVRINCS)
-LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lSDL_gfx -lXrandr -lGL $(RUNRULE_LDFLAGS) $(OVRLIBS)
+LDFLAGS   = $(O_FLAGS) $(shell slic-config --libs) -lSDL -lSDL_image -lSDL_gfx -lXrandr -lGL $(RUNRULE_LDFLAGS) $(OVRLIBS) -LPhaseSpace -lowlsock
 
 #   Add other user-defined extensions here, e.g. --
 #CFLAGS    += -I/my/header/files

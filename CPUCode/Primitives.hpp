@@ -162,6 +162,7 @@ public:
 	//for before the design begins to run
 	void InitialisePrimitives()
 	{
+		/*
 		printf("Initialising primitives...\n");
 
 		max_actions_t* act = max_actions_init(m_maxfile, "primitives_initialisation");
@@ -169,7 +170,13 @@ public:
 		max_run(m_engine, act);
 
 		//wait for a moment, because after we return the cpu program will reset the dfe, dropping the initialisation commands we just issued if they have not yet been executed
-		sleep(1);
+		sleep(1);*/
+
+		for(int i = 0; i < PRIMITIVES_COUNT; i++)
+		{
+			primitivesSettingsStream->Send(m_primitiveParameters[i]);
+		}
+		SetShade(1.0f);
 	}
 
 	//for after the design begins to run
