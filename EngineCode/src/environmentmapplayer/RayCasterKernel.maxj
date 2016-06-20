@@ -110,6 +110,30 @@ class RayCasterKernel extends Kernel {
 		DFEVector<DFEVar> n = plane["normal"];
 		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
 
+		boolean doBoundsTesting = true;
+		if(doBoundsTesting)
+		{
+			DFEVector<DFEVar> P = ray_o + (t * ray_d);
+
+			//find the uv coordinates of the intersection point
+
+			DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
+
+			DFEVector<DFEVar> xc = plane["u_basis"];
+			DFEVector<DFEVar> yc = plane["v_basis"];
+
+			//dot product is the sum of element wise multiplication - this is equivalent to squaring the length.
+			DFEVar u = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
+			DFEVar v = KernelVectorMath.dot(dV,yc) / KernelVectorMath.dot(yc, yc);
+
+			//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
+
+			//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
+			DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
+
+			t = b_isWithinBounds ? t : constant.var(dfefloat, 9999999999999.0f);
+		}
+
 		return t;
 	}
 
@@ -268,16 +292,6 @@ class RayCasterKernel extends Kernel {
 
 		DFEVector<DFEVar> a = plane["center"];
 		DFEVector<DFEVar> n = plane["normal"];
-
-		boolean enableOneSide = false;
-		if(enableOneSide){
-			/* planes are one sided by default. if we are viewing the back of a plane, write the 'null colour' to the screen. this is also used to create
-			 * the doorframe */
-
-			DFEVar dot_nd = KernelVectorMath.dot(n, r_d);
-			DFEVar isBackSide = dot_nd > 0;
-			plane_index = isBackSide ? constant.var(dfechar, 255) : plane_index;
-		}
 
 		DFEVar t = closestPlane["t"];
 		DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, t));

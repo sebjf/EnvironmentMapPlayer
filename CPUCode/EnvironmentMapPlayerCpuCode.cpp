@@ -56,6 +56,10 @@ int main(void)
 
 	Watchdog watchdog(0.001f);
 
+	VirtualRoom room;
+	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/TFF Model/";
+	room.Load(string("tff.csv"));
+
 	VirtualEnvironment ve;
 
 	PhaseSpaceTracker tracker("128.16.8.253");
@@ -70,7 +74,7 @@ int main(void)
 	veinterface.watchdog = &watchdog;
 	veinterface.Start();
 
-	ve.Initialise();
+	ve.Initialise(&room);
 
 	/* Connect the virtual monitor */
 
@@ -113,14 +117,20 @@ int main(void)
 			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
 		}
 
+		vector<float> pos;
+		pos.push_back(0);
+		pos.push_back(0);
+		pos.push_back(0);
+		ve.getCamera()->set_eye(pos);
+
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
 
 		if(d.changed()){
 			inclination += -d.y;
 			elevation += -d.x;
-			ve.getCamera()->set_lookat(inclination, elevation);
 		}
+		ve.getCamera()->set_lookat(inclination, elevation);
 
 		switch(keycode)
 		{

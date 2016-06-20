@@ -10,6 +10,118 @@
 
 #include "Maxfiles.h"
 #include "MaxSLiCInterface.h"
+#include <vector>
+
+class Map
+{
+public:
+	string  filename;
+	int 	index;
+};
+
+class VirtualRoom
+{
+public:
+	std::vector<Primitives::Primitive> primitives;
+	std::vector<Map> maps;
+	std::vector<Map> alphaMaps;
+
+	string root;
+
+	void Load(string csvFilename)
+	{
+		csvFilename = root + csvFilename;
+		Load((const char*)csvFilename.c_str());
+	}
+
+private:
+	void Load(const char* csvFilename)
+	{
+		CsvParser* parser = CsvParser_new(csvFilename,",",0);
+
+		/* number of planes */
+		CsvRow* row = CsvParser_getRow(parser);
+		const char** fields = CsvParser_getFields(row);
+		int numPrimitives = atoi(fields[0]);
+		CsvParser_destroy_row(row);
+
+		for(int i = 0; i < numPrimitives; i++)
+		{
+			row = CsvParser_getRow(parser);
+			fields = CsvParser_getFields(row);
+
+			if(CsvParser_getNumFields(row) < 13)
+			{
+				throw "Malformed Room Definition";
+			}
+
+			Primitives::Primitive p;
+
+			p.center.x = atof(fields[1]);
+			p.center.y = atof(fields[2]);
+			p.center.z = atof(fields[3]);
+
+			p.normal.x = atof(fields[4]);
+			p.normal.y = atof(fields[5]);
+			p.normal.z = atof(fields[6]);
+
+			p.up.x = atof(fields[7]);
+			p.up.y = atof(fields[8]);
+			p.up.z = atof(fields[9]);
+
+			p.width = atof(fields[10]);
+			p.height = atof(fields[11]);
+
+			p.mapIndex = atoi(fields[12]);
+
+			primitives.push_back(p);
+
+			CsvParser_destroy_row(row);
+		}
+
+		/* number of texture maps */
+		row = CsvParser_getRow(parser);
+		fields = CsvParser_getFields(row);
+		int numTextureMaps = atoi(fields[0]);
+		CsvParser_destroy_row(row);
+
+		for(int i = 0; i < numTextureMaps; i++)
+		{
+			row = CsvParser_getRow(parser);
+			fields = CsvParser_getFields(row);
+
+			Map m;
+			m.filename = root + string(fields[0]);
+			m.index = i;
+
+			maps.push_back(m);
+
+			CsvParser_destroy_row(row);
+		}
+
+		/* number of alpha maps */
+		row = CsvParser_getRow(parser);
+		fields = CsvParser_getFields(row);
+		int numTAlphaMaps = atoi(fields[0]);
+		CsvParser_destroy_row(row);
+
+		for(int i = 0; i < numTAlphaMaps; i++)
+		{
+			row = CsvParser_getRow(parser);
+			fields = CsvParser_getFields(row);
+
+			Map m;
+			m.filename = root + string(fields[0]);
+			m.index = i;
+
+			alphaMaps.push_back(m);
+
+			CsvParser_destroy_row(row);
+		}
+
+		CsvParser_destroy(parser);
+	}
+};
 
 class VirtualEnvironment
 {
@@ -41,7 +153,7 @@ public:
 		return engine;
 	}
 
-	void Initialise()
+	void Initialise(VirtualRoom* room)
 	{
 		/* Initialize the maxfile to get an actions with which to configure the renderer */
 
@@ -64,8 +176,7 @@ public:
 		/* Geometry Parameters */
 
 		primitives = new Primitives(engine, maxfile);
-		primitives->SetPrimitives(string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/cube_room.csv");
-		//
+		primitives->SetPrimitives(room->primitives);
 		primitives->connect();
 
 
@@ -79,10 +190,10 @@ public:
 		if(!isSimulation)
 		{
 		printf("Loading maps...");
-		environmentMap.SetNumMaps(primitives->maps.size());
-		for(uint i = 0; i < primitives->maps.size(); i++)
+		environmentMap.SetNumMaps(room->maps.size());
+		for(uint i = 0; i < room->maps.size(); i++)
 		{
-			environmentMap.LoadMap(primitives->maps[i].filename, primitives->maps[i].index);
+			environmentMap.LoadMap(room->maps[i].filename, room->maps[i].index);
 		}
 		printf("Loaded maps.\n");
 
@@ -90,7 +201,9 @@ public:
 		environmentMap.WriteEnvironmentMaps();
 		}
 
-		environmentMap.LoadAlphaMap(0, string(getenv("HOME")) + "/maxworkspace/EnvironmentMapPlayer/maps/alpha.jpg");
+		for(unsigned int i = 0; i < room->alphaMaps.size(); i++){
+			environmentMap.LoadAlphaMap(room->alphaMaps[i].index, room->alphaMaps[i].filename);
+		}
 
 		/* ignore memory input on subsequent runs */
 

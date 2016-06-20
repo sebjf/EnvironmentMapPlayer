@@ -134,6 +134,11 @@ public:
 	{
 		SDL_Surface* map = IMG_Load(filename.c_str());
 
+		if(map == NULL)
+		{
+			printf("ERROR: Could not load %s\n", filename.c_str());
+		}
+
 		AlphaMapParams* alphamap = NULL;
 		for(uint i = 0; i < m_alphaMaps.size(); i++)
 		{
