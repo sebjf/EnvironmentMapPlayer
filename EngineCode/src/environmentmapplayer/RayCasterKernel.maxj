@@ -110,30 +110,6 @@ class RayCasterKernel extends Kernel {
 		DFEVector<DFEVar> n = plane["normal"];
 		DFEVar t = KernelVectorMath.dot(KernelVectorMath.subtract(a, ray_o), n) / KernelVectorMath.dot(n, ray_d);
 
-		boolean doBoundsTesting = true;
-		if(doBoundsTesting)
-		{
-			DFEVector<DFEVar> P = ray_o + (t * ray_d);
-
-			//find the uv coordinates of the intersection point
-
-			DFEVector<DFEVar> dV = KernelVectorMath.subtract(P, a);
-
-			DFEVector<DFEVar> xc = plane["u_basis"];
-			DFEVector<DFEVar> yc = plane["v_basis"];
-
-			//dot product is the sum of element wise multiplication - this is equivalent to squaring the length.
-			DFEVar u = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
-			DFEVar v = KernelVectorMath.dot(dV,yc) / KernelVectorMath.dot(yc, yc);
-
-			//perform bounds checking to see if the intersection point is within the quad defined by the uv basis vectors
-
-			//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
-			DFEVar b_isWithinBounds = (KernelMath.abs(u) <= 0.5) & (KernelMath.abs(v) <= 0.5);
-
-			t = b_isWithinBounds ? t : constant.var(dfefloat, 9999999999999.0f);
-		}
-
 		return t;
 	}
 
@@ -143,6 +119,27 @@ class RayCasterKernel extends Kernel {
 			io.nonBlockingInput(name, type, constant.var(true), 1, DelimiterMode.FRAME_LENGTH, 0, NonBlockingMode.NO_TRICKLING);
 		T data = Reductions.streamHold(input.data, input.valid);
 		return data;
+	}
+
+	boolean hasBoundsTest(int i)
+	{
+		if(i >= 2 && i <= 7){
+			return true;
+		}
+		return false;
+	}
+
+	boolean hasAlphaMap(int i)
+	{
+		if(i == 0)
+		{
+			return true;
+		}
+		if(i == 1)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	protected RayCasterKernel(KernelParameters parameters) {
@@ -249,9 +246,9 @@ class RayCasterKernel extends Kernel {
 			valid = valid & (((DFEVar)current["t"]) > 0);
 			valid = valid & ((DFEVar)current["t"] < (DFEVar)closestPlane["t"]);
 
-			//if this intersection test has alpha map support, then check it
+			//if this intersection test has alpha map or bounds support, then check it
 
-			if(i == 0 || i == 1)
+			if(hasBoundsTest(i) || hasAlphaMap(i))
 			{
 				DFEVector<DFEVar> P = KernelVectorMath.add(r_o, KernelVectorMath.multiply(r_d, (DFEVar)current["t"]));
 
@@ -268,13 +265,20 @@ class RayCasterKernel extends Kernel {
 				DFEVar x = KernelVectorMath.dot(dV,xc) / KernelVectorMath.dot(xc, xc);
 				DFEVar y = KernelVectorMath.dot(dV,yc) / KernelVectorMath.dot(yc, yc);
 
+				//(a is in the center of the plane/quad, so until we add the 0.5 offset later on, uvs are in the range -0.5 to 0.5)
+				//bounds checking is cheap once we have the uv's, so do it for all alpha maps too
+				DFEVar b_isWithinBounds = (KernelMath.abs(x) <= 0.5) & (KernelMath.abs(y) <= 0.5);
+				valid = valid & b_isWithinBounds;
+
 				/* convert local coordinates to texture coordinates */
 
-				DFEVar u = (x) + 0.5;
-				DFEVar v = (y) + 0.5;
+				if(hasAlphaMap(i)){
+					DFEVar u = (x) + 0.5;
+					DFEVar v = (y) + 0.5;
 
-				AlphaMapDynamic alphaMap = new AlphaMapDynamic("alphaMapSlot" + i, Constants.alphaMapDimension, Constants.alphaMapDimension);
-				valid = valid & alphaMap.isOpaque(u, v);
+					AlphaMapDynamic alphaMap = new AlphaMapDynamic("alphaMapSlot" + i, Constants.alphaMapDimension, Constants.alphaMapDimension);
+					valid = valid & alphaMap.isOpaque(u, v);
+				}
 			}
 
 			/* If closer and the intersection is valid, replace the current plane identifier */
