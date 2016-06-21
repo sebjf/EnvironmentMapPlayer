@@ -22,6 +22,7 @@ public:
 
 	struct Primitive
 	{
+		int  index;
 		vector3 center;
 		vector3 normal;
 		vector3 up; //tangent to left of plane
@@ -79,7 +80,12 @@ public:
 		m_primitiveParametersSize = sizeof(struct planeParamsUpdate_t) * PRIMITIVES_COUNT;
 		m_primitiveParameters = (planeParamsUpdate_t*)malloc(m_primitiveParametersSize);
 
-		memset(m_primitiveParameters, m_primitiveParametersSize, 0x0);
+		for(int i = 0; i < PRIMITIVES_COUNT; i++)
+		{
+			planeParamsUpdate_t* p = &(m_primitiveParameters[i]);
+			p->index = i;
+			p->enable = false;
+		}
 
 		primitivesSettingsStream = new LowLatencyStream<planeParamsUpdate_t>("primitivesStream", maxfile);
 		coefficientsStream = new LowLatencyStream<coefficients_t>("coefficients", maxfile);
@@ -105,7 +111,7 @@ public:
 	{
 		for(unsigned int i = 0; i < primitives.size(); i++)
 		{
-			SetPrimitive(i, primitives[i]);
+			SetPrimitive(primitives[i].index, primitives[i]);
 		}
 	}
 

@@ -123,9 +123,6 @@ class RayCasterKernel extends Kernel {
 
 	boolean hasBoundsTest(int i)
 	{
-		if(i >= 2 && i <= 7){
-			return true;
-		}
 		return false;
 	}
 

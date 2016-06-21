@@ -50,29 +50,30 @@ private:
 			row = CsvParser_getRow(parser);
 			fields = CsvParser_getFields(row);
 
-			if(CsvParser_getNumFields(row) < 13)
+			if(CsvParser_getNumFields(row) < 14)
 			{
 				throw "Malformed Room Definition";
 			}
 
 			Primitives::Primitive p;
 
-			p.center.x = atof(fields[1]);
-			p.center.y = atof(fields[2]);
-			p.center.z = atof(fields[3]);
+			p.index = atoi(fields[0]);
+			p.center.x = atof(fields[2]);
+			p.center.y = atof(fields[3]);
+			p.center.z = atof(fields[4]);
 
-			p.normal.x = atof(fields[4]);
-			p.normal.y = atof(fields[5]);
-			p.normal.z = atof(fields[6]);
+			p.normal.x = atof(fields[5]);
+			p.normal.y = atof(fields[6]);
+			p.normal.z = atof(fields[7]);
 
-			p.up.x = atof(fields[7]);
-			p.up.y = atof(fields[8]);
-			p.up.z = atof(fields[9]);
+			p.up.x = atof(fields[8]);
+			p.up.y = atof(fields[9]);
+			p.up.z = atof(fields[10]);
 
-			p.width = atof(fields[10]);
-			p.height = atof(fields[11]);
+			p.width = atof(fields[11]);
+			p.height = atof(fields[12]);
 
-			p.mapIndex = atoi(fields[12]);
+			p.mapIndex = atoi(fields[13]);
 
 			primitives.push_back(p);
 

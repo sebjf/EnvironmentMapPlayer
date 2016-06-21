@@ -57,8 +57,8 @@ int main(void)
 	Watchdog watchdog(0.001f);
 
 	VirtualRoom room;
-	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/TFF Model/";
-	room.Load(string("tff.csv"));
+	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/1ES Model/";
+	room.Load(string("1es.csv"));
 
 	VirtualEnvironment ve;
 
@@ -113,13 +113,13 @@ int main(void)
 		else
 		{
 			// if we are not logging, pass the data right through
-			ve.getCamera()->set_eye(tracker.GetHeadPosition());
-			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
+		//	ve.getCamera()->set_eye(tracker.GetHeadPosition());
+		//	ve.getCamera()->set_lookat(tracker.GetHeadLookat());
 		}
 
 		vector<float> pos;
 		pos.push_back(0);
-		pos.push_back(0);
+		pos.push_back(160);
 		pos.push_back(0);
 		ve.getCamera()->set_eye(pos);
 
@@ -129,8 +129,9 @@ int main(void)
 		if(d.changed()){
 			inclination += -d.y;
 			elevation += -d.x;
+			ve.getCamera()->set_lookat(inclination, elevation);
 		}
-		ve.getCamera()->set_lookat(inclination, elevation);
+
 
 		switch(keycode)
 		{

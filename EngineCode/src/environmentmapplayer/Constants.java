@@ -10,7 +10,7 @@ public final class Constants {
 	public static int min_mip_level			= 3;  //mip level cannot be so low that the map is smaller than the tile size
 	public static int pixel_size_in_bytes 	= 4;
 	public static int map_tile_stride_bytes = 384; //the number of bytes between two tiles
-	public static int primitive_count 		= 14;
+	public static int primitive_count 		= 8;
 
 	public static int alphaMapDimension		= 1024;
 
