@@ -11,6 +11,13 @@
 #include <vector>
 #include <iostream>
 #include <cstring>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 #include "PhaseSpace/owl.h"
 #include "PhaseSpace/owl_math.h"
 
@@ -20,6 +27,14 @@
 
 class PhaseSpaceTracker
 {
+	struct state
+	{
+		float head_position[3];
+		float head_orientation[4];
+		float lfoot_position[3];
+		float rfoot_position[3];
+	};
+
 public:
 	PhaseSpaceTracker(string Address)
 	{
@@ -32,7 +47,10 @@ public:
 		flags = 0;
 
 		headTrackerId = 0;
-		feetTrackerId = 1;
+		lfootTrackerId = 6;
+		rfootTrackerId = 7;
+
+		connected = false;
 
 	}
 	~PhaseSpaceTracker()
@@ -42,43 +60,75 @@ public:
 
 	void Connect()
 	{
-		if(owlInit(address.c_str(), flags) < 0)
+		sockfd = socket(AF_INET, SOCK_STREAM, 0);
+		bzero((char*)&serv_addr, sizeof(struct sockaddr_in));
+		serv_addr.sin_family = AF_INET;
+
+		inet_aton("128.16.6.125", &serv_addr.sin_addr);
+
+		serv_addr.sin_port = htons(27015);
+
+		if(connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(struct sockaddr_in))<0)
 		{
-			printf("Could not connect to PhaseSpace\n");
+			printf("Could not connect to PhaseSpace forwarder");
 		}
-
-	//	owlSetInteger(OWL_FRAME_BUFFER_SIZE, 0);
-
-		// create trackers. There will be two trackers, one for the head, and one for the feet. The head tracker will be a rigid body, with the feet a collection of point trackers
-
-	//	owlTrackeri(headTrackerId, OWL_CREATE, OWL_RIGID_TRACKER);
-
-
-
+		else
+		{
+			connected = true;
+		}
 	}
 
 	bool isConnected()
 	{
-		return false;
+		return connected;
 	}
 
 	void Update()
 	{
+		if(connected)
+		{
+			write(sockfd, &n, 1);
 
+			struct state thestate;
+
+			int toread = sizeof(struct state);
+			while(toread > 0)
+			{
+				n = read(sockfd, &thestate, toread);
+				toread -= n;
+			}
+
+			headPosition[0] = thestate.head_position[0] * 0.1f;
+			headPosition[1] = thestate.head_position[1] * 0.1f;
+			headPosition[2] = thestate.head_position[2] * 0.1f;
+
+			float v[3] = { 0.0f,0.0f,1.0f };
+			float lookat[3];
+			mult_qvq((const float*)&thestate.head_orientation, v, lookat );
+			headLookat[0] = lookat[0];
+			headLookat[1] = lookat[1];
+			headLookat[2] = lookat[2];
+
+		}
 	}
 
 private:
+
+	int sockfd, portno, n;
+	struct sockaddr_in serv_addr;
+	struct hostent *server;
+
+	bool connected;
 
 	string	address;
 	size_t flags;
 
 	int headTrackerId;
-	int feetTrackerId;
+	int lfootTrackerId;
+	int rfootTrackerId;
 
 	OWLRigid rigids[1];
 	OWLMarker markers[2];
-
-	float pose[7];
 
 	vector<float> headPosition;
 	vector<float> headLookat;
@@ -94,12 +144,6 @@ public:
 
 	vector<float> GetHeadLookat()
 	{
-		float v[3] = { 0.0f,0.0f,1.0f };
-		float lookat[3];
-		mult_qvq(&pose[3], v, lookat );
-		headLookat[0] = lookat[0];
-		headLookat[1] = lookat[1];
-		headLookat[2] = lookat[2];
 		return headLookat;
 	}
 
