@@ -39,7 +39,7 @@ void int_handler(int s){
    run = false;
 }
 
-int main(void)
+int main(int argc, const char** argv)
 {
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = int_handler;
@@ -57,8 +57,8 @@ int main(void)
 	Watchdog watchdog(0.001f);
 
 	VirtualRoom room;
-	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/1ES Model/";
-	room.Load(string("1es.csv"));
+	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/TFF Model/";
+	room.Load(string("tff.csv"));
 
 	VirtualEnvironment ve;
 

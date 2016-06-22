@@ -14,7 +14,7 @@
 #include <memory.h>
 #include "CSVParser/csvparser.h"
 
-#define PRIMITIVES_COUNT 18
+#define PRIMITIVES_COUNT 8
 
 class Primitives
 {

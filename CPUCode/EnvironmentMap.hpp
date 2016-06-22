@@ -179,7 +179,7 @@ public:
 				uint64_t* worddata = &alphamap->m_data[word];
 				uint64_t worddataMask = (1UL << offset);
 
-				if(v > 128){
+				if(v > 16){
 					*(worddata) = (*worddata) | worddataMask;
 				}
 			}
