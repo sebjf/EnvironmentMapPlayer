@@ -179,12 +179,12 @@ public class EnvironmentMapPlayerManager extends CustomManager {
 		configBuild(engineParameters);
 
 	}
-
+/*
 	public DFELink getVideoStream(String name, float clock)
 	{
 		throw new MaxCompilerAPIError("Remove this shim before building in hardware");
 	}
-
+*/
 
 	private static EngineInterface primitives_initialisation()
 	{
