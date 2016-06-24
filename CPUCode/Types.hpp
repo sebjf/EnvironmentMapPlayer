@@ -8,6 +8,22 @@
 #ifndef TYPES_HPP_
 #define TYPES_HPP_
 
+/* We will typically use the oculus math library, but for components that shouldnt otherwise depend on it, this is a convenient
+ * way to pass around quaternions */
+struct quaternion
+{
+public:
+	float s;
+	float x;
+	float y;
+	float z;
+
+	float* data()
+	{
+		return (float*)this;
+	}
+};
+
 struct __attribute__((__packed__)) vector3
 {
 public:

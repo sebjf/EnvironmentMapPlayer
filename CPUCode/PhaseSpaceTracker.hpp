@@ -21,16 +21,102 @@
 #include "PhaseSpace/owl.hpp"
 #include "PhaseSpace/owl_math.h"
 
+#include "Types.hpp"
+
+#include "json/json.h"
+#include <string>
+#include <istream>
+#include <streambuf>
+
 #define X 0
 #define Y 1
 #define Z 2
+
+struct PhaseSpaceMarker
+{
+	int id;
+	string name;
+	string options;
+};
+
+class PhaseSpaceRigidBody
+{
+public:
+	PhaseSpaceRigidBody(string filename)
+	{
+		FILE* f = fopen(filename.c_str(), "rb");
+		fseek(f, 0, SEEK_END);
+		long fsize = ftell(f);
+		fseek(f, 0, SEEK_SET);
+
+		json = (char*)malloc(fsize + 1);
+		jsonlength = fsize + 1;
+		fread((void*)json, fsize, 1, f);
+		json[fsize] = 0;
+
+		fclose(f);
+
+		Json::Value root;
+		Json::Reader reader;
+
+		reader.parse(json, json + jsonlength, root, false);
+
+		Json::Value trackers = root["trackers"];
+		parseTracker(trackers); //use the first tracker
+	}
+
+	~PhaseSpaceRigidBody()
+	{
+		free(json);
+	}
+
+private:
+	char* json;
+	int jsonlength;
+
+	int id;
+	vector<PhaseSpaceMarker> markers;
+
+	PhaseSpaceMarker parseMarker(Json::Value token)
+	{
+		PhaseSpaceMarker marker;
+
+		marker.id = token["id"].asInt();
+		marker.name = token["name"].asString();
+		marker.options = token["options"].asString();
+
+		return marker;
+	}
+
+	void parseTracker(Json::Value tracker)
+	{
+		id = tracker["id"].asInt();
+
+		for(unsigned int i = 0; i < tracker["markers"].size(); i++)
+		{
+			markers.push_back(parseMarker(tracker["markers"][i]));
+		}
+	}
+
+public:
+	void Create(OWL::Context& owl)
+	{
+		owl.createTracker(id, "rigid", "head");
+		for(unsigned int i = 0; i < markers.size(); i++)
+		{
+			owl.assignMarker(id, markers[i].id, markers[i].name.c_str(), markers[i].options.c_str());
+		}
+	}
+};
 
 class PhaseSpaceTracker
 {
 
 public:
-	PhaseSpaceTracker(string Address)
+	PhaseSpaceTracker(string Address, PhaseSpaceRigidBody* headrigidbody)
 	{
+		headRigidBody = headrigidbody;
+
 		headPosition.assign(3, 0);
 		headLookat.assign(3,0);
 		leftFoot.assign(3, 0);
@@ -45,6 +131,7 @@ public:
 		rightFoot_id = 7;
 
 		connected = false;
+		valid = false;
 
 	}
 	~PhaseSpaceTracker()
@@ -83,16 +170,7 @@ public:
 
 		/* create the trackers */
 
-		owl.createTracker(head_id, "rigid", "head");
-
-		// assign markers to the rigid and specify local coordinates in millimeters (taken from wand.json)
-		owl.assignMarker(head_id, 0, "0", "pos=-148.573,77.3388,33.2397");
-		owl.assignMarker(head_id, 1, "1", "pos=-95.0524,-72.3504,-3.47924");
-		owl.assignMarker(head_id, 2, "2", "pos=10.2652,-85.5011,-32.9739");
-		owl.assignMarker(head_id, 3, "3", "pos=-3.54247,74.6796,-69.2826");
-		owl.assignMarker(head_id, 4, "4", "pos=99.6408,-79.5838,17.3713");
-		owl.assignMarker(head_id, 5, "5", "pos=137.262,85.4163,55.1239");
-
+		headRigidBody->Create(owl);
 
 		owl.streaming(1);
 	}
@@ -154,17 +232,14 @@ public:
 								headPosition[1] = m->pose[1] * 0.1f;
 								headPosition[2] = m->pose[2] * 0.1f;
 
-								float* headOrientation = &m->pose[3];
+								memcpy(&orientation, &(m->pose[3]), sizeof(float) * 3);
+
 								float forward[3] = { 0.0f,0.0f,-1.0f }; //-1 because rigid body was created 'backwards'
 								float up[3] = { 0.0f,1.0f,0.0f };
-								float lookat[3];
-								owl_mult_qvq(headOrientation, forward, headLookat.data());
+								owl_mult_qvq(orientation.data(), forward, headLookat.data());
+								owl_mult_qvq(orientation.data(), up, headUp.data());
 
-								owl_mult_qvq(headOrientation, up, headUp.data());
-
-							//	headLookat[0] = lookat[0];
-							//	headLookat[1] = lookat[1];
-							//	headLookat[2] = lookat[2];
+								valid = true;
 							}
 						}
 					}
@@ -180,6 +255,7 @@ private:
 	OWL::Rigids rigids;
 
 	bool connected;
+	bool valid;
 
 	string address;
 	size_t flags;
@@ -193,6 +269,10 @@ private:
 	vector<float> headUp;
 	vector<float> leftFoot;
 	vector<float> rightFoot;
+
+	quaternion orientation;
+
+	PhaseSpaceRigidBody* headRigidBody;
 
 public:
 
@@ -219,6 +299,16 @@ public:
 	vector<float> GetRightFoot()
 	{
 		return rightFoot;
+	}
+
+	quaternion GetOrientation()
+	{
+		return orientation;
+	}
+
+	bool GetValid()
+	{
+		return valid;
 	}
 
 private:

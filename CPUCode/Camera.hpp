@@ -96,6 +96,13 @@ public:
 		update_camera_streams();
 	}
 
+	void set_up(vector<float> v)
+	{
+		camera_settings.camera_up.x = v[0];
+		camera_settings.camera_up.y = v[1];
+		camera_settings.camera_up.z = v[2];
+	}
+
 	void set_up(float* v)
 	{
 		camera_settings.camera_up.x = v[0];
@@ -138,38 +145,6 @@ private:
 			}
 		}
 	}
-
-
-
-	vector<float> add(vector<float> a, vector<float> b)
-	{
-		vector<float> ans(3);
-		ans[0] = (a[0] + b[0]);
-		ans[1] = (a[1] + b[1]);
-		ans[2] = (a[2] + b[2]);
-		return ans;
-	}
-
-	vector<float> divide(vector<float> a, float b)
-	{
-		vector<float> ans(3);
-		ans[0] = (a[0] / b);
-		ans[1] = (a[1] / b);
-		ans[2] = (a[2] / b);
-		return ans;
-	}
-
-	vector<float> subtract(vector<float> a, vector<float> b)
-	{
-		vector<float> ans(3);
-		ans[0] = (a[0] - b[0]);
-		ans[1] = (a[1] - b[1]);
-		ans[2] = (a[2] - b[2]);
-		return ans;
-	}
-
-
-
 };
 
 #endif /* CAMERA_H_ */

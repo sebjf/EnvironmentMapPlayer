@@ -24,6 +24,7 @@
 #include "VirtualEnvironment.hpp"
 #include "Watchdog.hpp"
 #include "Oculus.hpp"
+#include "TrackerIntegrator.hpp"
 
 //gnc#define USEOCULUS
 
@@ -63,17 +64,18 @@ int main(int argc, const char** argv)
 
 	VirtualEnvironment ve;
 
-	PhaseSpaceTracker tracker("128.16.8.253");
-	tracker.Connect();
-
+	PhaseSpaceRigidBody headRigidBody(string("/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/DK2Head.json"));
+	PhaseSpaceTracker phasespace("128.16.8.253", &headRigidBody);
+	phasespace.Connect();
 	Oculus oculus;
+	TrackerIntegrator tracker(&phasespace, &oculus);
 
 	Logging log;
 
 	RemoteInterface veinterface(9001);
 	veinterface.ve = &ve;
 	veinterface.log = &log;
-	veinterface.tracker = &tracker;
+	veinterface.tracker = &phasespace;
 	veinterface.watchdog = &watchdog;
 	veinterface.Start();
 
@@ -103,10 +105,11 @@ int main(int argc, const char** argv)
 		monitor.Refresh();
 
 		veinterface.Update();
-		tracker.Update();
+		phasespace.Update();
 		oculus.Update();
+		tracker.Update();
 
-		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), tracker.GetLeftFoot(), tracker.GetRightFoot());
+		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), phasespace.GetLeftFoot(), phasespace.GetRightFoot());
 
 		if(log.GetRecordCount() > 0){
 			// if we are logging, return the head position based on the latency
@@ -118,11 +121,8 @@ int main(int argc, const char** argv)
 		{
 			// if we are not logging, pass the data right through
 			ve.getCamera()->set_eye(tracker.GetHeadPosition());
-			ve.getCamera()->set_up(tracker.GetHeadUp().data());
+			ve.getCamera()->set_up(tracker.GetHeadUp());
 			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
-		//	ve.getCamera()->set_eye(0,160,0);
-		//	ve.getCamera()->set_up(oculus.GetCameraUp().data());
-		//	ve.getCamera()->set_lookat(oculus.GetCameraForward().data());
 		}
 
 		MouseDelta d = mouse.readMouse(false);
