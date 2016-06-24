@@ -92,7 +92,7 @@ public:
 		{
 			for(int x = 0; x < m_width; x++)
 			{
-				file.read((char*)&(m_SampleParameters[x][y]),sizeof(SampleParameters_t));
+				file.read((char*)&(m_SampleParameters[m_width - 1 - x][y]),sizeof(SampleParameters_t));
 			}
 		}
 

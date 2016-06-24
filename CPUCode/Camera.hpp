@@ -34,7 +34,7 @@ public:
 	{
 		memset(&camera_settings, 0, sizeof(CameraUpdate));
 		camera_settings.camera_lookat.z = 1;
-		camera_settings.camera_up.y = -1; 		//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
+		camera_settings.camera_up.y = 1; 		//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
 
 		connected = false;
 	}
