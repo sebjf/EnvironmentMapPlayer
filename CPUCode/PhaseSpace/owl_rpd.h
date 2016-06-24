@@ -1,8 +1,25 @@
+/***
+Copyright (c) PhaseSpace, Inc 2016
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL PHASESPACE, INC
+BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+***/
+
 // owl_rpd.h
-// OWL v1.3
+// OWL C API v2.0
 
 #ifndef OWL_RPD_H
 #define OWL_RPD_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdbool.h>
 
 #ifdef WIN32
 #ifdef __DLL
@@ -17,19 +34,14 @@
 #define OWL_RPD_SAVE 1
 #define OWL_RPD_LOAD 2
 
-#ifndef CTX
-#define CTX
-#define CTXVOID void
-#endif // CTX
+struct OWLRPD;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-OWLAPI int owlRPDOpen(CTX const char *servername, const char *filename, int mode);
-OWLAPI void owlRPDClose(CTXVOID);
-OWLAPI int owlRPDSend(CTXVOID);
-OWLAPI int owlRPDRecv(CTXVOID);
+OWLAPI OWLRPD* owlRPDCreate();
+OWLAPI bool owlRPDRelease(struct OWLRPD **rpd);
+OWLAPI bool owlRPDOpen(struct OWLRPD *rpd, const char *servername, const char *filename, int mode);
+OWLAPI bool owlRPDClose(struct OWLRPD *rpd);
+OWLAPI int owlRPDSend(struct OWLRPD *rpd, long timeout);
+OWLAPI int owlRPDRecv(struct OWLRPD *rpd, long timeout);
 
 #ifdef __cplusplus
 }

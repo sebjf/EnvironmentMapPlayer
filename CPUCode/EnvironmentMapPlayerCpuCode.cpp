@@ -113,15 +113,9 @@ int main(int argc, const char** argv)
 		else
 		{
 			// if we are not logging, pass the data right through
-		//	ve.getCamera()->set_eye(tracker.GetHeadPosition());
-		//	ve.getCamera()->set_lookat(tracker.GetHeadLookat());
+			ve.getCamera()->set_eye(tracker.GetHeadPosition());
+			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
 		}
-
-		vector<float> pos;
-		pos.push_back(0);
-		pos.push_back(160);
-		pos.push_back(0);
-		ve.getCamera()->set_eye(pos);
 
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
@@ -129,7 +123,7 @@ int main(int argc, const char** argv)
 		if(d.changed()){
 			inclination += -d.y;
 			elevation += -d.x;
-			ve.getCamera()->set_lookat(inclination, elevation);
+	//		ve.getCamera()->set_lookat(inclination, elevation);
 		}
 
 

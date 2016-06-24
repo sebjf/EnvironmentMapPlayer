@@ -1,10 +1,26 @@
-// owl.h
-// OWL v1.3
+/***
+Copyright (c) PhaseSpace, Inc 2016
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL PHASESPACE, INC
+BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+***/
+
+// owl.h -*- C -*-
+// OWL C API v2.0
 
 #ifndef OWL_H
 #define OWL_H
 
-#define OWL_API_VERSION 0x010300
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+#include <stdbool.h>
 
 #ifdef WIN32
 #ifdef __DLL
@@ -16,230 +32,224 @@
 #define OWLAPI
 #endif // WIN32
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define OWL_MAX_FREQUENCY 960.0
 
-// to enable OWL Context API, include owl_ctx.h before owl.h, 
-// and link against libowlsock-mt
+/* id is unsigned 32-bit */
+/* time is signed 64-bit, 1 count per frame or to be specified */
+/* pose: pos, rot -- [x y z], [s x y z] */
+/* options format: [opt1=value opt2=value1,value2 ...] */
 
-// ignore CTX macros if not using OWL Context
-#ifndef CTX
-#define CTX
-#define CTXVOID void
-#endif // CTX
+/* Data Types */
 
-typedef unsigned int uint_t;
+struct OWLCamera {
+  uint32_t id;
+  uint32_t flags;
+  float pose[7];
+  float cond;
+};
+
+struct OWLPeak {
+  uint32_t id;
+  uint32_t flags;
+  int64_t time;
+  uint16_t camera;
+  uint16_t detector;
+  uint32_t width;
+  float pos;
+  float amp;
+};
+
+struct OWLPlane {
+  uint32_t id;
+  uint32_t flags;
+  int64_t time;
+  uint16_t camera;
+  uint16_t detector;
+  float plane[4];
+  float offset;
+};
 
 struct OWLMarker {
-  int id;
-  int frame;
+  uint32_t id;
+  uint32_t flags;
+  int64_t time;
   float x, y, z;
   float cond;
-  uint_t flag;
 };
 
 struct OWLRigid {
-  int id;
-  int frame;
+  uint32_t id;
+  uint32_t flags;
+  int64_t time;
   float pose[7];
   float cond;
-  uint_t flag;
 };
 
-struct OWLCamera {
-  int id;
-  float pose[7];
-  float cond;
-  uint_t flag;
+struct OWLInput {
+  uint64_t hw_id;
+  uint64_t flags;
+  int64_t time;
+  const uint8_t *data;
+  const uint8_t *data_end;
+};
+
+/* Event */
+
+enum {
+  OWL_TYPE_INVALID = 0, OWL_TYPE_BYTE, OWL_TYPE_STRING = OWL_TYPE_BYTE, OWL_TYPE_INT, OWL_TYPE_FLOAT,
+  OWL_TYPE_ERROR = 0x7F,
+  OWL_TYPE_EVENT = 0x80, OWL_TYPE_FRAME = OWL_TYPE_EVENT, OWL_TYPE_CAMERA, OWL_TYPE_PEAK, OWL_TYPE_PLANE,
+  OWL_TYPE_MARKER, OWL_TYPE_RIGID, OWL_TYPE_INPUT,
+  OWL_TYPE_MARKERINFO, OWL_TYPE_TRACKERINFO, OWL_TYPE_FILTERINFO, OWL_TYPE_DEVICEINFO
 };
 
 struct OWLEvent {
-  int type;
-  int frame;
+  uint16_t type_id;
+  uint16_t id;
+  uint32_t flags;
+  int64_t time;
+  const char *type_name;
+  const char *name;
+  /* private */
+  const void *data;
+  const void *data_end;
 };
 
-typedef unsigned int OWLenum;
+/* Info */
 
-/*
- * Constants
- */
+struct OWLMarkerInfo {
+  uint32_t id;
+  uint32_t tracker_id;
+  const char *name;
+  const char *options;
+};
 
-#define OWL_MAX_FREQUENCY       480.0
+struct OWLTrackerInfo {
+  uint32_t id;
+  const char *type;
+  const char *name;
+  const char *options;
+  const uint32_t *marker_ids;
+  const uint32_t *marker_ids_end;
+};
 
-/* Errors */
-#define OWL_NO_ERROR            0x0
-#define OWL_INVALID_VALUE       0x0020
-#define OWL_INVALID_ENUM        0x0021
-#define OWL_INVALID_OPERATION   0x0022
+struct OWLFilterInfo {
+  uint32_t period;
+  const char *name;
+  const char *options;
+};
 
-/* Common Events */
-#define OWL_DONE                0x0002
+struct OWLDeviceInfo {
+  uint64_t hw_id;
+  uint32_t id;
+  int64_t time;
+  const char *type;
+  const char *name;
+  const char *options;
+  const char *status;
+};
 
-/* Common flags */
-#define OWL_CREATE              0x0100
-#define OWL_DESTROY             0x0101
-#define OWL_ENABLE              0x0102
-#define OWL_DISABLE             0x0103
+/* Initialization */
 
-/* Init flags */
-#define OWL_SLAVE               0x0001  // socket only
-#define OWL_FILE                0x0002  // socket only
-#define OWL_ASYNC               0x0008  // socket only
-#define OWL_POSTPROCESS         0x0010
-#define OWL_MODE1               0x0100
-#define OWL_MODE2               0x0200
-#define OWL_MODE3               0x0300
-#define OWL_MODE4               0x0400
-#define OWL_LASER               0x0A00
-#define OWL_CALIB               0x0C00
-#define OWL_DIAGNOSTIC          0x0D00
-#define OWL_CALIBPLANAR         0x0F00
+struct OWLAPI OWLContext;
 
-/* Sets */
-#define OWL_FREQUENCY           0x0200
-#define OWL_STREAMING           0x0201  // socket only
-#define OWL_INTERPOLATION       0x0202
-#define OWL_BROADCAST           0x0203  // socket only
-#define OWL_EVENTS              0x020F  // socket only
-#define OWL_BUTTONS             0x0210
-#define OWL_MARKERS             0x0211
-#define OWL_RIGIDS              0x0212
-#define OWL_COMMDATA            0x0220
-#define OWL_TIMESTAMP           0x0221
-#define OWL_PLANES              0x02A0
-#define OWL_DETECTORS           0x02A1
-#define OWL_PEAKS               0x02A2
-#define OWL_IMAGES              0x02A3
+OWLAPI struct OWLContext* owlCreateContext();
+OWLAPI bool owlReleaseContext(struct OWLContext **ctx);
 
-#define OWL_CAMERAS             0x02A4
+OWLAPI int owlOpen(struct OWLContext *ctx, const char *name, const char *open_options);
+OWLAPI bool owlClose(struct OWLContext *ctx);
+OWLAPI bool owlIsOpen(const struct OWLContext *ctx);
 
-#define OWL_FRAME_BUFFER_SIZE   0x02B0  // socket only
+OWLAPI int owlInitialize(struct OWLContext *ctx, const char *init_options);
+OWLAPI int owlDone(struct OWLContext *ctx, const char *done_options);
 
-#define OWL_MARKER_STATS        0x02D0
-#define OWL_CAMERA_STATS        0x02D1
-#define OWL_MARKER_COVARIANCE   0x02D5
+OWLAPI int owlStreaming(const struct OWLContext *ctx);
+OWLAPI bool owlSetStreaming(struct OWLContext *ctx, int enable);
 
-#define OWL_HW_CONFIG           0x02F0
+OWLAPI float owlFrequency(const struct OWLContext *ctx);
+OWLAPI bool owlSetFrequency(struct OWLContext *ctx, float frequency);
 
-#define OWL_TRANSFORM           0xC200  // camera transformation
+OWLAPI const int* owlTimeBase(const struct OWLContext *ctx);
+OWLAPI bool owlSetTimeBase(struct OWLContext *ctx, int num, int den);
 
-/* Trackers */
-#define OWL_POINT_TRACKER       0x0300
-#define OWL_RIGID_TRACKER       0x0301
+OWLAPI float owlScale(const struct OWLContext *ctx);
+OWLAPI bool owlSetScale(struct OWLContext *ctx, float scale);
 
-// planar tracker (may be temporary)
-#define OWL_PLANAR_TRACKER      0x030A
+OWLAPI const float* owlPose(const struct OWLContext *ctx);
+OWLAPI bool owlSetPose(struct OWLContext *ctx, const float *pose);
 
-#define OWL_SET_FILTER          0x0310
+OWLAPI const char* owlOption(const struct OWLContext *ctx, const char *option);
+OWLAPI const char* owlOptions(const struct OWLContext *ctx);
+OWLAPI bool owlSetOption(struct OWLContext *ctx, const char *option, const char *value);
+OWLAPI bool owlSetOptions(struct OWLContext *ctx, const char *options);
 
-// undocumented freatures
-// use at your own risk
-#define OWL_FEATURE0            0x03F0 // optical
-#define OWL_FEATURE1            0x03F1 // offsets
-#define OWL_FEATURE2            0x03F2 // projection
-#define OWL_FEATURE3            0x03F3 // predicted
-#define OWL_FEATURE4            0x03F4 // valid min
-#define OWL_FEATURE5            0x03F5 // query min
-#define OWL_FEATURE6            0x03F6 // storedepth
-#define OWL_FEATURE7            0x03F7 // 
-#define OWL_FEATURE8            0x03F8 // rejection
-#define OWL_FEATURE9            0x03F9 // filtering
-#define OWL_FEATURE10           0x03FA // window size
-#define OWL_FEATURE11           0x03FB // LS cutoff
-#define OWL_FEATURE12           0x03FC // off-fill
-#define OWL_FEATURE_LAST        0x03FD // last feature
-
-// calibration only
-#define OWL_CALIB_TRACKER       0x0C01
-#define OWL_CALIB_RESET         0x0C10
-#define OWL_CALIB_LOAD          0x0C11
-#define OWL_CALIB_SAVE          0x0C12
-#define OWL_CALIBRATE           0x0C13
-#define OWL_RECALIBRATE         0x0C14
-#define OWL_CAPTURE_RESET       0x0C20
-#define OWL_CAPTURE_START       0x0C21
-#define OWL_CAPTURE_STOP        0x0C22
-#define OWL_CALIB_ACTIVE        0x0C30
-
-// planar calib tracker (may be temporary)
-#define OWL_CALIBPL_TRACKER     0x0CA1
+OWLAPI const char* owlLastError(const struct OWLContext *ctx);
 
 /* Markers */
-#define OWL_SET_LED             0x0400
-#define OWL_SET_POSITION        0x0401
-#define OWL_CLEAR_MARKER        0x0402
 
-/* Gets */
-#define OWL_VERSION             0x0500
-#define OWL_FRAME_NUMBER        0x0510
-#define OWL_STATUS_STRING       0x0520
-#define OWL_CUSTOM_STRING       0x05F0
+OWLAPI bool owlSetMarkerName(struct OWLContext *ctx, uint32_t marker_id, const char *marker_name);
+OWLAPI bool owlSetMarkerOptions(struct OWLContext *ctx, uint32_t marker_id, const char *marker_options);
 
-// calibration only
-#define OWL_CALIB_STATUS        0x0C51
-#define OWL_CALIB_ERROR         0x0C52
-  
-/* Macros */
-#define MARKER(tracker, index)  (((tracker)<<12)|(index))
+OWLAPI const struct OWLMarkerInfo owlMarkerInfo(const struct OWLContext *ctx, uint32_t marker_id);
 
-#define INDEX(id)   ((id)&0x0fff)
-#define TRACKER(id) ((id)>>12)
+/* Trackers */
 
-// owlGetRigid is deprecated
-#define owlGetRigid owlGetRigids
+OWLAPI bool owlCreateTracker(struct OWLContext *ctx, uint32_t tracker_id, const char *tracker_type,
+                      const char *tracker_name, const char *tracker_options);
+OWLAPI bool owlCreateTrackers(struct OWLContext *ctx, const struct OWLTrackerInfo *info, uint32_t count);
 
-/* initialization */
+OWLAPI bool owlDestroyTracker(struct OWLContext *ctx, uint32_t tracker_id);
+OWLAPI bool owlDestroyTrackers(struct OWLContext *ctx, const uint32_t *tracker_ids, uint32_t count);
 
-OWLAPI int owlInit(CTX const char *server, int flags);
-OWLAPI void owlDone(CTXVOID);
+OWLAPI bool owlAssignMarker(struct OWLContext *ctx, uint32_t tracker_id, uint32_t marker_id,
+                     const char *marker_name, const char *marker_options);
+OWLAPI bool owlAssignMarkers(struct OWLContext *ctx, const struct OWLMarkerInfo *info, uint32_t count);
 
-/* client -> server */
+OWLAPI bool owlSetTrackerName(struct OWLContext *ctx, uint32_t tracker_id, const char *tracker_name);
+OWLAPI bool owlSetTrackerOptions(struct OWLContext *ctx, uint32_t tracker_id, const char *tracker_options);
 
-OWLAPI void owlSetFloat(CTX OWLenum pname, float param);
-OWLAPI void owlSetInteger(CTX OWLenum pname, int param);
-OWLAPI void owlSetFloatv(CTX OWLenum pname, const float *param);
-OWLAPI void owlSetIntegerv(CTX OWLenum pname, const int *param);
-OWLAPI void owlSetString(CTX OWLenum pname, const char *str);
+OWLAPI const struct OWLTrackerInfo owlTrackerInfo(const struct OWLContext *ctx, uint32_t tracker_id);
 
-// 'tracker' is the tracker id
-OWLAPI void owlTracker(CTX int tracker, OWLenum pname);
-OWLAPI void owlTrackerf(CTX int tracker, OWLenum pname, float param);
-OWLAPI void owlTrackeri(CTX int tracker, OWLenum pname, int param);
-OWLAPI void owlTrackerfv(CTX int tracker, OWLenum pname, const float *param);
-OWLAPI void owlTrackeriv(CTX int tracker, OWLenum pname, const int *param);
+/* Filters */
 
-// 'marker' is MARKER(tracker, index)
-OWLAPI void owlMarker(CTX int marker, OWLenum pname);
-OWLAPI void owlMarkerf(CTX int marker, OWLenum pname, float param);
-OWLAPI void owlMarkeri(CTX int marker, OWLenum pname, int param);
-OWLAPI void owlMarkerfv(CTX int marker, OWLenum pname, const float *param);
-OWLAPI void owlMarkeriv(CTX int marker, OWLenum pname, const int *param);
+OWLAPI bool owlSetFilter(struct OWLContext *ctx, uint32_t period, const char *name, const char *filter_options);
+OWLAPI bool owlSetFilters(struct OWLContext *ctx, const struct OWLFilterInfo *info, uint32_t count);
+OWLAPI const struct OWLFilterInfo owlFilterInfo(const struct OWLContext *ctx, const char *name);
 
-/* client */
+/* Devices */
 
-OWLAPI void owlScale(CTX float scale);
-// pose: pos, rot -- [x y z], [s x y z]
-OWLAPI void owlLoadPose(CTX const float *pose);
+OWLAPI const struct OWLDeviceInfo owlDeviceInfo(const struct OWLContext *ctx, uint64_t hw_id);
 
-/* server -> client */
+/* Events */
 
-OWLAPI int owlGetStatus(CTXVOID);
-OWLAPI int owlGetError(CTXVOID);
+OWLAPI const struct OWLEvent* owlPeekEvent(struct OWLContext *ctx, long timeout);
+OWLAPI const struct OWLEvent* owlNextEvent(struct OWLContext *ctx, long timeout);
 
-OWLAPI struct OWLEvent owlPeekEvent(CTXVOID);
-OWLAPI struct OWLEvent owlGetEvent(CTXVOID);
+OWLAPI int owlGetString(const struct OWLEvent *e, char *value, uint32_t count);
+OWLAPI int owlGetIntegers(const struct OWLEvent *e, int *value, uint32_t count);
+OWLAPI int owlGetFloats(const struct OWLEvent *e, float *value, uint32_t count);
 
-OWLAPI int owlGetMarkers(CTX struct OWLMarker *markers, uint_t count);
-OWLAPI int owlGetRigids(CTX struct OWLRigid *rigid, uint_t count);
-OWLAPI int owlGetCameras(CTX struct OWLCamera *cameras, uint_t count);
+OWLAPI int owlGetCameras(const struct OWLEvent *e, struct OWLCamera *cameras, uint32_t count);
+OWLAPI int owlGetPeaks(const struct OWLEvent *e, struct OWLPeak *peaks, uint32_t count);
+OWLAPI int owlGetPlanes(const struct OWLEvent *e, struct OWLPlane *planes, uint32_t count);
+OWLAPI int owlGetMarkers(const struct OWLEvent *e, struct OWLMarker *markers, uint32_t count);
+OWLAPI int owlGetRigids(const struct OWLEvent *e, struct OWLRigid *rigids, uint32_t count);
+OWLAPI int owlGetInputs(const struct OWLEvent *e, struct OWLInput *imputs, uint32_t count);
 
-OWLAPI int owlGetFloatv(CTX OWLenum pname, float *param);
-OWLAPI int owlGetIntegerv(CTX OWLenum pname, int *param);
-OWLAPI int owlGetString(CTX OWLenum pname, char *str);
+OWLAPI const struct OWLEvent* owlFindEvent(const struct OWLEvent *event, uint16_t type_id, const char *name);
+
+/* Property */
+
+OWLAPI const char* owlProperty(const struct OWLContext *ctx, const char *name);
+OWLAPI int owlPropertyi(const struct OWLContext *ctx, const char *name);
+OWLAPI float owlPropertyf(const struct OWLContext *ctx, const char *name);
+OWLAPI int owlPropertyiv(const struct OWLContext *ctx, const char *name, int *value, uint32_t count);
+OWLAPI int owlPropertyfv(const struct OWLContext *ctx, const char *name, float *value, uint32_t count);
+
+/**/
 
 #ifdef __cplusplus
-}
+} // extern C
 #endif
 
 #endif // OWL_H

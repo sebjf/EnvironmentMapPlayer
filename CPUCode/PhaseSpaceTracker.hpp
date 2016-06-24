@@ -18,7 +18,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#include "PhaseSpace/owl.h"
+#include "PhaseSpace/owl.hpp"
 #include "PhaseSpace/owl_math.h"
 
 #define X 0
@@ -27,13 +27,6 @@
 
 class PhaseSpaceTracker
 {
-	struct state
-	{
-		float head_position[3];
-		float head_orientation[4];
-		float lfoot_position[3];
-		float rfoot_position[3];
-	};
 
 public:
 	PhaseSpaceTracker(string Address)
@@ -46,36 +39,61 @@ public:
 
 		flags = 0;
 
-		headTrackerId = 0;
-		lfootTrackerId = 6;
-		rfootTrackerId = 7;
+		head_id = 0;
+		leftFoot_id = 6;
+		rightFoot_id = 7;
 
 		connected = false;
 
 	}
 	~PhaseSpaceTracker()
 	{
-
+		if(owl.isOpen())
+		{
+			owl.done();
+			owl.close();
+		}
 	}
 
 	void Connect()
 	{
-		sockfd = socket(AF_INET, SOCK_STREAM, 0);
-		bzero((char*)&serv_addr, sizeof(struct sockaddr_in));
-		serv_addr.sin_family = AF_INET;
+		int result = owl.open(address);
 
-		inet_aton("128.16.6.125", &serv_addr.sin_addr);
-
-		serv_addr.sin_port = htons(27015);
-
-		if(connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(struct sockaddr_in))<0)
+		if (result == 0)
 		{
-			printf("Could not connect to PhaseSpace forwarder");
+			printf("ERROR: Timeout connecting to PhaseSpace\n");
+			return;
 		}
-		else
+		if (result < 0)
 		{
-			connected = true;
+			printf("ERROR: Error connecting to PhaseSpace");
+			return;
 		}
+
+		result = owl.initialize();
+
+		if (result < 0)
+		{
+			printf("ERROR: Error initialising PhaseSpace");
+			return;
+		}
+
+		connected = true;
+
+		/* create the trackers */
+
+		owl.createTracker(head_id, "rigid", "head");
+
+		// assign markers to the rigid and specify local coordinates in millimeters (taken from wand.json)
+		owl.assignMarker(head_id, 0, "0", "pos=-148.573,77.3388,33.2397");
+		owl.assignMarker(head_id, 1, "1", "pos=-95.0524,-72.3504,-3.47924");
+		owl.assignMarker(head_id, 2, "2", "pos=10.2652,-85.5011,-32.9739");
+		owl.assignMarker(head_id, 3, "3", "pos=-3.54247,74.6796,-69.2826");
+		owl.assignMarker(head_id, 4, "4", "pos=99.6408,-79.5838,17.3713");
+		owl.assignMarker(head_id, 5, "5", "pos=137.262,85.4163,55.1239");
+
+
+		owl.streaming(1);
 	}
 
 	bool isConnected()
@@ -85,50 +103,86 @@ public:
 
 	void Update()
 	{
-		if(connected)
+		if(owl.isOpen() && owl.property<int>("initialized"))
 		{
-			write(sockfd, &n, 1);
-
-			struct state thestate;
-
-			int toread = sizeof(struct state);
-			while(toread > 0)
+			const OWL::Event *event = owl.nextEvent(0);	//no timeout - poll
+			if (!event)
 			{
-				n = read(sockfd, &thestate, toread);
-				toread -= n;
+				return;
 			}
 
-			headPosition[0] = thestate.head_position[0] * 0.1f;
-			headPosition[1] = thestate.head_position[1] * 0.1f;
-			headPosition[2] = thestate.head_position[2] * -0.1f;
+			if(event->type_id() == OWL::Type::ERROR)
+			{
+				cerr << event->name() << ": " << event->str() << endl;
+				return;
+			}
 
-			float v[3] = { 0.0f,0.0f,1.0f };
-			float lookat[3];
-			mult_qvq((const float*)&thestate.head_orientation, v, lookat );
-			headLookat[0] = headPosition[0] + lookat[0];
-			headLookat[1] = headPosition[1] + lookat[1];
-			headLookat[2] = headPosition[2] + lookat[2];
+			if(event->type_id() == OWL::Type::FRAME)
+			{
+				if(event->find("markers", markers) > 0)
+				{
+					for (OWL::Markers::iterator m = markers.begin(); m != markers.end(); m++)
+					{
+						if (m->cond > 0)
+						{
+							if (m->id == leftFoot_id)
+							{
+								leftFoot[0] = m->x;
+								leftFoot[0] = m->y;
+								leftFoot[0] = m->z;
+							}
+							if (m->id == rightFoot_id)
+							{
+								rightFoot[0] = m->x;
+								rightFoot[0] = m->y;
+								rightFoot[0] = m->z;
+							}
+						}
+					}
+				}
 
+				if (event->find("rigids", rigids) > 0)
+				{
+					for (OWL::Rigids::iterator m = rigids.begin(); m != rigids.end(); m++)
+					{
+						if (m->cond > 0)
+						{
+							if (m->id == head_id)
+							{
+								headPosition[0] = m->pose[0] * 0.1f;
+								headPosition[1] = m->pose[1] * 0.1f;
+								headPosition[2] = m->pose[2] * 0.1f;
+
+								float* headOrientation = &m->pose[3];
+								float forward[3] = { 0.0f,0.0f,-1.0f };
+								float lookat[3];
+								owl_mult_qvq(headOrientation, forward, lookat);
+
+								headLookat[0] = headPosition[0] + lookat[0];
+								headLookat[1] = headPosition[1] + lookat[1];
+								headLookat[2] = headPosition[2] + lookat[2];
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
 private:
 
-	int sockfd, portno, n;
-	struct sockaddr_in serv_addr;
-	struct hostent *server;
+	OWL::Context owl;
+	OWL::Markers markers;
+	OWL::Rigids rigids;
 
 	bool connected;
 
-	string	address;
+	string address;
 	size_t flags;
 
-	int headTrackerId;
-	int lfootTrackerId;
-	int rfootTrackerId;
-
-	OWLRigid rigids[1];
-	OWLMarker markers[2];
+	unsigned int head_id;
+	unsigned int leftFoot_id;
+	unsigned int rightFoot_id;
 
 	vector<float> headPosition;
 	vector<float> headLookat;
@@ -159,15 +213,6 @@ public:
 
 private:
 
-	void owl_print_error(const char *s, int n)
-	{
-	  if(n < 0) printf("%s: %d\n", s, n);
-	  else if(n == OWL_NO_ERROR) printf("%s: No Error\n", s);
-	  else if(n == OWL_INVALID_VALUE) printf("%s: Invalid Value\n", s);
-	  else if(n == OWL_INVALID_ENUM) printf("%s: Invalid Enum\n", s);
-	  else if(n == OWL_INVALID_OPERATION) printf("%s: Invalid Operation\n", s);
-	  else printf("%s: 0x%x\n", s, n);
-	}
 
 };
 
