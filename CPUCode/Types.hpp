@@ -19,6 +19,11 @@ public:
 	vector3(){}
 	vector3(float ix, float iy, float iz){ x = ix; y = iy; z = iz; }
 
+	float* data()
+	{
+		return (float*)this;
+	}
+
 	vector3 normalised()
 	{
 		return vector3::normalise(*this);

@@ -70,14 +70,14 @@ public:
 		ovrSensorState state = ovrHmd_GetSensorState(Hmd, 0.0);
 
 		OVR::Vector3<float> up = OVR::Vector3<float>(0,1,0);
-		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,1);
+		OVR::Vector3<float> forward = OVR::Vector3<float>(0,0,-1);
 
 		m_orientation = state.Recorded.Pose.Orientation;
 		m_timeInSeconds = state.Recorded.TimeInSeconds;
 
 		//because the y axis is inverted (i.e. the screen y counter starts at 0, but really its drawing down from the top) we must do a 180 degree turn around z
 		//to flip the world
-		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,1),3.14f);
+		OVR::Quat<float> oneEighty = OVR::Quat<float>(OVR::Vector3<float>(0,0,1),0);
 
 		m_up      = (oneEighty * m_orientation).Rotate(up);
 		m_forward = (oneEighty * m_orientation).Rotate(forward);

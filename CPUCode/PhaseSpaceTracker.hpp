@@ -35,6 +35,7 @@ public:
 		headLookat.assign(3,0);
 		leftFoot.assign(3, 0);
 		rightFoot.assign(3, 0);
+		headUp.assign(3,0);
 		address = Address;
 
 		flags = 0;
@@ -154,13 +155,16 @@ public:
 								headPosition[2] = m->pose[2] * 0.1f;
 
 								float* headOrientation = &m->pose[3];
-								float forward[3] = { 0.0f,0.0f,-1.0f };
+								float forward[3] = { 0.0f,0.0f,-1.0f }; //-1 because rigid body was created 'backwards'
+								float up[3] = { 0.0f,1.0f,0.0f };
 								float lookat[3];
-								owl_mult_qvq(headOrientation, forward, lookat);
+								owl_mult_qvq(headOrientation, forward, headLookat.data());
 
-								headLookat[0] = headPosition[0] + lookat[0];
-								headLookat[1] = headPosition[1] + lookat[1];
-								headLookat[2] = headPosition[2] + lookat[2];
+								owl_mult_qvq(headOrientation, up, headUp.data());
+
+							//	headLookat[0] = lookat[0];
+							//	headLookat[1] = lookat[1];
+							//	headLookat[2] = lookat[2];
 							}
 						}
 					}
@@ -186,6 +190,7 @@ private:
 
 	vector<float> headPosition;
 	vector<float> headLookat;
+	vector<float> headUp;
 	vector<float> leftFoot;
 	vector<float> rightFoot;
 
@@ -194,6 +199,11 @@ public:
 	vector<float> GetHeadPosition()
 	{
 		return headPosition;
+	}
+
+	vector<float> GetHeadUp()
+	{
+		return headUp;
 	}
 
 	vector<float> GetHeadLookat()

@@ -23,6 +23,7 @@
 #include "PhaseSpaceTracker.hpp"
 #include "VirtualEnvironment.hpp"
 #include "Watchdog.hpp"
+#include "Oculus.hpp"
 
 //gnc#define USEOCULUS
 
@@ -65,6 +66,8 @@ int main(int argc, const char** argv)
 	PhaseSpaceTracker tracker("128.16.8.253");
 	tracker.Connect();
 
+	Oculus oculus;
+
 	Logging log;
 
 	RemoteInterface veinterface(9001);
@@ -101,6 +104,7 @@ int main(int argc, const char** argv)
 
 		veinterface.Update();
 		tracker.Update();
+		oculus.Update();
 
 		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), tracker.GetLeftFoot(), tracker.GetRightFoot());
 
@@ -114,7 +118,11 @@ int main(int argc, const char** argv)
 		{
 			// if we are not logging, pass the data right through
 			ve.getCamera()->set_eye(tracker.GetHeadPosition());
+			ve.getCamera()->set_up(tracker.GetHeadUp().data());
 			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
+		//	ve.getCamera()->set_eye(0,160,0);
+		//	ve.getCamera()->set_up(oculus.GetCameraUp().data());
+		//	ve.getCamera()->set_lookat(oculus.GetCameraForward().data());
 		}
 
 		MouseDelta d = mouse.readMouse(false);

@@ -34,7 +34,7 @@ public:
 	{
 		memset(&camera_settings, 0, sizeof(CameraUpdate));
 		camera_settings.camera_lookat.z = 1;
-		camera_settings.camera_up.y = 1; 		//Because the scanout of the display starts at 0 and increases as we move down, but the world coordinate system has Y increasing as we move up
+		camera_settings.camera_up.y = 1;
 
 		connected = false;
 	}
@@ -80,28 +80,27 @@ public:
 
 	void set_lookat(vector<float> v)
 	{
-		camera_settings.camera_lookat.x = v[0];
-		camera_settings.camera_lookat.y = v[1];
-		camera_settings.camera_lookat.z = v[2];
+		camera_settings.camera_lookat.x = camera_settings.camera_eye.x + v[0];
+		camera_settings.camera_lookat.y = camera_settings.camera_eye.y + v[1];
+		camera_settings.camera_lookat.z = camera_settings.camera_eye.z + v[2];
 
 		update_camera_streams();
 	}
 
 	void set_lookat(float* v)
 	{
-		camera_settings.camera_lookat.x = v[0];
-		camera_settings.camera_lookat.y = v[1];
-		camera_settings.camera_lookat.z = v[2];
+		camera_settings.camera_lookat.x = camera_settings.camera_eye.x + v[0];
+		camera_settings.camera_lookat.y = camera_settings.camera_eye.y + v[1];
+		camera_settings.camera_lookat.z = camera_settings.camera_eye.z + v[2];
 
 		update_camera_streams();
 	}
 
-	void set_ovr(vector3 forward, vector3 up)
+	void set_up(float* v)
 	{
-		camera_settings.camera_lookat = vector3::add(camera_settings.camera_eye, forward);
-		camera_settings.camera_up = up;
-
-		update_camera_streams();
+		camera_settings.camera_up.x = v[0];
+		camera_settings.camera_up.y = v[1];
+		camera_settings.camera_up.z = v[2];
 	}
 
 	void connect(max_engine* engine)
