@@ -100,14 +100,14 @@ public:
 
 			headPosition[0] = thestate.head_position[0] * 0.1f;
 			headPosition[1] = thestate.head_position[1] * 0.1f;
-			headPosition[2] = thestate.head_position[2] * 0.1f;
+			headPosition[2] = thestate.head_position[2] * -0.1f;
 
 			float v[3] = { 0.0f,0.0f,1.0f };
 			float lookat[3];
 			mult_qvq((const float*)&thestate.head_orientation, v, lookat );
-			headLookat[0] = lookat[0];
-			headLookat[1] = lookat[1];
-			headLookat[2] = lookat[2];
+			headLookat[0] = headPosition[0] + lookat[0];
+			headLookat[1] = headPosition[1] + lookat[1];
+			headLookat[2] = headPosition[2] + lookat[2];
 
 		}
 	}
