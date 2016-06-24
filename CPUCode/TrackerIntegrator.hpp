@@ -26,6 +26,10 @@ class TrackerIntegrator
 	Quatf correction;
 	Quatf orientation;
 
+	Quatf phasespaceAveraged;
+
+	int phasespaceSampleCounter;
+
 	bool offsetSet;
 
 public:
@@ -43,6 +47,8 @@ public:
 		headUp.assign(3,0);
 		headLookat.assign(3,0);
 
+		phasespaceSampleCounter = false;
+
 		offsetSet = false;
 	}
 
@@ -56,17 +62,34 @@ public:
 		Quatf oculus = oculusTracker->GetOrientation();
 		Quatf phasespace = toQuatf(phasespaceTracker->GetOrientation());
 
+		if(phasespaceTracker->GetValid())
+		{
+			if(phasespaceSampleCounter == 0){
+				phasespaceAveraged = phasespace;
+			}
+
+			phasespaceAveraged = (phasespaceAveraged * 0.8) + (phasespace * 0.2);
+			phasespaceSampleCounter++;
+		}
+
 		if(!offsetSet)
 		{
 			/* The offset is basically the difference between the phasespace (which is always absolute) and the oculus (which starts
 			 * at Identity no matter which way the actual device is facing) before the oculus begins to drift */
-
-			offset = phasespace; //if the oculus starts at I, then the offset is just the rotation that takes I to the phasespace
-
-			offsetSet = phasespaceTracker->GetValid();
+			if(phasespaceSampleCounter == 100)
+			{
+				offset = phasespaceAveraged;
+				offsetSet = true;
+				printf("Tracker Offset Calibrated\n");
+			}
 		}
 
 		orientation = offset * oculus;
+
+		Quatf correction_n = phasespace * orientation.Inverted();	//the difference between the absolute and estimate
+		correction = (correction * 0.95) + (correction_n * 0.05);	//very slow rate of correction
+
+	//	orientation = correction * offset * oculus;
 	}
 
 	vector<float> GetHeadPosition()

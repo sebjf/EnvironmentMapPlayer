@@ -182,6 +182,8 @@ public:
 
 	void Update()
 	{
+		valid = false;
+
 		if(owl.isOpen() && owl.property<int>("initialized"))
 		{
 			const OWL::Event *event = owl.nextEvent(0);	//no timeout - poll
