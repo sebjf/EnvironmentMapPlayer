@@ -86,10 +86,10 @@ public:
 
 		orientation = offset * oculus;
 
-		Quatf correction_n = phasespace * orientation.Inverted();	//the difference between the absolute and estimate
-		correction = (correction * 0.95) + (correction_n * 0.05);	//very slow rate of correction
+		Quatf correction_n = phasespaceAveraged * orientation.Inverted();	//the difference between the absolute and estimate
+		correction = (correction * 0.9999) + (correction_n * 0.0001);	//very slow rate of correction
 
-	//	orientation = correction * offset * oculus;
+		//orientation = correction * offset * oculus;
 	}
 
 	vector<float> GetHeadPosition()
