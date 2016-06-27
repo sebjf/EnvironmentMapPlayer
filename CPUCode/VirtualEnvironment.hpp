@@ -26,6 +26,8 @@ public:
 	std::vector<Map> maps;
 	std::vector<Map> alphaMaps;
 
+	vector<float> offset;
+
 	string root;
 
 	void Load(string csvFilename)
@@ -39,9 +41,19 @@ private:
 	{
 		CsvParser* parser = CsvParser_new(csvFilename,",",0);
 
-		/* number of planes */
+		/* offset */
+
 		CsvRow* row = CsvParser_getRow(parser);
 		const char** fields = CsvParser_getFields(row);
+		offset.assign(3,0);
+		offset[0] = atof(fields[0]);
+		offset[1] = atof(fields[1]);
+		offset[2] = atof(fields[2]);
+		CsvParser_destroy_row(row);
+
+		/* number of planes */
+		row = CsvParser_getRow(parser);
+		fields = CsvParser_getFields(row);
 		int numPrimitives = atoi(fields[0]);
 		CsvParser_destroy_row(row);
 
@@ -177,6 +189,7 @@ public:
 		/* Geometry Parameters */
 
 		primitives = new Primitives(engine, maxfile);
+		primitives->SetOffset(room->offset);
 		primitives->SetPrimitives(room->primitives);
 		primitives->connect();
 

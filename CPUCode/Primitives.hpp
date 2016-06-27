@@ -57,6 +57,8 @@ private:
 	max_engine_t* m_engine;
 	max_file_t* m_maxfile;
 
+	vector<float> offset;
+
 	planeParamsUpdate_t* m_primitiveParameters;
 	int m_primitiveParametersSize;
 
@@ -76,6 +78,8 @@ public:
 	{
 		m_engine = engine;
 		m_maxfile = maxfile;
+
+		offset.assign(3,0);
 
 		m_primitiveParametersSize = sizeof(struct planeParamsUpdate_t) * PRIMITIVES_COUNT;
 		m_primitiveParameters = (planeParamsUpdate_t*)malloc(m_primitiveParametersSize);
@@ -97,7 +101,7 @@ public:
 
 		p->index = id;
 		p->enable = true;
-		p->center = primitive.center;
+		p->center = vector3::add(primitive.center, offset);
 		p->normal = primitive.normal;
 		p->face = primitive.mapIndex;
 
@@ -140,6 +144,11 @@ public:
 		p->center.y = position.at(1);
 		p->center.z = position.at(2);
 		primitivesSettingsStream->Send(*p);
+	}
+
+	void SetOffset(vector<float> o)
+	{
+		offset = o;
 	}
 
 	void SetShade(float v)

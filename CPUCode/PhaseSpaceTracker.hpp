@@ -127,8 +127,8 @@ public:
 		flags = 0;
 
 		head_id = 0;
-		leftFoot_id = 6;
-		rightFoot_id = 7;
+		leftFoot_id = 25;
+		rightFoot_id = 38;
 
 		connected = false;
 		valid = false;

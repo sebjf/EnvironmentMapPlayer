@@ -8,6 +8,8 @@
 #ifndef TYPES_HPP_
 #define TYPES_HPP_
 
+#include <vector>
+
 /* We will typically use the oculus math library, but for components that shouldnt otherwise depend on it, this is a convenient
  * way to pass around quaternions */
 struct quaternion
@@ -58,6 +60,15 @@ public:
 		ans.y = ((a.z*b.x) - (a.x*b.z));
 		ans.z = ((a.x*b.y) - (a.y*b.x));
 
+		return ans;
+	}
+
+	static vector3 add(vector3 a, std::vector<float> b)
+	{
+		vector3 ans;
+		ans.x = (a.x + b[0]);
+		ans.y = (a.y + b[1]);
+		ans.z = (a.z + b[2]);
 		return ans;
 	}
 

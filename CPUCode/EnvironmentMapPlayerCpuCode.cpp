@@ -25,6 +25,7 @@
 #include "Watchdog.hpp"
 #include "Oculus.hpp"
 #include "TrackerIntegrator.hpp"
+#include "Delay.hpp"
 
 //gnc#define USEOCULUS
 
@@ -71,6 +72,7 @@ int main(int argc, const char** argv)
 	TrackerIntegrator tracker(&phasespace, &oculus);
 
 	Logging log;
+	Delay delay(0.001f,0.500f);
 
 	RemoteInterface veinterface(9001);
 	veinterface.ve = &ve;
@@ -109,21 +111,13 @@ int main(int argc, const char** argv)
 		oculus.Update();
 		tracker.Update();
 
-		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), phasespace.GetLeftFoot(), phasespace.GetRightFoot());
+		delay.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), tracker.GetHeadUp());
+		Delay::Record trackerdata = delay.GetRecord(veinterface.latency * 0.001f);
+		ve.getCamera()->set_eye(trackerdata.head);
+		ve.getCamera()->set_lookat(trackerdata.lookat);
+		ve.getCamera()->set_up(trackerdata.up);
 
-		if(log.GetRecordCount() > 0){
-			// if we are logging, return the head position based on the latency
-			Logging::Record record = log.GetRecord(log.GetCurrentTimeInSeconds() - veinterface.latency);
-			ve.getCamera()->set_eye(record.headposition);
-			ve.getCamera()->set_lookat(record.headlookat);
-		}
-		else
-		{
-			// if we are not logging, pass the data right through
-			ve.getCamera()->set_eye(tracker.GetHeadPosition());
-			ve.getCamera()->set_up(tracker.GetHeadUp());
-			ve.getCamera()->set_lookat(tracker.GetHeadLookat());
-		}
+		log.Update(tracker.GetHeadPosition(), tracker.GetHeadLookat(), phasespace.GetLeftFoot(), phasespace.GetRightFoot());
 
 		MouseDelta d = mouse.readMouse(false);
 		__u16 keycode = characterController.update(); //character controller reads the keyboard and outputs any character read, whether or not it acted on it
@@ -133,7 +127,6 @@ int main(int argc, const char** argv)
 			elevation += -d.x;
 	//		ve.getCamera()->set_lookat(inclination, elevation);
 		}
-
 
 		switch(keycode)
 		{
