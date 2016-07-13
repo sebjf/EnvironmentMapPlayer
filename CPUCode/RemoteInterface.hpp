@@ -11,6 +11,7 @@
 #include "VirtualEnvironment.hpp"
 #include "Logging.hpp"
 #include "PhaseSpaceTracker.hpp"
+#include "TrackerIntegrator.hpp"
 #include "Watchdog.hpp"
 #include <pthread.h>
 #include <stdio.h>
@@ -33,6 +34,9 @@ enum Commands : char {
 	CMD_CLEARCOPIEDLOG = 11,
 	CMD_REQUESTGEOMETRY = 12,
 	CMD_SETFLAG = 13,
+	CMD_RECALIBRATETRACKER = 14,
+	CMD_RESETENGINE = 15,
+	CMD_CLEARWATCHDOGERROR = 16,
 };
 
 class RemoteInterface
@@ -66,6 +70,7 @@ public:
 	VirtualEnvironment* ve;
 	Logging* log;
 	PhaseSpaceTracker* tracker;
+	TrackerIntegrator* trackerIntegrator;
 	Watchdog* watchdog;
 
 private:
@@ -118,6 +123,8 @@ private:
 		float watchdogerror;
 		float watchdogperiod;
 		float currentTime;
+		float loglocked;
+		float watchdogworking;
 	};
 
 	struct StatusPacket currentStatus;
@@ -260,6 +267,15 @@ private:
 			case CMD_SETFLAG:
 				args->interface->flag = packet.param1;
 				break;
+			case CMD_RECALIBRATETRACKER:
+				args->interface->recalibrateTracker = true;
+				break;
+			case CMD_RESETENGINE:
+				args->interface->resetEngine = true;
+				break;
+			case CMD_CLEARWATCHDOGERROR:
+				args->interface->clearwatchdogerror = true;
+				break;
 			}
 		}
 
@@ -273,6 +289,9 @@ private:
 
 	volatile sig_atomic_t startLogging;
 	volatile sig_atomic_t stopLogging;
+	volatile sig_atomic_t recalibrateTracker;
+	volatile sig_atomic_t resetEngine;
+	volatile sig_atomic_t clearwatchdogerror;
 
 	volatile float shade;
 
@@ -378,6 +397,24 @@ public:
 			stopLogging = false;
 		}
 
+		if(recalibrateTracker)
+		{
+			trackerIntegrator->Calibrate();
+			recalibrateTracker = false;
+		}
+
+		if(resetEngine)
+		{
+			ve->Reset();
+			resetEngine = false;
+		}
+
+		if(clearwatchdogerror)
+		{
+			watchdog->ClearError();
+			clearwatchdogerror = false;
+		}
+
 		log->SetParticipantId(participantid);
 		log->SetTrialId(trialid);
 		log->SetFlag(flag);
@@ -440,16 +477,17 @@ public:
 		currentStatus.heady = head[1];
 		currentStatus.headz = head[2];
 
-		vector<float> lookat = tracker->GetHeadLookat();
+		vector<float> lookat = trackerIntegrator->GetHeadLookat();
 		currentStatus.heada = lookat[0];
 		currentStatus.headb = lookat[1];
 		currentStatus.headc = lookat[2];
 
 		currentStatus.watchdogerror = watchdog->GetError();
-		watchdog->ClearError();
 		currentStatus.watchdogperiod = watchdog->GetPeriod();
+		currentStatus.watchdogworking = watchdog->GetStatus();
 
 		currentStatus.currentTime = log->GetCurrentTimeInSeconds();
+		currentStatus.loglocked = log->GetLocked();
 	}
 
 };

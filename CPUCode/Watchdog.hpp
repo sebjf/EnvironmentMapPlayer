@@ -18,6 +18,7 @@ public:
 	{
 		threshold = warningThreshold;
 		checking = false;
+		working = false;
 		lastPeriod = 0.0f;
 		clock_gettime(CLOCK_REALTIME, &lastTime);
 	}
@@ -29,6 +30,8 @@ public:
 		timespec d = tsSubtract(currentTime, lastTime);
 		lastTime = currentTime;
 
+		working = false;
+
 		if(checking)
 		{
 			float lastPeriod = tsFloat(d);
@@ -36,9 +39,18 @@ public:
 			{
 				error = true;
 			}
+			if(lastPeriod > 0)
+			{
+				working = true;
+			}
 		}
 
 		checking = true;
+	}
+
+	float GetStatus()
+	{
+		return working;
 	}
 
 	float GetPeriod()
@@ -58,6 +70,7 @@ public:
 
 private:
 
+	bool working;
 	bool error;
 	float threshold;
 	bool checking;

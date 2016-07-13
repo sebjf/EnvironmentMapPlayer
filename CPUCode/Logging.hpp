@@ -97,10 +97,10 @@ public:
 		{
 			Record r;
 
-			memccpy(r.headposition, head.data(), sizeof(float), 3);
-			memccpy(r.headlookat, lookat.data(), sizeof(float), 3);
-			memccpy(r.leftfootposition, lfoot.data(), sizeof(float), 3);
-			memccpy(r.rightfootposition, rfoot.data(), sizeof(float), 3);
+			memcpy(r.headposition, head.data(), sizeof(float) * 3);
+			memcpy(r.headlookat, lookat.data(), sizeof(float) * 3);
+			memcpy(r.leftfootposition, lfoot.data(), sizeof(float) * 3);
+			memcpy(r.rightfootposition, rfoot.data(), sizeof(float) * 3);
 
 			r.participantid = participantid;
 			r.trialid = trialid;
@@ -122,6 +122,7 @@ public:
 		if(!locked)
 		{
 			log.clear();
+			memset(&lastR,0,sizeof(struct Record));
 			clock_gettime(CLOCK_REALTIME, &startTime);
 		}
 	}
@@ -157,6 +158,11 @@ public:
 	bool GetState()
 	{
 		return enable & !locked;
+	}
+
+	bool GetLocked()
+	{
+		return locked;
 	}
 
 private:

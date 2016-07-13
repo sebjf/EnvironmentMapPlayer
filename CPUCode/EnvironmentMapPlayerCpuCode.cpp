@@ -78,6 +78,7 @@ int main(int argc, const char** argv)
 	veinterface.ve = &ve;
 	veinterface.log = &log;
 	veinterface.tracker = &phasespace;
+	veinterface.trackerIntegrator = &tracker;
 	veinterface.watchdog = &watchdog;
 	veinterface.Start();
 

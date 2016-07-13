@@ -172,6 +172,14 @@ public:
 
 		headRigidBody->Create(owl);
 
+		/* Create some tracker using the markers so the server will look for them */
+
+		owl.createTracker(1, "point", "lfoot", "");
+		owl.assignMarker(1, leftFoot_id, "25", "");
+
+		owl.createTracker(2, "point", "rfoot", "");
+		owl.assignMarker(1, rightFoot_id, "38", "");
+
 		owl.streaming(1);
 	}
 
@@ -184,6 +192,8 @@ public:
 	{
 		valid = false;
 
+		orientationcond = 0;
+
 		if(owl.isOpen() && owl.property<int>("initialized"))
 		{
 			const OWL::Event *event = owl.nextEvent(0);	//no timeout - poll
@@ -194,7 +204,7 @@ public:
 
 			if(event->type_id() == OWL::Type::ERROR)
 			{
-				cerr << event->name() << ": " << event->str() << endl;
+				//cerr << event->name() << ": " << event->str() << endl; //commented out in case nonfatal errors cause the main loop to stall
 				return;
 			}
 
@@ -208,15 +218,15 @@ public:
 						{
 							if (m->id == leftFoot_id)
 							{
-								leftFoot[0] = m->x;
-								leftFoot[0] = m->y;
-								leftFoot[0] = m->z;
+								leftFoot[0] = m->x * 0.1f;
+								leftFoot[1] = m->y * 0.1f;
+								leftFoot[2] = m->z * 0.1f;
 							}
 							if (m->id == rightFoot_id)
 							{
-								rightFoot[0] = m->x;
-								rightFoot[0] = m->y;
-								rightFoot[0] = m->z;
+								rightFoot[0] = m->x * 0.1f;
+								rightFoot[1] = m->y * 0.1f;
+								rightFoot[2] = m->z * 0.1f;
 							}
 						}
 					}
@@ -235,6 +245,8 @@ public:
 								headPosition[2] = m->pose[2] * 0.1f;
 
 								memcpy(&orientation, &(m->pose[3]), sizeof(float) * 3);
+
+								orientationcond = m->cond;
 
 								float forward[3] = { 0.0f,0.0f,-1.0f }; //-1 because rigid body was created 'backwards'
 								float up[3] = { 0.0f,1.0f,0.0f };
@@ -272,6 +284,8 @@ private:
 	vector<float> leftFoot;
 	vector<float> rightFoot;
 
+	float orientationcond;
+
 	quaternion orientation;
 
 	PhaseSpaceRigidBody* headRigidBody;
@@ -306,6 +320,11 @@ public:
 	quaternion GetOrientation()
 	{
 		return orientation;
+	}
+
+	float GetOrientationCond()
+	{
+		return orientationcond;
 	}
 
 	bool GetValid()

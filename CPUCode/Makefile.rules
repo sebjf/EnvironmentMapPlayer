@@ -33,7 +33,7 @@ all:
 endif
 
 ifndef DEBUG
- O_FLAGS = -g -O3
+ O_FLAGS = -g -O0   #03
 else
  O_FLAGS = -g -O0
 endif
