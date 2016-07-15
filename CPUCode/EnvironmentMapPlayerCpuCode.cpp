@@ -61,7 +61,7 @@ int main(int argc, const char** argv)
 
 	VirtualRoom room;
 	room.root = "/home/sfriston/Dropbox/Investigations/Latency Gait and Distance Study/TFF Model/";
-	room.Load(string("tff.csv"));
+	room.Load(string("room.csv"));
 
 	VirtualEnvironment ve;
 
